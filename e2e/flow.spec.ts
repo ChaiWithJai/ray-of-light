@@ -83,9 +83,12 @@ test('AC1 + AC2 + AC7: a full daily session, audio first and transfer last', asy
 	await expect(page.getByText('Bonjour, monsieur.')).toBeVisible();
 	await page.getByRole('button', { name: /read the spread/ }).click();
 
-	// Comprehension, then the rest of the flow.
+	// Comprehension — the ported corpus gave lesson 1 a second check (#8);
+	// answer each in turn before the flow advances.
 	await expect(page).toHaveURL(/\/comprehension/);
 	await page.getByRole('button', { name: /I would like a coffee/ }).first().click();
+	await page.getByRole('button', { name: /Next|Continue/ }).click();
+	await page.getByRole('button', { name: /drink it there or take it away/ }).first().click();
 	await page.getByRole('button', { name: /Next|Continue/ }).click();
 
 	await expect(page).toHaveURL(/\/shadow/);
