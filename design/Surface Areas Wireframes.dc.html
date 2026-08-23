@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#f0eee9;font-family:'Patrick Hand',system-ui,sans-serif;color:#222}
+a{color:#2a78d6}a:hover{color:#1b5aa8}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 16px/1.2 'Patrick Hand',sans-serif;color:#1a1a1a}
+.dv-sub{font:14px/1.4 'Caveat',cursive;color:rgba(0,0,0,.55);margin:0 0 22px}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:15px/1.3 'Patrick Hand',sans-serif;color:rgba(0,0,0,.7)}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:22px 0 0;font:13px/1.5 'Patrick Hand',sans-serif;color:rgba(0,0,0,.5)}
+.grp{width:100%;font:700 15px 'Caveat',cursive;color:#2a78d6;border-bottom:1px dashed rgba(42,120,214,.4);padding-bottom:2px;margin-top:8px}
+.ph{width:300px;background:#fff;border:2px solid #222;border-radius:14px;padding:14px 14px 18px;box-shadow:2px 3px 0 rgba(0,0,0,.12);display:flex;flex-direction:column;gap:10px;min-height:420px}
+.tbar{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#888;border-bottom:1.5px solid #222;padding-bottom:6px}
+.h1{font-size:19px;line-height:1.15}
+.mut{color:#888;font-size:13px;line-height:1.3}
+.btn{border:2px solid #222;border-radius:8px;padding:7px 10px;text-align:center;font-size:15px;background:#fff}
+.btnP{border:2px solid #222;border-radius:8px;padding:8px 10px;text-align:center;font-size:15px;background:#2a78d6;color:#fff}
+.chip{border:1.5px solid #222;border-radius:999px;padding:3px 10px;font-size:13px;background:#fff}
+.chipOn{border:2px solid #2a78d6;border-radius:999px;padding:3px 10px;font-size:13px;background:#e6f0fc;color:#1b5aa8}
+.ln{height:8px;border-radius:4px;background:#ddd}
+.card{border:1.5px solid #222;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;background:#fff}
+.cov{background:repeating-linear-gradient(45deg,#eee,#eee 5px,#f8f8f8 5px,#f8f8f8 10px);border:1.5px dashed #aaa;border-radius:6px;color:#999;text-align:center;font-size:12px;padding:5px 6px}
+.fr{font-size:14.5px}
+.en{font-size:13.5px;color:#666}
+.num{display:inline-block;width:16px;color:#aaa;font-size:12px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start;padding:4px 2px;border-radius:6px}
+.pairHi{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start;padding:4px 2px;border-radius:6px;background:#e6f0fc;outline:2px solid #2a78d6}
+.play{width:30px;height:30px;border:2px solid #222;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none}
+.playBig{width:64px;height:64px;border:3px solid #222;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto}
+.wv{display:flex;align-items:flex-end;gap:2px;height:34px}
+.wb{width:4px;background:#222;border-radius:2px}
+.wbB{width:4px;background:#2a78d6;border-radius:2px}
+.mic{width:52px;height:52px;border:2.5px solid #2a78d6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;color:#2a78d6;margin:0 auto;background:#e6f0fc}
+.note{font:15px/1.25 'Caveat',cursive;color:#c05621}
+.tp{width:34px;height:34px;border:2px solid #2a78d6;border-radius:50%;background:rgba(42,120,214,.18);flex:none}
+.pill{font-size:11px;border:1.5px solid #222;border-radius:999px;padding:1px 8px}
+.pillOn{font-size:11px;border:1.5px solid #2a78d6;border-radius:999px;padding:1px 8px;background:#2a78d6;color:#fff}
+.tabs{display:flex;justify-content:space-around;border-top:1.5px solid #222;padding-top:8px;margin-top:auto;font-size:12.5px;color:#888}
+.tabOn{color:#2a78d6;font-weight:600}
+.row{display:flex;gap:8px;align-items:center}
+.col{display:flex;flex-direction:column;gap:6px}
+.diffBad{background:#fde3e3;border-radius:3px;padding:0 3px;text-decoration:line-through;color:#b33}
+.diffGood{background:#e0f2e4;border-radius:3px;padding:0 3px;color:#1d7a35}
+.slider{height:6px;background:#ddd;border-radius:3px;position:relative}
+.knob{position:absolute;top:-5px;width:16px;height:16px;border:2px solid #222;border-radius:50%;background:#fff}
+.stage{display:flex;gap:3px}
+.sq{width:14px;height:8px;border:1px solid #222;border-radius:2px}
+.sqOn{width:14px;height:8px;border:1px solid #2a78d6;border-radius:2px;background:#2a78d6}
+</style></helmet>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">All 22 surfaces — digital Assimil (French &amp; Tamil)</span></div>
+<p class="dv-sub">One stable spatial model: the parallel spread (<a class="dv-oid" href="#1e">1e</a>) is the center; most surfaces are states of it with support progressively removed. Nav = Today · Book · Phrases · Progress.</p>
+<div class="dv-opts">
+
+<div class="grp">Onboarding &amp; scheduling</div>
+
+<div class="dv-opt" id="1a"><div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>1 · Entry assessment</div>
+<div class="ph">
+<div class="tbar"><span>◁</span><span>Getting started · 1/3</span><span></span></div>
+<div class="h1">Let's find your starting point</div>
+<div class="mut">Respond naturally — there are no wrong answers.</div>
+<div class="card"><div class="row"><div class="play">▶</div><div class="col" style="gap:3px"><div style="font-size:13px">Listen, then pick what you heard</div><div class="wv"><div class="wb" style="height:8px"></div><div class="wb" style="height:18px"></div><div class="wb" style="height:26px"></div><div class="wb" style="height:12px"></div><div class="wb" style="height:22px"></div><div class="wb" style="height:9px"></div></div></div></div></div>
+<div class="btn">"He is ordering a coffee"</div>
+<div class="chipOn" style="text-align:center;border-radius:8px;padding:7px">"She would like a coffee"</div>
+<div class="btn">"They don't like coffee"</div>
+<div class="card"><div style="font-size:13px">Now say it back:</div><div class="mic">🎙</div><div class="mut" style="text-align:center">hold to speak</div></div>
+<div class="note">→ listening, reading &amp; speaking samples set the entry lesson</div>
+<div class="btnP">Continue</div>
+</div></div>
+
+<div class="dv-opt" id="1b"><div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>2 · Learning plan</div>
+<div class="ph">
+<div class="tbar"><span>◁</span><span>Getting started · 2/3</span><span></span></div>
+<div class="h1">How much, daily?</div>
+<div class="row"><div class="chip">15 min</div><div class="chipOn">25 min</div><div class="chip">40 min</div></div>
+<div class="card"><div style="font-size:13px;font-weight:600">Your projected path</div>
+<div class="row" style="margin-top:4px"><div style="flex:1"><div class="ln" style="background:#2a78d6"></div><div class="mut" style="margin-top:3px">L1–49 passive wave</div></div><div style="flex:1"><div class="ln"></div><div class="mut" style="margin-top:3px">L50+ active wave</div></div></div>
+<div class="mut" style="margin-top:6px">Day 50: you'll start translating Lesson 1 back into French — from memory.</div></div>
+<div class="card"><div style="font-size:13px;font-weight:600">Goal</div><div class="row" style="flex-wrap:wrap"><div class="chipOn">Travel</div><div class="chip">Family</div><div class="chip">Work</div><div class="chip">Reading</div></div></div>
+<div class="mut">Every 7th lesson is a review day — that's built in, not extra.</div>
+<div class="note">→ commitment sets pacing; expectation calibration, not gamified streaks</div>
+<div class="btnP">Set my plan</div>
+</div></div>
+
+<div class="dv-opt" id="1c"><div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>3 · Today</div>
+<div class="ph">
+<div class="tbar"><span>☰</span><span>Day 51</span><span>⚙</span></div>
+<div class="h1">Today</div>
+<div class="card" style="border-width:2px"><div class="row" style="justify-content:space-between"><div style="font-weight:600">Lesson 51 · Au marché</div><div class="pill">new</div></div><div class="mut">Passive procedure · ~15 min</div><div class="btnP" style="margin-top:4px">Start</div></div>
+<div class="card"><div class="row" style="justify-content:space-between"><div style="font-weight:600">Lesson 2 · Au café</div><div class="pillOn">recall</div></div><div class="mut">Active wave: say it in French from the English · ~10 min</div><div class="btn" style="margin-top:4px">Start recall</div></div>
+<div class="mut" style="text-align:center">Nothing else to choose. That's the point.</div>
+<div class="note">→ one screen kills choice paralysis &amp; enforces spacing</div>
+<div class="tabs"><span class="tabOn">Today</span><span>Book</span><span>Phrases</span><span>Progress</span></div>
+</div></div>
+
+<div class="grp">The lesson core — states of one spread</div>
+
+<div class="dv-opt" id="1d"><div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>4 · Audio preview</div>
+<div class="ph" style="justify-content:center;gap:18px">
+<div class="tbar"><span>✕</span><span>Lesson 51 · step 1</span><span></span></div>
+<div style="flex:1"></div>
+<div class="playBig">▶</div>
+<div style="text-align:center;font-size:16px">Just listen.</div>
+<div class="mut" style="text-align:center">No text yet — let your ears go first.</div>
+<div class="row" style="justify-content:center"><div style="width:8px;height:8px;border-radius:50%;background:#2a78d6"></div><div style="width:8px;height:8px;border-radius:50%;border:1.5px solid #aaa"></div></div>
+<div class="mut" style="text-align:center">listen 1 of 2</div>
+<div style="flex:1"></div>
+<div class="note">→ unbiased sound perception before any spelling bias</div>
+<div class="btn">I've listened twice →</div>
+</div></div>
+
+<div class="dv-opt" id="1e"><div class="dv-olabel"><a class="dv-oid" href="#1e">1e</a>5 · Parallel spread — the center of the product</div>
+<div class="ph" style="width:340px">
+<div class="tbar"><span>✕</span><span>Lesson 51 · Au marché</span><span>♪</span></div>
+<div class="row" style="justify-content:space-between;font-size:12px;color:#888"><span>FRANÇAIS</span><span>ENGLISH</span></div>
+<div class="pair"><div class="fr"><span class="num">1</span>Bonjour, madame.</div><div class="en"><span class="num">1</span>Good morning, madam.</div></div>
+<div class="pairHi"><div class="fr"><span class="num">2</span><b>Je voudrais un kilo de tomates.</b> <span style="font-size:11px">▶</span></div><div class="en"><span class="num">2</span>I would like a kilo of tomatoes.</div></div>
+<div class="pair"><div class="fr"><span class="num">3</span>Et avec ceci ?</div><div class="en"><span class="num">3</span>Anything else?</div></div>
+<div class="pair"><div class="fr"><span class="num">4</span>C'est tout, merci.</div><div class="en"><span class="num">4</span>That's all, thanks.</div></div>
+<div class="row" style="justify-content:center;gap:14px;margin-top:auto"><div class="play">⏮</div><div class="play" style="border-color:#2a78d6;color:#2a78d6">▶</div><div class="play">⏭</div></div>
+<div class="row" style="justify-content:center"><div class="chip">cover EN</div><div class="chip">cover FR</div><div class="chip">notes</div></div>
+<div class="note">→ lines stay horizontally aligned; audio belongs to the FR line; tap FR to replay. Same layout hosts every later state (<a class="dv-oid" href="#1i">1i</a>, <a class="dv-oid" href="#1m">1m</a>).</div>
+</div></div>
+
+<div class="dv-opt" id="1f"><div class="dv-olabel"><a class="dv-oid" href="#1f">1f</a>6 · Finger-tracking layer</div>
+<div class="ph" style="width:340px">
+<div class="tbar"><span>✕</span><span>Parallel reading</span><span>♪</span></div>
+<div class="pair" style="opacity:.45"><div class="fr"><span class="num">1</span>Bonjour, madame.</div><div class="en"><span class="num">1</span>Good morning, madam.</div></div>
+<div style="position:relative">
+<div class="pairHi"><div class="fr"><span class="num">2</span>Je voudrais un kilo…</div><div class="en"><span class="num">2</span>I would like a kilo…</div></div>
+<div style="position:absolute;left:8px;top:-6px" class="tp"></div>
+<div style="position:absolute;right:8px;top:-6px" class="tp"></div>
+<div style="position:absolute;left:44px;right:44px;top:8px;border-top:2px dashed #2a78d6"></div>
+</div>
+<div class="pair" style="opacity:.45"><div class="fr"><span class="num">3</span>Et avec ceci ?</div><div class="en"><span class="num">3</span>Anything else?</div></div>
+<div class="pair" style="opacity:.45"><div class="fr"><span class="num">4</span>C'est tout, merci.</div><div class="en"><span class="num">4</span>That's all, thanks.</div></div>
+<div style="text-align:center;font-size:22px;color:#2a78d6">↓</div>
+<div class="mut" style="text-align:center">drag either side — both anchors move together;<br>audio follows the pair</div>
+<div class="note">→ two linked touchpoints = joint attention on form + meaning. Desktop: one cross-column reading guide, hover links both, ↑↓ moves a pair.</div>
+</div></div>
+
+<div class="dv-opt" id="1g"><div class="dv-olabel"><a class="dv-oid" href="#1g">1g</a>7 · Pronunciation layer</div>
+<div class="ph">
+<div class="tbar"><span>◁ spread</span><span>Pronounce</span><span></span></div>
+<div class="card" style="border-color:#2a78d6"><div class="fr" style="font-size:18px">Je voudrais un kilo de tomates.</div><div class="mut">zhuh voo-DREH uh(n) kee-LO…</div></div>
+<div class="card"><div class="mut" style="font-size:12px">native</div><div class="wv"><div class="wb" style="height:10px"></div><div class="wb" style="height:24px"></div><div class="wb" style="height:30px"></div><div class="wb" style="height:14px"></div><div class="wb" style="height:26px"></div><div class="wb" style="height:8px"></div><div class="wb" style="height:20px"></div></div>
+<div class="mut" style="font-size:12px;margin-top:4px">you</div><div class="wv"><div class="wbB" style="height:8px"></div><div class="wbB" style="height:20px"></div><div class="wbB" style="height:31px"></div><div class="wbB" style="height:10px"></div><div class="wbB" style="height:28px"></div><div class="wbB" style="height:6px"></div><div class="wbB" style="height:16px"></div></div></div>
+<div class="row" style="justify-content:center"><div class="chip">▶ normal</div><div class="chip">🐢 slow</div></div>
+<div class="mic">🎙</div>
+<div class="mut" style="text-align:center">compare by ear — no scores, no red marks</div>
+<div class="note">→ imitation over evaluation; rhythm &amp; liaison, not points</div>
+</div></div>
+
+<div class="dv-opt" id="1h"><div class="dv-olabel"><a class="dv-oid" href="#1h">1h</a>8 · Notes drawer</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Lesson 51</span><span>♪</span></div>
+<div style="opacity:.35" class="col">
+<div class="pair"><div class="fr"><span class="num">1</span>Bonjour, madame.</div><div class="en"><span class="num">1</span>Good morning…</div></div>
+<div class="pair"><div class="fr"><span class="num">2</span>Je <u style="text-decoration-color:#c05621">voudrais</u> un kilo…</div><div class="en"><span class="num">2</span>I would like…</div></div>
+</div>
+<div class="card" style="margin-top:auto;border-width:2px;border-radius:14px 14px 10px 10px">
+<div class="row" style="justify-content:space-between"><div style="font-weight:600;font-size:14px">📎 voudrais</div><div class="mut">✕</div></div>
+<div style="font-size:13.5px;line-height:1.35">Conditional of <i>vouloir</i> — the polite "would like". Blunter: <i>je veux</i> ("I want") — fine with family, brusque with strangers.</div>
+<div class="mut">Culture: shopkeepers expect <i>bonjour</i> before any request.</div>
+</div>
+<div class="note">→ note is anchored to the exact word, opens only on demand — just-in-time, never a grammar chapter</div>
+</div></div>
+
+<div class="grp">Checks &amp; exercises (passive wave)</div>
+
+<div class="dv-opt" id="1i"><div class="dv-olabel"><a class="dv-oid" href="#1i">1i</a>9 · Comprehension check</div>
+<div class="ph" style="width:340px">
+<div class="tbar"><span>✕</span><span>Do you get it?</span><span></span></div>
+<div class="row" style="justify-content:space-between;font-size:12px;color:#888"><span>FRANÇAIS</span><span>ENGLISH</span></div>
+<div class="pair"><div class="fr"><span class="num">1</span>Bonjour, madame.</div><div class="cov">covered</div></div>
+<div class="pairHi"><div class="fr"><span class="num">2</span>Je voudrais un kilo de tomates. ▶</div><div class="cov">covered</div></div>
+<div class="pair"><div class="fr"><span class="num">3</span>Et avec ceci ?</div><div class="cov">covered</div></div>
+<div class="card"><div style="font-size:13.5px">Line 2 means…</div><div class="btn" style="font-size:13.5px">"I'd like a kilo of tomatoes"</div><div class="btn" style="font-size:13.5px">"Do you have any tomatoes?"</div></div>
+<div class="mut" style="text-align:center">tap-and-hold a covered line to peek (counts as a hint)</div>
+<div class="note">→ same spread as <a class="dv-oid" href="#1e">1e</a>, English removed — translation dependency comes off first</div>
+</div></div>
+
+<div class="dv-opt" id="1j"><div class="dv-olabel"><a class="dv-oid" href="#1j">1j</a>10 · Echo practice</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Shadow</span><span></span></div>
+<div class="mut">Repeat right on the speaker's heels — chunk by chunk.</div>
+<div class="card" style="border-color:#2a78d6"><div class="row" style="flex-wrap:wrap;gap:5px"><div class="chipOn">Je voudrais</div><div class="chip">un kilo</div><div class="chip">de tomates</div></div>
+<div class="wv" style="margin-top:6px"><div class="wbB" style="height:12px"></div><div class="wbB" style="height:26px"></div><div class="wbB" style="height:18px"></div><div class="wb" style="height:8px;opacity:.3"></div><div class="wb" style="height:20px;opacity:.3"></div><div class="wb" style="height:10px;opacity:.3"></div></div></div>
+<div style="text-align:center;font-size:14px">▶ chunk … <b style="color:#2a78d6">your turn</b> … next chunk</div>
+<div class="mic">🎙</div>
+<div class="row" style="justify-content:center"><div class="chip">replay chunk</div><div class="chip">whole line</div></div>
+<div class="note">→ segmented audio builds phrase chunking, not word-by-word reading aloud</div>
+</div></div>
+
+<div class="dv-opt" id="1k"><div class="dv-olabel"><a class="dv-oid" href="#1k">1k</a>11 · Translation exercise (FR → EN)</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Exercise 1 · 2/5</span><span></span></div>
+<div class="mut">Translate into English:</div>
+<div class="card" style="border-color:#2a78d6"><div class="fr" style="font-size:17px">Et avec ceci ? ▶</div></div>
+<div class="card" style="min-height:64px"><div class="mut">type or dictate your English…</div></div>
+<div class="row"><div class="btn" style="flex:1">🎙</div><div class="btnP" style="flex:3">Check</div></div>
+<div class="card" style="background:#f4faf5;border-color:#1d7a35"><div style="font-size:13px;color:#1d7a35">✓ "Anything else?" — literal: "and with this?"</div></div>
+<div class="note">→ confirms precise comprehension; literal gloss shows the FR structure</div>
+</div></div>
+
+<div class="dv-opt" id="1l"><div class="dv-olabel"><a class="dv-oid" href="#1l">1l</a>12 · Completion exercise</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Exercise 2 · 4/5</span><span></span></div>
+<div class="mut">Fill in the missing piece:</div>
+<div class="card" style="border-color:#2a78d6"><div class="fr" style="font-size:17px">Je voudrais un kilo <span style="border-bottom:2px solid #2a78d6;padding:0 18px;color:#2a78d6">?</span> tomates.</div></div>
+<div class="row" style="justify-content:center;flex-wrap:wrap"><div class="chip">du</div><div class="chipOn">de</div><div class="chip">des</div><div class="chip">à</div></div>
+<div class="btnP">Check</div>
+<div class="card"><div class="mut">After quantities → always <b>de</b>: un kilo <b>de</b>, beaucoup <b>de</b>…</div></div>
+<div class="note">→ cue-supported retrieval; the missing element is always the lesson's target construction</div>
+</div></div>
+
+<div class="grp">Active wave (Day 50+)</div>
+
+<div class="dv-opt" id="1m"><div class="dv-olabel"><a class="dv-oid" href="#1m">1m</a>13 · Active-wave spread</div>
+<div class="ph" style="width:340px">
+<div class="tbar"><span>✕</span><span>Recall · Lesson 2</span><span></span></div>
+<div class="mut" style="text-align:center">You read this 49 days ago. Say it in French.</div>
+<div class="row" style="justify-content:space-between;font-size:12px;color:#888"><span>FRANÇAIS</span><span>ENGLISH</span></div>
+<div class="pair"><div class="cov">said ✓</div><div class="en"><span class="num">1</span>Good morning, sir.</div></div>
+<div class="pairHi"><div class="cov" style="border-color:#2a78d6;color:#2a78d6">your turn 🎙</div><div class="en"><span class="num">2</span>I would like a coffee.</div></div>
+<div class="pair"><div class="cov">···</div><div class="en"><span class="num">3</span>With milk?</div></div>
+<div class="mic">🎙</div>
+<div class="row" style="justify-content:center"><div class="chip">hint: first word</div><div class="chip">reveal</div></div>
+<div class="note">→ the strongest part of Assimil: same spread as <a class="dv-oid" href="#1e">1e</a>, mirrored — French covered, produced aloud line by line</div>
+</div></div>
+
+<div class="dv-opt" id="1n"><div class="dv-olabel"><a class="dv-oid" href="#1n">1n</a>14 · Answer comparison</div>
+<div class="ph">
+<div class="tbar"><span>◁</span><span>Compare</span><span></span></div>
+<div class="card"><div class="mut" style="font-size:12px">YOU SAID</div><div class="fr">Je <span class="diffBad">voudrait</span> un café.</div></div>
+<div style="text-align:center;color:#888">↕ spot the difference</div>
+<div class="card" style="border-color:#1d7a35"><div class="mut" style="font-size:12px">CANONICAL ▶</div><div class="fr">Je <span class="diffGood">voudrais</span> un café.</div></div>
+<div class="card"><div class="mut"><i>-s</i> for <i>je</i>; <i>-t</i> is the il/elle form. Sounds identical — spelling only.</div></div>
+<div class="btnP">Say the corrected line 🎙</div>
+<div class="mut" style="text-align:center">tricky lines come back in 1 · 3 · 7 days</div>
+<div class="note">→ learner notices the diff first, then reproduces the fix — error discrimination, not red X's</div>
+</div></div>
+
+<div class="dv-opt" id="1o"><div class="dv-olabel"><a class="dv-oid" href="#1o">1o</a>15 · Transfer challenge</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Make it yours</span><span></span></div>
+<div class="card" style="background:#faf7f0"><div style="font-size:13px">🏨 New situation: a hotel desk, 10 pm.</div><div class="mut">You want to book a room for two nights.</div></div>
+<div class="mut">Use a construction you already own:</div>
+<div class="chipOn" style="align-self:flex-start">Je voudrais + inf/noun</div>
+<div class="card" style="min-height:56px"><div class="mut">say or type your new sentence…</div></div>
+<div class="mic">🎙</div>
+<div class="card" style="background:#f4faf5;border-color:#1d7a35"><div style="font-size:13px;color:#1d7a35">✓ "Je voudrais réserver une chambre pour deux nuits."</div></div>
+<div class="note">→ generalization beyond the memorized dialogue = the "transferable" state in <a class="dv-oid" href="#1s">1s</a></div>
+</div></div>
+
+<div class="dv-opt" id="1p"><div class="dv-olabel"><a class="dv-oid" href="#1p">1p</a>16 · Error repair</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Your pattern</span><span></span></div>
+<div class="card" style="border-color:#c05621"><div style="font-size:14px;font-weight:600">You keep mixing <i>du</i> / <i>de</i></div><div class="mut">seen 4× this week — let's fix just this one</div></div>
+<div class="col">
+<div class="card"><div class="fr" style="font-size:14px">un kilo <span style="border-bottom:2px solid #2a78d6;padding:0 12px"></span> tomates</div></div>
+<div class="card"><div class="fr" style="font-size:14px">je bois <span style="border-bottom:2px solid #2a78d6;padding:0 12px"></span> café</div></div>
+<div class="card"><div class="fr" style="font-size:14px">beaucoup <span style="border-bottom:2px solid #2a78d6;padding:0 12px"></span> pain</div></div>
+</div>
+<div class="row" style="justify-content:center"><div class="chip">du</div><div class="chip">de</div></div>
+<div class="mut" style="text-align:center">then say each full sentence aloud</div>
+<div class="note">→ one recurring error, many contexts — never a mixed "mistakes review" pile</div>
+</div></div>
+
+<div class="grp">Closure &amp; consolidation</div>
+
+<div class="dv-opt" id="1q"><div class="dv-olabel"><a class="dv-oid" href="#1q">1q</a>17 · Lesson closure</div>
+<div class="ph">
+<div class="tbar"><span></span><span>Lesson 51 done</span><span></span></div>
+<div class="h1">Before you go —</div>
+<div class="card"><div style="font-size:13.5px">I understood the dialogue</div><div class="slider"><div style="width:80%;height:6px;background:#2a78d6;border-radius:3px"></div><div class="knob" style="left:78%"></div></div></div>
+<div class="card"><div style="font-size:13.5px">I could say the key lines myself</div><div class="slider"><div style="width:45%;height:6px;background:#2a78d6;border-radius:3px"></div><div class="knob" style="left:43%"></div></div></div>
+<div class="card"><div style="font-size:13.5px">Effort today felt…</div><div class="row"><div class="chip">easy</div><div class="chipOn">just right</div><div class="chip">too hard</div></div></div>
+<div class="mut">Your ratings tune when lines resurface — be honest, not kind.</div>
+<div class="note">→ calibration, not celebration; no confetti</div>
+<div class="btnP">Done for today</div>
+</div></div>
+
+<div class="dv-opt" id="1r"><div class="dv-olabel"><a class="dv-oid" href="#1r">1r</a>18 · Weekly synthesis (every 7th lesson)</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>Lesson 49 · Review</span><span></span></div>
+<div class="h1">This week, condensed</div>
+<div class="card"><div class="mut" style="font-size:12px">PATTERNS YOU MET</div>
+<div class="row" style="flex-wrap:wrap"><div class="chip">je voudrais +</div><div class="chip">quantité + de</div><div class="chip">est-ce que… ?</div></div></div>
+<div class="card"><div class="mut" style="font-size:12px">ONE NEW DIALOGUE, ALL OLD PIECES ▶</div>
+<div class="fr" style="font-size:13.5px">— Bonjour ! Je voudrais deux kilos de pommes.<br>— Et avec ceci ?<br>— Est-ce que vous avez du fromage ?</div></div>
+<div class="btnP">Perform it 🎙</div>
+<div class="mut" style="text-align:center">nothing new to learn today — only reassembly</div>
+<div class="note">→ interleaving: familiar constructions in unfamiliar combinations</div>
+</div></div>
+
+<div class="grp">Book-wide surfaces (persistent nav)</div>
+
+<div class="dv-opt" id="1s"><div class="dv-olabel"><a class="dv-oid" href="#1s">1s</a>19 · Progress map</div>
+<div class="ph">
+<div class="tbar"><span>☰</span><span>Progress</span><span></span></div>
+<div class="mut">Capability, not lesson count. 5 states per construction:</div>
+<div class="row" style="font-size:10.5px;color:#888;gap:4px"><span>exposed</span>→<span>recognized</span>→<span>recalled</span>→<span>stabilized</span>→<span>transferable</span></div>
+<div class="col">
+<div class="card" style="padding:8px"><div class="row" style="justify-content:space-between"><div class="fr" style="font-size:13.5px">je voudrais +</div><div class="stage"><div class="sqOn"></div><div class="sqOn"></div><div class="sqOn"></div><div class="sqOn"></div><div class="sqOn"></div></div></div></div>
+<div class="card" style="padding:8px"><div class="row" style="justify-content:space-between"><div class="fr" style="font-size:13.5px">quantité + de</div><div class="stage"><div class="sqOn"></div><div class="sqOn"></div><div class="sqOn"></div><div class="sq"></div><div class="sq"></div></div></div></div>
+<div class="card" style="padding:8px"><div class="row" style="justify-content:space-between"><div class="fr" style="font-size:13.5px">est-ce que… ?</div><div class="stage"><div class="sqOn"></div><div class="sqOn"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div></div></div></div>
+<div class="card" style="padding:8px"><div class="row" style="justify-content:space-between"><div class="fr" style="font-size:13.5px">il y a…</div><div class="stage"><div class="sqOn"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div><div class="sq"></div></div></div></div>
+</div>
+<div class="note">→ no "completed" flag anywhere; a lesson can be finished but not yet retrievable</div>
+<div class="tabs"><span>Today</span><span>Book</span><span>Phrases</span><span class="tabOn">Progress</span></div>
+</div></div>
+
+<div class="dv-opt" id="1t"><div class="dv-olabel"><a class="dv-oid" href="#1t">1t</a>20 · Phrase library</div>
+<div class="ph">
+<div class="tbar"><span>☰</span><span>Phrases</span><span></span></div>
+<div class="card" style="padding:7px"><div class="mut">🔍 "how do I ask for…"</div></div>
+<div class="row"><div class="chipOn">requests</div><div class="chip">shopping</div><div class="chip">greetings</div></div>
+<div class="col">
+<div class="card"><div class="row" style="justify-content:space-between"><div class="fr" style="font-size:14px">Je voudrais…</div><div class="play" style="width:24px;height:24px;font-size:10px">▶</div></div><div class="mut">I'd like… · from L2, Au café</div></div>
+<div class="card"><div class="row" style="justify-content:space-between"><div class="fr" style="font-size:14px">Est-ce que vous avez… ?</div><div class="play" style="width:24px;height:24px;font-size:10px">▶</div></div><div class="mut">Do you have…? · from L23</div></div>
+</div>
+<div class="btn">Rehearse these 2 🎙</div>
+<div class="note">→ constructions in context, for real-world reuse — not a flashcard deck</div>
+<div class="tabs"><span>Today</span><span>Book</span><span class="tabOn">Phrases</span><span>Progress</span></div>
+</div></div>
+
+<div class="dv-opt" id="1u"><div class="dv-olabel"><a class="dv-oid" href="#1u">1u</a>21 · Conversation bridge</div>
+<div class="ph">
+<div class="tbar"><span>✕</span><span>🏪 At the market</span><span></span></div>
+<div class="mut">Built only from lessons 1–51. Nothing you haven't met.</div>
+<div class="col" style="flex:1">
+<div class="card" style="align-self:flex-start;max-width:85%"><div class="fr" style="font-size:13.5px">Bonjour ! Et avec ceci ? ▶</div></div>
+<div class="card" style="align-self:flex-end;max-width:85%;border-color:#2a78d6"><div class="fr" style="font-size:13.5px">🎙 Je voudrais du fromage…</div></div>
+<div class="card" style="align-self:flex-start;max-width:85%"><div class="fr" style="font-size:13.5px">Combien ? ▶</div></div>
+</div>
+<div class="row" style="justify-content:center"><div class="chip" style="font-size:11px">stuck? tap for a phrase</div></div>
+<div class="mic">🎙</div>
+<div class="note">→ AI (or partner) constrained to learned material — lessons become communication</div>
+</div></div>
+
+<div class="dv-opt" id="1v"><div class="dv-olabel"><a class="dv-oid" href="#1v">1v</a>22 · Settings / accessibility</div>
+<div class="ph">
+<div class="tbar"><span>◁</span><span>Settings</span><span></span></div>
+<div class="card"><div style="font-size:13.5px">Audio speed</div><div class="row"><div class="chip">0.75×</div><div class="chipOn">1×</div><div class="chip">slow first listen</div></div></div>
+<div class="card"><div style="font-size:13.5px">Text size</div><div class="slider"><div style="width:55%;height:6px;background:#2a78d6;border-radius:3px"></div><div class="knob" style="left:53%"></div></div></div>
+<div class="card"><div class="row" style="justify-content:space-between"><div style="font-size:13.5px">Transliteration (Tamil)</div><div class="pill" style="background:#2a78d6;color:#fff;border-color:#2a78d6">on</div></div><div class="mut">a temporary scaffold — nudges you to turn it off around L30</div></div>
+<div class="card"><div class="row" style="justify-content:space-between"><div style="font-size:13.5px">Two-finger tracking</div><div class="pill">single-guide</div></div><div class="mut">accessibility: one linked reading guide instead</div></div>
+<div class="card"><div class="row" style="justify-content:space-between"><div style="font-size:13.5px">Daily reminder</div><div class="pill">7:30 am</div></div></div>
+<div class="note">→ everything here reduces irrelevant load; nothing here teaches</div>
+</div></div>
+
+</div>
+<p class="dv-next">Try next: "hi-fi the parallel spread <a class="dv-oid" href="#1e">1e</a>" · "show the Tamil version of <a class="dv-oid" href="#1e">1e</a> with script + transliteration rows" · "storyboard one full day (Day 51) end to end"</p>
+</section>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,77 @@
+@import 'tailwindcss';
+
+@import '@fontsource/patrick-hand/400.css';
+@import '@fontsource-variable/caveat';
+
+/*
+ * Design tokens transcribed from the Claude Design handoff
+ * (`design/Surface Areas Wireframes.dc.html`). These are the whole design system —
+ * there is no second theme underneath, so every value here is the literal value
+ * from the prototype stylesheet.
+ */
+@theme {
+	--font-sans: 'Patrick Hand', system-ui, sans-serif;
+	--font-hand: 'Patrick Hand', system-ui, sans-serif;
+	--font-script: 'Caveat Variable', 'Caveat', cursive;
+	--font-mono: ui-monospace, Menlo, monospace;
+
+	--color-paper: #f0eee9;
+	--color-ink: #222;
+	--color-ink-soft: #888;
+	--color-ink-faint: #aaa;
+	--color-ink-en: #666;
+	--color-rule: #ddd;
+	--color-accent-blue: #2a78d6;
+	--color-accent-blue-dark: #1b5aa8;
+	--color-accent-blue-wash: #e6f0fc;
+	--color-note: #c05621;
+	--color-good: #1d7a35;
+	--color-good-wash: #e0f2e4;
+	--color-good-card: #f4faf5;
+	--color-bad: #b33;
+	--color-bad-wash: #fde3e3;
+	--color-parchment: #faf7f0;
+	--color-cover-line: #aaa;
+	--color-cover-ink: #999;
+}
+
+@layer base {
+	body {
+		@apply bg-paper font-hand text-ink;
+		margin: 0;
+	}
+
+	a {
+		@apply text-accent-blue;
+	}
+
+	a:hover {
+		@apply text-accent-blue-dark;
+	}
+
+	/* The sketch look has no focus ring of its own; give keyboard users a real one. */
+	:focus-visible {
+		outline: none;
+	}
+}
+
+@layer components {
+	/*
+	 * `.cov` in the prototype: a hatched "covered" cell. Kept as a component
+	 * class because the repeating gradient is not expressible as a utility.
+	 */
+	.sketch-cover {
+		background: repeating-linear-gradient(
+			45deg,
+			#eee,
+			#eee 5px,
+			#f8f8f8 5px,
+			#f8f8f8 10px
+		);
+	}
+
+	/* `.ph` — the phone frame's offset sketch shadow. */
+	.sketch-shadow {
+		box-shadow: 2px 3px 0 rgb(0 0 0 / 0.12);
+	}
+}
