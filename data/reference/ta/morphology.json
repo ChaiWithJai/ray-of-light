@@ -1,0 +1,179 @@
+{
+	"$comment": "Derived from Universal Dependencies. Reference annotation only — never teaching content.",
+	"source": "UD_Tamil-TTB",
+	"sourceFiles": [
+		"ta_ttb-ud-train.conllu",
+		"ta_ttb-ud-dev.conllu",
+		"ta_ttb-ud-test.conllu"
+	],
+	"license": "CC BY-NC-SA 3.0",
+	"commercialUse": "prohibited",
+	"attribution": "Universal Dependencies Tamil-TTB treebank, https://github.com/UniversalDependencies/UD_Tamil-TTB",
+	"derivedAt": null,
+	"vocabularySize": 158,
+	"covered": 27,
+	"lexicon": {
+		"அடுத்த": {
+			"lemma": "அடுத்த",
+			"upos": "ADJ",
+			"feats": null,
+			"count": 9
+		},
+		"அது": {
+			"lemma": "அது",
+			"upos": "PRON",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3|PronType=Prs",
+			"count": 8
+		},
+		"ஆகும்": {
+			"lemma": "ஆகு",
+			"upos": "AUX",
+			"feats": "Gender=Neut|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Tense=Fut|VerbForm=Fin|Voice=Act",
+			"count": 1
+		},
+		"ஆறு": {
+			"lemma": "ஆறு",
+			"upos": "PART",
+			"feats": null,
+			"count": 8
+		},
+		"இந்த": {
+			"lemma": "இந்த",
+			"upos": "DET",
+			"feats": null,
+			"count": 49
+		},
+		"இருந்தது": {
+			"lemma": "இரு",
+			"upos": "AUX",
+			"feats": "Gender=Neut|Mood=Ind|Number=Sing|Person=3|Polarity=Pos|Tense=Past|VerbForm=Fin|Voice=Act",
+			"count": 14
+		},
+		"இருந்து": {
+			"lemma": "இரு",
+			"upos": "AUX",
+			"feats": "Polarity=Pos|VerbForm=Part|Voice=Act",
+			"count": 10
+		},
+		"எந்த": {
+			"lemma": "எந்த",
+			"upos": "DET",
+			"feats": null,
+			"count": 7
+		},
+		"எனக்கு": {
+			"lemma": "என்",
+			"upos": "PRON",
+			"feats": "Animacy=Anim|Case=Dat|Gender=Com|Number=Sing|Person=1|PronType=Prs",
+			"count": 2
+		},
+		"ஒரு": {
+			"lemma": "ஒரு",
+			"upos": "ADJ",
+			"feats": null,
+			"count": 20
+		},
+		"கொஞ்சம்": {
+			"lemma": "கொஞ்சம்",
+			"upos": "DET",
+			"feats": "NumType=Card",
+			"count": 1
+		},
+		"கொண்டு": {
+			"lemma": "கொள்",
+			"upos": "VERB",
+			"feats": "Polarity=Pos|VerbForm=Part|Voice=Act",
+			"count": 19
+		},
+		"சரி": {
+			"lemma": "சரி",
+			"upos": "NOUN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 3
+		},
+		"நடந்து": {
+			"lemma": "நட",
+			"upos": "VERB",
+			"feats": "Polarity=Pos|VerbForm=Part|Voice=Act",
+			"count": 2
+		},
+		"நாள்": {
+			"lemma": "நாள்",
+			"upos": "NOUN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 3
+		},
+		"நான்": {
+			"lemma": "நான்",
+			"upos": "PRON",
+			"feats": "Animacy=Anim|Case=Nom|Gender=Com|Number=Sing|Person=1|PronType=Prs",
+			"count": 8
+		},
+		"நேரம்": {
+			"lemma": "நேரம்",
+			"upos": "NOUN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 2
+		},
+		"பஸ்": {
+			"lemma": "பஸ்",
+			"upos": "PROPN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 2
+		},
+		"பால்": {
+			"lemma": "பால்",
+			"upos": "PROPN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 6
+		},
+		"பேர்": {
+			"lemma": "பேர்",
+			"upos": "NOUN",
+			"feats": "Animacy=Anim|Case=Nom|Gender=Com|Number=Plur|Person=3",
+			"count": 20
+		},
+		"மட்டும்": {
+			"lemma": "மட்டும்",
+			"upos": "ADV",
+			"feats": null,
+			"count": 2
+		},
+		"மணிக்கு": {
+			"lemma": "மணி",
+			"upos": "NOUN",
+			"feats": "Case=Dat|Gender=Neut|Number=Sing|Person=3",
+			"count": 7
+		},
+		"மறுபடியும்": {
+			"lemma": "மறுபடியும்",
+			"upos": "ADV",
+			"feats": null,
+			"count": 2
+		},
+		"மொத்தம்": {
+			"lemma": "மொத்தம்",
+			"upos": "ADJ",
+			"feats": null,
+			"count": 4
+		},
+		"ரயில்": {
+			"lemma": "ரயில்",
+			"upos": "NOUN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 5
+		},
+		"வாரம்": {
+			"lemma": "வாரம்",
+			"upos": "NOUN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 5
+		},
+		"வேலை": {
+			"lemma": "வேலை",
+			"upos": "NOUN",
+			"feats": "Case=Nom|Gender=Neut|Number=Sing|Person=3",
+			"count": 3
+		}
+	}
+}

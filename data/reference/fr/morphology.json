@@ -1,8 +1,11 @@
 {
 	"$comment": "Derived from Universal Dependencies. Reference annotation only — never teaching content.",
 	"source": "UD_French-GSD",
-	"sourceFile": "fr_gsd-ud-train.conllu",
+	"sourceFiles": [
+		"fr_gsd-ud-train.conllu"
+	],
 	"license": "CC BY-SA 4.0",
+	"commercialUse": "permitted",
 	"attribution": "Universal Dependencies French-GSD treebank, https://github.com/UniversalDependencies/UD_French-GSD",
 	"derivedAt": null,
 	"vocabularySize": 184,

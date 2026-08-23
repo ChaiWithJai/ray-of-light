@@ -65,6 +65,6 @@ remote exists, `scripts/file-issues.sh` pushes every file to GitHub verbatim
 - [`T-02`](T-02-native-review-french.md) — Native review pass on the French corpus
 - [`T-03`](T-03-native-review-tamil.md) — Native review pass on the Tamil corpus (highest risk)
 - [`T-04`](T-04-unblock-open-corpora.md) — Ingest the blocked open corpora (Tatoeba, Common Voice, Wiktionary, FSI)
-- [`T-05`](T-05-tamil-morphology-licence.md) — Find a usable-licence source for Tamil morphology
+- [`T-05`](T-05-tamil-morphology-native-annotation.md) — Annotate Tamil morphology natively (TTB is thin on spoken forms)
 - [`T-06`](T-06-microphone-and-transcription.md) — Microphone capture and transcription (never scoring)
 - [`T-07`](T-07-connect-github-app.md) — Connect the Claude GitHub App so agents can file issues

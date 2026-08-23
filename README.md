@@ -125,9 +125,10 @@ anything ships. The short version:
   author cannot self-check. See `T-02`, `T-03`.
 - **No microphone capture.** Mic affordances are wired to UI state but do not
   record. See `T-06`.
-- **French morphology is sourced; Tamil is not.** UD_French-GSD is CC BY-SA 4.0
-  and is used. UD_Tamil-TTB is CC BY-**NC**-SA 3.0 — non-commercial — so it is
-  excluded on purpose, with a test asserting the absence. See `T-05`.
+- **Tamil morphology is thin — 27/158 forms, vs 174/184 for French.** Not a size
+  problem: UD_Tamil-TTB annotates *written* news Tamil while this course teaches
+  *spoken* Tamil, so the forms it lacks (`வேணும்`, `இருக்கு`, `குடுங்க`) are exactly
+  the spoken ones. See `T-05`.
 
 ## Content and licensing
 
@@ -136,5 +137,20 @@ only; no Assimil text is reproduced. Every line carries `source`, `license` and
 `reviewStatus`, and the schema refuses content without them.
 
 Sourced reference data is isolated in `data/reference/` with its own
-[`LICENSE.md`](data/reference/LICENSE.md), so the CC BY-SA share-alike boundary is
-explicit rather than accidental.
+[`LICENSE.md`](data/reference/LICENSE.md), so the share-alike boundary is explicit
+rather than accidental.
+
+### ⚠️ This project is non-commercial, and one dependency requires it to stay that way
+
+The Tamil morphology lexicon is derived from UD_Tamil-TTB, which is
+**CC BY-NC-SA 3.0**. Non-commercial use is exactly what that licence grants, so it
+is used here — but it is a one-way door. **If this ever ships commercially:**
+
+1. Delete `data/reference/ta/`.
+2. Remove the Tamil branch from `src/lib/morphology.ts`.
+3. Re-source Tamil morphology, or complete `T-05` (native annotation of our own
+   lines, which removes the encumbrance entirely).
+
+`hasCommercialRestriction('ta')` returns `true` so this is queryable in code, and
+a test asserts the restriction stays recorded. French (CC BY-SA 4.0) has no such
+limit.

@@ -9,13 +9,18 @@
  *
  * ## Licensing (checked, not assumed)
  *
- *   UD_French-GSD   CC BY-SA 4.0       usable with attribution + share-alike
- *   UD_Tamil-TTB    CC BY-NC-SA 3.0    NON-COMMERCIAL — deliberately NOT sourced
+ *   UD_French-GSD   CC BY-SA 4.0       attribution + share-alike
+ *   UD_Tamil-TTB    CC BY-NC-SA 3.0    attribution + share-alike + NON-COMMERCIAL
  *
- * The Tamil treebank is excluded on purpose. A non-commercial licence cannot go
- * into a corpus that may ship commercially, and quietly vendoring it would be
- * exactly the "every corpus has its own licence" trap. Tamil morphology needs a
- * differently-licensed source or a native linguist — see docs/ISSUE-1-LIMITATIONS.md.
+ * ⚠️  THE TAMIL LEXICON IS NON-COMMERCIAL-ONLY.
+ *
+ * This project is personal and non-commercial, which is exactly the use
+ * CC BY-NC-SA grants — so Tamil morphology is sourced. But it is a one-way door:
+ * if this ever ships commercially, `data/reference/ta/` must be deleted and Tamil
+ * morphology re-sourced from something else. That is why the Tamil output carries
+ * a `commercialUse: 'prohibited'` field, why `hasCommercialRestriction()` exists in
+ * morphology.ts, and why a test asserts the restriction is recorded — so the
+ * constraint travels with the data instead of living in someone's memory.
  *
  * Run: node scripts/source-ud.mjs
  */
@@ -30,10 +35,23 @@ const SOURCES = [
 		// genre and covers function words well but misses exactly the vocabulary
 		// that teaches — `voudrais`, `tomates`, `bonjour` are all absent from it.
 		// The download is one-off; the committed lexicon stays tiny either way.
-		file: 'fr_gsd-ud-train.conllu',
+		files: ['fr_gsd-ud-train.conllu'],
 		license: 'CC BY-SA 4.0',
+		commercialUse: 'permitted',
 		attribution:
 			'Universal Dependencies French-GSD treebank, https://github.com/UniversalDependencies/UD_French-GSD'
+	},
+	{
+		language: 'ta',
+		treebank: 'UD_Tamil-TTB',
+		// TTB is small (~1.7MB across all three splits), so take all of them —
+		// Tamil is agglutinative and the corpus is news genre, so surface-form
+		// overlap with conversational lessons is thin to begin with.
+		files: ['ta_ttb-ud-train.conllu', 'ta_ttb-ud-dev.conllu', 'ta_ttb-ud-test.conllu'],
+		license: 'CC BY-NC-SA 3.0',
+		commercialUse: 'prohibited',
+		attribution:
+			'Universal Dependencies Tamil-TTB treebank, https://github.com/UniversalDependencies/UD_Tamil-TTB'
 	}
 ];
 
@@ -69,14 +87,16 @@ async function main() {
 
 	for (const source of SOURCES) {
 		const vocabulary = await lessonVocabulary(source.language);
-		const url = `https://raw.githubusercontent.com/UniversalDependencies/${source.treebank}/master/${source.file}`;
-
-		process.stdout.write(`Fetching ${source.treebank}/${source.file}…\n`);
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error(`${url} → HTTP ${response.status}`);
+		let text = '';
+		for (const file of source.files) {
+			const url = `https://raw.githubusercontent.com/UniversalDependencies/${source.treebank}/master/${file}`;
+			process.stdout.write(`Fetching ${source.treebank}/${file}…\n`);
+			const response = await fetch(url);
+			if (!response.ok) {
+				throw new Error(`${url} → HTTP ${response.status}`);
+			}
+			text += (await response.text()) + '\n';
 		}
-		const text = await response.text();
 
 		/** form → { lemma, upos, feats, count } — restricted to our vocabulary. */
 		const lexicon = {};
@@ -108,8 +128,9 @@ async function main() {
 					$comment:
 						'Derived from Universal Dependencies. Reference annotation only — never teaching content.',
 					source: source.treebank,
-					sourceFile: source.file,
+					sourceFiles: source.files,
 					license: source.license,
+					commercialUse: source.commercialUse,
 					attribution: source.attribution,
 					derivedAt: null,
 					vocabularySize: vocabulary.size,
@@ -134,27 +155,49 @@ async function main() {
 Everything in this directory is **reference annotation**, never teaching content.
 Canonical lessons are original and owned; see \`src/lib/content/\`.
 
-## Sourced
+## Sources
 
-| Source | License | Use |
+| Source | Licence | Commercial use |
 | --- | --- | --- |
-| UD_French-GSD | CC BY-SA 4.0 | Morphological annotation for French word forms used in our lessons |
+| UD_French-GSD | CC BY-SA 4.0 | Permitted, with attribution + share-alike |
+| UD_Tamil-TTB | CC BY-NC-SA 3.0 | **PROHIBITED** |
 
-Attribution: Universal Dependencies French-GSD treebank —
-https://github.com/UniversalDependencies/UD_French-GSD
+Attribution:
+- Universal Dependencies French-GSD — https://github.com/UniversalDependencies/UD_French-GSD
+- Universal Dependencies Tamil-TTB — https://github.com/UniversalDependencies/UD_Tamil-TTB
 
-CC BY-SA 4.0 is share-alike. The derived lexicon in \`fr/morphology.json\` carries
-that obligation; it is kept in its own directory, and out of the canonical corpus,
-so the share-alike boundary is explicit rather than accidental.
+## ⚠️ The Tamil lexicon is non-commercial-only
 
-## Deliberately NOT sourced
+\`ta/morphology.json\` is derived from a **CC BY-NC-SA 3.0** corpus. This project is
+personal and non-commercial, which is exactly the use that licence grants.
 
-| Source | License | Why not |
-| --- | --- | --- |
-| UD_Tamil-TTB | **CC BY-NC-SA 3.0** | Non-commercial. Cannot go into a corpus that may ship commercially. |
+**It is a one-way door.** If this ever ships commercially:
 
-Tamil morphological annotation needs a differently-licensed source or a native
-linguist. See \`docs/ISSUE-1-LIMITATIONS.md\`.
+1. Delete \`data/reference/ta/\`.
+2. Remove the Tamil branch from \`src/lib/morphology.ts\`.
+3. Re-source Tamil morphology from something else, or annotate our own lines.
+
+\`hasCommercialRestriction('ta')\` returns true so the constraint is queryable in
+code, and \`morphology.test.ts\` asserts it stays recorded.
+
+## Share-alike
+
+Both licences are share-alike, so these derived lexicons carry that obligation.
+They are kept in this directory and out of the canonical corpus so the boundary is
+explicit rather than accidental.
+
+## Coverage, and why Tamil's is thin
+
+| Language | Lesson forms covered |
+| --- | --- |
+| French | 174 / 184 |
+| Tamil | 27 / 158 |
+
+Tamil coverage is low for a reason worth knowing: **TTB annotates written news
+Tamil, and this course teaches spoken Tamil.** The forms it lacks — \`வேணும்\`,
+\`இருக்கு\`, \`குடுங்க\` — are precisely the spoken verb forms. That is the same
+written/spoken split the product exists to bridge, so a larger treebank of the
+same register would not help. Annotating our own lines is the real fix.
 `
 	);
 

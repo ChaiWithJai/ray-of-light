@@ -83,27 +83,47 @@ diversity, dictionary definitions) are unbuilt.
 **Needs a human, or a session with wider egress:** allowlist those hosts, or fetch
 the datasets and commit them.
 
-### L4 — UD_Tamil-TTB is non-commercial, so Tamil has no morphology layer
+### L4 — Tamil morphology: resolved, conditionally
 
-French morphology is sourced. Tamil is not, and this one is a **licence** problem
-rather than a network problem:
+**Previously listed as blocked. It is not, because this project is
+non-commercial.**
 
-| Treebank | Licence | Usable? |
+UD_Tamil-TTB is CC BY-NC-SA 3.0. Non-commercial use is exactly what that licence
+grants, so Tamil morphology is now sourced and wired into the notes drawer
+alongside French.
+
+| Treebank | Licence | Commercial use |
 | --- | --- | --- |
-| UD_French-GSD | CC BY-SA 4.0 | Yes, with attribution + share-alike |
-| UD_Tamil-TTB | **CC BY-NC-SA 3.0** | **No — non-commercial** |
+| UD_French-GSD | CC BY-SA 4.0 | permitted |
+| UD_Tamil-TTB | CC BY-NC-SA 3.0 | **prohibited** |
 
-A non-commercial corpus cannot go into a corpus that may ship commercially, and
-vendoring it quietly is exactly the trap the sourcing model warns about. It is
-excluded deliberately, and a test asserts Tamil has no lexicon so nobody "fixes"
-it by accident.
+**This is a one-way door.** If the project ever ships commercially,
+`data/reference/ta/` must be deleted and Tamil morphology re-sourced. The
+constraint is queryable via `hasCommercialRestriction('ta')` and asserted by a
+test, so it travels with the code rather than living in someone's memory.
 
-Note also that CC BY-SA 4.0 is **share-alike**: the derived French lexicon carries
-that obligation. It is isolated in `data/reference/` rather than merged into the
-canonical corpus so the boundary is explicit.
+Both licences are also **share-alike**, which is why the derived lexicons sit in
+`data/reference/` rather than being merged into the canonical corpus.
 
-**Needs a human:** either a differently-licensed Tamil treebank, a commercial
-licence for TTB, or a native linguist annotating our own lines.
+#### The interesting part: coverage is thin for a reason
+
+| Language | Lesson forms covered |
+| --- | --- |
+| French | 174 / 184 |
+| Tamil | **27 / 158** |
+
+Tamil coverage is low, and it is not mainly a size problem. **TTB annotates
+written news Tamil; this course teaches spoken Tamil.** The forms it lacks —
+`வேணும்`, `இருக்கு`, `குடுங்க` — are exactly the spoken verb forms. That is the same
+written/spoken split the product exists to bridge, so a bigger treebank of the
+same register would not fix it.
+
+What it *does* resolve is the single most load-bearing annotation in the Tamil
+course: `எனக்கு → என், pronoun, dative`. Lesson 1's grammar note claims "the wanter
+goes in the dative"; this makes that checkable rather than asserted.
+
+**The real fix (see T-05):** have a native linguist annotate our own ~110 Tamil
+lines. Small, owned outright, correct register, and no licence encumbrance.
 
 ---
 
