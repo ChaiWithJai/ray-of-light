@@ -1,5 +1,3 @@
-import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /**
@@ -10,29 +8,26 @@ import { describe, expect, it } from 'vitest';
  * components must consume `$lib/components/ui` instead.
  */
 
-const SRC = join(__dirname, '..');
+const sources = import.meta.glob(
+	['/src/routes/**/*.svelte', '/src/routes/**/*.ts', '/src/lib/components/**/*.svelte'],
+	{ query: '?raw', import: 'default', eager: true }
+) as Record<string, string>;
 
-function svelteAndTsFiles(dir: string): string[] {
-	return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-		const path = join(dir, entry.name);
-		if (entry.isDirectory()) return svelteAndTsFiles(path);
-		return /\.(svelte|ts)$/.test(entry.name) ? [path] : [];
-	});
-}
-
-const ALLOWED = [join(SRC, 'routes', 'surfaces'), join(SRC, 'lib', 'components', 'surfaces')];
+const ALLOWED = [
+	'/src/routes/surfaces/',
+	'/src/lib/components/surfaces/',
+	'/src/lib/components/wireframe/'
+];
 
 describe('production boundary', () => {
 	it('no production route or component imports from components/wireframe', () => {
-		const offenders = [
-			...svelteAndTsFiles(join(SRC, 'routes')),
-			...svelteAndTsFiles(join(SRC, 'lib', 'components'))
-		].filter(
-			(file) =>
-				!ALLOWED.some((allowed) => file.startsWith(allowed)) &&
-				!file.includes(join('lib', 'components', 'wireframe')) &&
-				readFileSync(file, 'utf8').includes('components/wireframe')
-		);
+		const offenders = Object.entries(sources)
+			.filter(
+				([path, content]) =>
+					!ALLOWED.some((allowed) => path.startsWith(allowed)) &&
+					content.includes('components/wireframe')
+			)
+			.map(([path]) => path);
 
 		expect(offenders).toEqual([]);
 	});
