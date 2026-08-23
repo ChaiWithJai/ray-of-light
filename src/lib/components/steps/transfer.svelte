@@ -1,12 +1,12 @@
 <script lang="ts">
 	/**
 	 * 1o · Transfer challenge. AC 7: every lesson ends with a novel transfer
-	 * prompt. Validity is judged on whether the owned construction was used, not
-	 * on exact string match — otherwise it would be recall wearing a new hat.
+	 * prompt. The machine check only detects an authored ordered token pattern;
+	 * it cannot establish grammatical, pragmatic, or native-quality transfer.
 	 */
 	import * as W from '$lib/components/wireframe/index.js';
 	import { CONTENT_VERSION, getConstruction } from '$lib/content/index.js';
-	import { normalise } from '$lib/answers.js';
+	import { evaluateTransferAttempt, type TransferEvaluation } from '$lib/answers.js';
 	import type { Lesson, TransferPrompt } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -21,30 +21,24 @@
 
 	let answer = $state('');
 	let submitted = $state(false);
-
-	/**
-	 * A light check that the learner reached for the right construction: does the
-	 * attempt share a distinctive chunk with the construction's label? Generous on
-	 * purpose — a novel sentence is *supposed* to differ from the exemplar.
-	 */
-	const usedConstruction = $derived.by(() => {
-		if (!construction) return false;
-		const stem = construction.label
-			.split(/[+/]/)[0]
-			.trim()
-			.split(/\s+/)
-			.filter((w) => w.length > 2);
-		const attempt = normalise(answer);
-		return stem.length === 0 || stem.some((w) => attempt.includes(normalise(w)));
-	});
+	let evaluation = $state<TransferEvaluation | null>(null);
+	const allConstructionsMatched = $derived(evaluation?.unmatchedConstructionIds.length === 0);
+	const anyConstructionMatched = $derived((evaluation?.matchedConstructionIds.length ?? 0) > 0);
 
 	function submit() {
 		if (submitted || answer.trim() === '' || !prompt) return;
 		submitted = true;
-		profile.record(
-			usedConstruction ? 'transfer-correct' : 'attempt-incorrect',
+		evaluation = evaluateTransferAttempt(answer, prompt);
+		profile.recordOutcomes(
+			[
+				{
+					kind: 'transfer-pattern-matched',
+					constructionIds: evaluation.matchedConstructionIds,
+					assessmentSource: 'authored-pattern'
+				},
+				{ kind: 'attempt-incorrect', constructionIds: evaluation.unmatchedConstructionIds }
+			],
 			lesson.id,
-			[prompt.useConstruction, ...prompt.constructions],
 			{ contentVersion: CONTENT_VERSION }
 		);
 	}
@@ -72,15 +66,26 @@
 	<W.MicButton />
 
 	{#if submitted}
-		<W.SketchCard tone={usedConstruction ? 'good' : 'warn'}>
-			<div class="text-[13px] {usedConstruction ? 'text-good' : 'text-note'}">
-				{usedConstruction
-					? '✓ You reused the construction in a new situation.'
-					: '→ That did not use the construction. Compare:'}
+		<W.SketchCard tone={allConstructionsMatched && evaluation?.contextMatched ? 'good' : 'warn'}>
+			<div
+				class="text-[13px] {allConstructionsMatched && evaluation?.contextMatched
+					? 'text-good'
+					: 'text-note'}"
+			>
+				{allConstructionsMatched && evaluation?.contextMatched
+					? '✓ Your answer matched the target construction and situation patterns.'
+					: allConstructionsMatched
+						? '→ The construction matched, but some situation details did not. Compare:'
+						: anyConstructionMatched
+							? '→ Some construction patterns matched; the unmatched ones need another look. Compare:'
+							: '→ The target construction pattern did not match. Compare:'}
 			</div>
 			<W.Fr class="text-[13.5px]">{prompt.exemplar}</W.Fr>
 			<W.Muted class="text-[11.5px]">
-				One valid answer, not the only one — yours can differ.
+				{anyConstructionMatched
+					? 'Matched constructions record recognition evidence only; situation matching is feedback, not progress.'
+					: 'No recognition progress was recorded. This incorrect attempt can guide later repair.'}
+				This is not a judgment of full grammar or native naturalness.
 			</W.Muted>
 		</W.SketchCard>
 		<W.SketchButton tone="primary" onclick={onDone}>Continue</W.SketchButton>

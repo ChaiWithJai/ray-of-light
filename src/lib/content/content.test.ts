@@ -72,6 +72,23 @@ describe.each(LANGUAGES)('course: %s', (language) => {
 		}
 	});
 
+	it('authors explicit machine-checkable criteria for every transfer prompt', () => {
+		for (const lesson of course.lessons) {
+			for (const exercise of lesson.exercises) {
+				if (exercise.kind !== 'transfer') continue;
+				const expected = new Set([exercise.useConstruction, ...exercise.constructions]);
+				const authored = exercise.criteria.constructions.map((criterion) => criterion.constructionId);
+				expect(new Set(authored), exercise.id).toEqual(expected);
+				for (const criterion of exercise.criteria.constructions) {
+					expect(criterion.orderedGroups.length, exercise.id).toBeGreaterThan(0);
+					for (const alternatives of criterion.orderedGroups) {
+						expect(alternatives.length, exercise.id).toBeGreaterThan(0);
+					}
+				}
+			}
+		}
+	});
+
 	it('resolves every referenced construction somewhere in the course', () => {
 		for (const lesson of course.lessons) {
 			const referenced = [

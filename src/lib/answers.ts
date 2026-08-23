@@ -5,7 +5,12 @@
  * only ever compares against authored accepted answers. It is not a grader,
  * and it never scores pronunciation — see docs/ISSUE-1-LIMITATIONS.md.
  */
-import type { LessonLine, RecallPrompt } from '$lib/schemas/content.js';
+import type {
+	LessonLine,
+	RecallPrompt,
+	TransferCriteria,
+	TransferPrompt
+} from '$lib/schemas/content.js';
 
 /**
  * Fold away the differences that are not the learner's mistake: case, accents,
@@ -31,6 +36,84 @@ export function normalise(value: string): string {
 export function matchesAccepted(attempt: string, accepted: readonly string[]): boolean {
 	const a = normalise(attempt);
 	return accepted.some((candidate) => normalise(candidate) === a);
+}
+
+/** Match a normalized phrase on token boundaries, never as an arbitrary substring. */
+export function containsPhrase(attempt: string, phrase: string): boolean {
+	const attemptTokens = normalise(attempt).split(' ').filter(Boolean);
+	const phraseTokens = normalise(phrase).split(' ').filter(Boolean);
+	if (phraseTokens.length === 0 || phraseTokens.length > attemptTokens.length) return false;
+
+	return phraseStarts(attemptTokens, phraseTokens, 0).length > 0;
+}
+
+function phraseStarts(tokens: readonly string[], phrase: readonly string[], from: number): number[] {
+	const starts: number[] = [];
+	for (let start = from; start <= tokens.length - phrase.length; start += 1) {
+		if (phrase.every((token, offset) => tokens[start + offset] === token)) starts.push(start);
+	}
+	return starts;
+}
+
+/**
+ * Every authored group is required in order. Alternatives within a group support
+ * another valid realization, including Tamil script/transliteration. This proves
+ * only that the target pattern is present; it is not a grammar or native-quality
+ * judgment.
+ */
+function matchesOrderedGroups(
+	attempt: string,
+	orderedGroups: TransferCriteria['contextGroups']
+): boolean {
+	if (attempt.trim() === '') return false;
+	const tokens = normalise(attempt).split(' ').filter(Boolean);
+
+	function matchesFrom(groupIndex: number, tokenIndex: number): boolean {
+		if (groupIndex === orderedGroups.length) return true;
+		for (const alternative of orderedGroups[groupIndex]) {
+			const phrase = normalise(alternative).split(' ').filter(Boolean);
+			for (const start of phraseStarts(tokens, phrase, tokenIndex)) {
+				if (matchesFrom(groupIndex + 1, start + phrase.length)) return true;
+			}
+		}
+		return false;
+	}
+
+	return matchesFrom(0, 0);
+}
+
+export function matchesTransferCriteria(attempt: string, criteria: TransferCriteria): boolean {
+	return (
+		criteria.constructions.every((criterion) =>
+			matchesOrderedGroups(attempt, criterion.orderedGroups)
+		) && matchesOrderedGroups(attempt, criteria.contextGroups)
+	);
+}
+
+export type TransferEvaluation = {
+	matchedConstructionIds: string[];
+	unmatchedConstructionIds: string[];
+	contextMatched: boolean;
+};
+
+/**
+ * Classify only whether the authored ordered token pattern appeared. A match is
+ * deliberately not `transfer-correct`: this evaluator cannot establish full
+ * grammar, meaning, pragmatic fit, pronunciation, or native naturalness.
+ */
+export function evaluateTransferAttempt(
+	attempt: string,
+	prompt: TransferPrompt
+): TransferEvaluation {
+	return {
+		matchedConstructionIds: prompt.criteria.constructions
+			.filter((criterion) => matchesOrderedGroups(attempt, criterion.orderedGroups))
+			.map((criterion) => criterion.constructionId),
+		unmatchedConstructionIds: prompt.criteria.constructions
+			.filter((criterion) => !matchesOrderedGroups(attempt, criterion.orderedGroups))
+			.map((criterion) => criterion.constructionId),
+		contextMatched: matchesOrderedGroups(attempt, prompt.criteria.contextGroups)
+	};
 }
 
 export type RecallEvidenceKind = 'recall-correct' | 'attempt-incorrect';
