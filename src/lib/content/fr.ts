@@ -36,11 +36,13 @@ const l1 = d({
 		['cest-adj', "c'est + adjective", 'simple evaluation — "it is …"']
 	],
 	lines: [
-		{ target: 'Bonjour, monsieur.', english: 'Good morning, sir.', speaker: 'Client', constructions: ['bonjour-politesse'], notes: [{ type: 'culture', text: 'In France you greet before you ask. Skipping bonjour reads as rude, not as efficient.', anchor: 'Bonjour' }] },
+		{ target: 'Bonjour, monsieur.', english: 'Good morning, sir.', speaker: 'Client', constructions: ['bonjour-politesse'], notes: [{ type: 'culture', text: 'In France you greet before you ask. Skipping bonjour reads as rude, not as efficient. Bonjour is the safe default with strangers, shopkeepers, or anyone older; salut is the casual hello between friends and people your own age.', anchor: 'Bonjour' }] },
 		{ target: 'Bonjour ! Vous désirez ?', english: 'Good morning! What would you like?', speaker: 'Serveur' },
-		{ target: 'Je voudrais un café, s’il vous plaît.', english: 'I would like a coffee, please.', speaker: 'Client', constructions: ['je-voudrais'], chunks: ['Je voudrais', 'un café', "s'il vous plaît"], notes: [{ type: 'grammar', text: 'Conditional of vouloir. The blunt form is je veux ("I want") — fine with family, brusque with strangers.', anchor: 'voudrais' }] },
+		{ target: 'Je voudrais un café, s’il vous plaît.', english: 'I would like a coffee, please.', speaker: 'Client', constructions: ['je-voudrais'], chunks: ['Je voudrais', 'un café', "s'il vous plaît"], notes: [{ type: 'grammar', text: 'Conditional of vouloir. The blunt form is je veux ("I want") — fine with family, brusque with strangers.', anchor: 'voudrais' }, { type: 'grammar', text: 'The article carries the noun’s gender: un café, une eau. Learn each noun together with its un or une.', anchor: 'un café' }] },
 		{ target: 'Un café. Et avec ceci ?', english: 'One coffee. Anything else?', speaker: 'Serveur' },
 		{ target: 'C’est tout, merci.', english: "That's all, thank you.", speaker: 'Client' },
+		{ target: 'Sur place ou à emporter ?', english: 'For here or to go?', speaker: 'Serveur', notes: [{ type: 'culture', text: '« Sur place ou à emporter ? » is the standard counter question everywhere in France. Sur place = drinking it there; à emporter = taking it away — often cheaper, since table service can carry a surcharge.', anchor: 'Sur place ou à emporter' }] },
+		{ target: 'Sur place, s’il vous plaît.', english: 'For here, please.', speaker: 'Client' },
 		{ target: 'Deux euros quarante.', english: 'Two euros forty.', speaker: 'Serveur' },
 		{ target: 'Voilà.', english: 'Here you are.', speaker: 'Client' },
 		{ target: 'Merci. Bonne journée !', english: 'Thank you. Have a good day!', speaker: 'Serveur' },
@@ -48,7 +50,8 @@ const l1 = d({
 	],
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I would like a coffee, please"', '"Do you have any coffee?"', '"The coffee is good"'], answerIndex: 0, constructions: ['je-voudrais'] },
-		{ kind: 'recall', prompt: 'Say it in French: "I would like a coffee, please."', canonical: "Je voudrais un café, s'il vous plaît.", accepted: ["Je voudrais un café, s'il vous plaît.", 'Je voudrais un café.'], hints: ['Je…'], constructions: ['je-voudrais'] },
+		{ kind: 'comprehension', lineIndex: 5, prompt: 'The waiter asks: « Sur place ou à emporter ? » What does he want to know?', options: ['Whether you will drink it there or take it away', 'Whether you want sugar or milk', 'Whether you will pay by card or in cash'], answerIndex: 0 },
+		{ kind: 'recall', prompt: 'Say it in French: "I would like a coffee, please."', canonical: "Je voudrais un café, s'il vous plaît.", accepted: ["Je voudrais un café, s'il vous plaît.", 'Je voudrais un café.', "Un café, s'il vous plaît."], hints: ['Je…'], constructions: ['je-voudrais'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: '___ , monsieur. Je voudrais un café.', options: ['Bonjour', 'Merci', 'Voilà'], answer: 'Bonjour', rule: 'The greeting comes first, before any request.', constructions: ['bonjour-politesse'] },
 		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🥐 A bakery, 8am. You want a croissant.', use: 'je-voudrais', exemplar: "Je voudrais un croissant, s'il vous plaît.", constructions: ['je-voudrais'] }
 	]
@@ -62,7 +65,8 @@ const l2 = d({
 	constructions: [
 		['je-voudrais-inf', 'je voudrais + infinitive', 'polite request to *do* something'],
 		['avez-vous', 'avez-vous + noun ?', 'asking about availability'],
-		['pour-duree', 'pour + duration', 'saying how long']
+		['pour-duree', 'pour + duration', 'saying how long'],
+		['je-mappelle', 'je m’appelle + nom', 'stating your name ("I call myself …")']
 	],
 	lines: [
 		{ target: 'Bonsoir, madame.', english: 'Good evening, madam.', speaker: 'Client' },
@@ -70,14 +74,18 @@ const l2 = d({
 		{ target: 'Je voudrais réserver une chambre.', english: 'I would like to book a room.', speaker: 'Client', constructions: ['je-voudrais-inf'], chunks: ['Je voudrais', 'réserver', 'une chambre'], notes: [{ type: 'grammar', text: 'Same je voudrais as lesson 1, now followed by a verb instead of a noun. One construction, two shapes.', anchor: 'réserver' }] },
 		{ target: 'Pour combien de nuits ?', english: 'For how many nights?', speaker: 'Réceptionniste' },
 		{ target: 'Pour deux nuits.', english: 'For two nights.', speaker: 'Client', constructions: ['pour-duree'] },
-		{ target: 'Avez-vous une chambre calme ?', english: 'Do you have a quiet room?', speaker: 'Client', constructions: ['avez-vous'] },
+		{ target: 'Avez-vous une chambre calme ?', english: 'Do you have a quiet room?', speaker: 'Client', constructions: ['avez-vous'], notes: [{ type: 'grammar', text: 'Est-ce que (literally "is it that…") turns any statement into a yes/no question without changing the word order: « Est-ce que vous avez une chambre calme ? » works just as well as the inversion. You will meet it again in « Est-ce que je peux… » (lesson 9).', anchor: 'Avez-vous' }] },
 		{ target: 'Oui, au troisième étage.', english: 'Yes, on the third floor.', speaker: 'Réceptionniste' },
+		{ target: 'C’est à quel nom ?', english: 'What name is it under?', speaker: 'Réceptionniste' },
+		{ target: 'Je m’appelle Paul Martin.', english: 'My name is Paul Martin.', speaker: 'Client', constructions: ['je-mappelle'], chunks: ['Je m’appelle', 'Paul Martin'], notes: [{ type: 'grammar', text: 'Je m’appelle literally means "I call myself" — the verb is s’appeler, and the m’ is "myself". So you are not saying "my name is"; you are saying what you call yourself.', anchor: 'Je m’appelle' }] },
 		{ target: "C'est parfait.", english: "That's perfect.", speaker: 'Client', constructions: ['cest-adj'] },
 		{ target: 'Voici votre clé. Bonne nuit !', english: 'Here is your key. Good night!', speaker: 'Réceptionniste' }
 	],
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 5, prompt: 'Line 6 means…', options: ['"Do you have a quiet room?"', '"The room is quiet"', '"I would like to sleep"'], answerIndex: 0, constructions: ['avez-vous'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like to book a room for two nights."', canonical: 'Je voudrais réserver une chambre pour deux nuits.', accepted: ['Je voudrais réserver une chambre pour deux nuits.', 'Je voudrais réserver une chambre.'], hints: ['Je voudrais…'], constructions: ['je-voudrais-inf', 'pour-duree'] },
+		{ kind: 'recall', prompt: 'Introduce yourself: say "My name is Marie."', canonical: 'Je m’appelle Marie.', accepted: ['Je m’appelle Marie.', 'Moi, je m’appelle Marie.'], hints: ['Literally: "I call-myself …"', 'It starts with « Je m’… »'], constructions: ['je-mappelle'] },
+		{ kind: 'recall', prompt: 'Ask in French: "Do you have a quiet room?"', canonical: 'Avez-vous une chambre calme ?', accepted: ['Avez-vous une chambre calme ?', 'Est-ce que vous avez une chambre calme ?', 'Vous avez une chambre calme ?'], hints: ['Avez-vous… — or start with « Est-ce que »'], constructions: ['avez-vous'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je voudrais ___ une chambre.', options: ['réserver', 'réservation', 'réservé'], answer: 'réserver', rule: 'After je voudrais, a verb stays in the infinitive.', constructions: ['je-voudrais-inf'] },
 		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍽️ A restaurant. You want to book a table for four.', use: 'je-voudrais-inf', exemplar: 'Je voudrais réserver une table pour quatre personnes.', constructions: ['je-voudrais-inf'] }
 	]
@@ -91,23 +99,27 @@ const l3 = d({
 	constructions: [
 		['quantite-de', 'quantity + de + noun', 'after any quantity, de never changes'],
 		['combien', 'combien ?', 'asking how much / how many'],
-		['et-avec-ceci', 'et avec ceci ?', 'the shopkeeper’s "anything else?"']
+		['et-avec-ceci', 'et avec ceci ?', 'the shopkeeper’s "anything else?"'],
+		['ca-fait', 'ça fait + amount', 'stating a total — "that comes to …"']
 	],
 	lines: [
 		{ target: 'Bonjour, madame.', english: 'Good morning, madam.', speaker: 'Client' },
-		{ target: 'Bonjour ! Vous désirez ?', english: 'Good morning! What would you like?', speaker: 'Marchande' },
+		{ target: 'Bonjour ! Vous désirez ?', english: 'Good morning! What would you like?', speaker: 'Marchande', notes: [{ type: 'culture', text: '« Vous désirez ? » — literally "you desire?" — is the standard shopkeeper opener. Market vendors often add madame or monsieur to the greeting.', anchor: 'Vous désirez' }] },
 		{ target: 'Je voudrais un kilo de tomates.', english: 'I would like a kilo of tomatoes.', speaker: 'Client', constructions: ['je-voudrais', 'quantite-de'], chunks: ['Je voudrais', 'un kilo', 'de tomates'], notes: [{ type: 'grammar', text: 'After a quantity the word is always de — un kilo de, beaucoup de, un peu de. Never du or des here.', anchor: 'de' }] },
 		{ target: 'Et avec ceci ?', english: 'Anything else?', speaker: 'Marchande', constructions: ['et-avec-ceci'] },
 		{ target: 'Un peu de fromage, aussi.', english: 'A little cheese, too.', speaker: 'Client', constructions: ['quantite-de'] },
 		{ target: "C'est tout ?", english: 'Is that all?', speaker: 'Marchande' },
-		{ target: "Oui, c'est tout. C'est combien ?", english: "Yes, that's all. How much is it?", speaker: 'Client', constructions: ['combien'] },
-		{ target: 'Sept euros cinquante.', english: 'Seven euros fifty.', speaker: 'Marchande' },
+		{ target: "Oui, c'est tout. C'est combien ?", english: "Yes, that's all. How much is it?", speaker: 'Client', constructions: ['combien'], notes: [{ type: 'grammar', text: 'Spoken French loves this pattern: state the question first, then name the thing after a comma — « C’est combien, les tomates ? ». You will hear it far more often than « Combien coûtent les tomates ? ».', anchor: "C'est combien" }] },
+		{ target: 'Ça fait sept euros cinquante.', english: 'That comes to seven euros fifty.', speaker: 'Marchande', constructions: ['ca-fait'], notes: [{ type: 'pronunciation', text: 'Prices are spoken euros-first with no word for "and": sept euros cinquante, never sept euros *et* cinquante. And in prices the f of neuf sounds like [v] before euros: neuf euros → "neu-veuros" (the same liaison happens with ans).', anchor: 'sept euros cinquante' }] },
 		{ target: 'Voilà. Merci beaucoup !', english: 'Here you are. Thank you very much!', speaker: 'Client' }
 	],
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"Anything else?"', '"How much is it?"', '"Is that all?"'], answerIndex: 0, constructions: ['et-avec-ceci'] },
+		{ kind: 'comprehension', lineIndex: 7, prompt: 'The vendor says: « Ça fait sept euros cinquante. » What is the total?', options: ['7.50 euros', '7.15 euros', '6.50 euros'], answerIndex: 0, constructions: ['ca-fait'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like a kilo of tomatoes."', canonical: 'Je voudrais un kilo de tomates.', accepted: ['Je voudrais un kilo de tomates.'], hints: ['Je voudrais un kilo…'], constructions: ['quantite-de'] },
+		{ kind: 'recall', prompt: 'Ask the price, spoken style: "How much are the tomatoes?"', canonical: "C'est combien, les tomates ?", accepted: ["C'est combien, les tomates ?", "C'est combien ?", 'Combien coûtent les tomates ?'], hints: ["State the question first: C'est combien…", '…then name the thing after a comma'], constructions: ['combien'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je voudrais un kilo ___ tomates.', options: ['de', 'du', 'des'], answer: 'de', rule: 'After quantities → always de: un kilo de, beaucoup de, un peu de.', constructions: ['quantite-de'] },
+		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: '___ douze euros cinquante en tout.', options: ['Ça fait', "C'est combien", 'Je voudrais'], answer: 'Ça fait', rule: 'Totals are announced with ça fait + amount; c’est combien asks a price, it does not state one.', constructions: ['ca-fait'] },
 		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧀 A cheese shop. You want 200 grams of comté.', use: 'quantite-de', exemplar: 'Je voudrais deux cents grammes de comté.', constructions: ['quantite-de'] }
 	]
 });
@@ -120,15 +132,18 @@ const l4 = d({
 	constructions: [
 		['ou-est', 'où est + place ?', 'asking where something is'],
 		['a-gauche-droite', 'à gauche / à droite / tout droit', 'the three directions you need'],
-		['cest-loin', "c'est loin ?", 'asking about distance']
+		['cest-loin', "c'est loin ?", 'asking about distance'],
+		['je-cherche', 'je cherche + noun', 'stating what you are looking for — the indirect where-question'],
+		['a-cote-de', 'à côté de / en face de + place', 'locating something next to / opposite something else']
 	],
 	lines: [
-		{ target: 'Pardon, madame !', english: 'Excuse me, madam!', speaker: 'Touriste' },
+		{ target: 'Pardon, madame ! Je cherche la gare.', english: 'Excuse me, madam! I’m looking for the station.', speaker: 'Touriste', constructions: ['je-cherche'], notes: [{ type: 'culture', text: 'Always open with « Pardon » or « Excusez-moi, monsieur / madame » before asking a stranger anything — launching straight into the question sounds abrupt in France.', anchor: 'Pardon' }] },
 		{ target: 'Oui ?', english: 'Yes?', speaker: 'Passante' },
-		{ target: 'Où est la gare, s’il vous plaît ?', english: 'Where is the station, please?', speaker: 'Touriste', constructions: ['ou-est'], chunks: ['Où est', 'la gare', "s'il vous plaît"] },
-		{ target: 'Tout droit, puis à gauche.', english: 'Straight ahead, then left.', speaker: 'Passante', constructions: ['a-gauche-droite'] },
+		{ target: 'Où est la gare, s’il vous plaît ?', english: 'Where is the station, please?', speaker: 'Touriste', constructions: ['ou-est'], chunks: ['Où est', 'la gare', "s'il vous plaît"], notes: [{ type: 'grammar', text: '« Où est + singular noun ? » asks where something is. With a plural, the verb changes: « Où sont les toilettes ? »', anchor: 'Où est' }] },
+		{ target: 'Tout droit, puis à gauche.', english: 'Straight ahead, then left.', speaker: 'Passante', constructions: ['a-gauche-droite'], notes: [{ type: 'pronunciation', text: 'Gauche rhymes with "oh" plus "sh": [goʃ]. Keep à gauche and à droite as ready-made chunks — you will hear them in every set of directions.', anchor: 'à gauche' }] },
 		{ target: "C'est loin ?", english: 'Is it far?', speaker: 'Touriste', constructions: ['cest-loin'] },
 		{ target: 'Non, cinq minutes à pied.', english: 'No, five minutes on foot.', speaker: 'Passante' },
+		{ target: 'C’est à côté de la banque.', english: 'It’s next to the bank.', speaker: 'Passante', constructions: ['a-cote-de'], notes: [{ type: 'grammar', text: 'À côté de (next to) and en face de (opposite) locate one thing by another. The de contracts with le: en face du supermarché — but stays de la, de l’ otherwise.', anchor: 'à côté de' }] },
 		{ target: 'Et le musée ?', english: 'And the museum?', speaker: 'Touriste' },
 		{ target: 'À droite, après la banque.', english: 'On the right, after the bank.', speaker: 'Passante', constructions: ['a-gauche-droite'] },
 		{ target: 'Merci beaucoup, madame !', english: 'Thank you very much, madam!', speaker: 'Touriste' }
@@ -136,8 +151,11 @@ const l4 = d({
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 4, prompt: 'Line 5 means…', options: ['"Is it far?"', '"Where is it?"', '"Is it open?"'], answerIndex: 0, constructions: ['cest-loin'] },
 		{ kind: 'recall', prompt: 'Say it in French: "Where is the station, please?"', canonical: "Où est la gare, s'il vous plaît ?", accepted: ["Où est la gare, s'il vous plaît ?", 'Où est la gare ?'], hints: ['Où…'], constructions: ['ou-est'] },
+		{ kind: 'recall', prompt: 'Stop a stranger and say you are looking for a pharmacy.', canonical: 'Excusez-moi, je cherche une pharmacie.', accepted: ['Excusez-moi, je cherche une pharmacie.', 'Excusez-moi, monsieur, je cherche une pharmacie.', 'Pardon, je cherche une pharmacie.', 'Je cherche une pharmacie.'], hints: ['Open with « Excusez-moi » or « Pardon »'], constructions: ['je-cherche'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Tout droit, puis ___ gauche.', options: ['à', 'de', 'en'], answer: 'à', rule: 'Direction takes à: à gauche, à droite, à pied.', constructions: ['a-gauche-droite'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💊 You need a pharmacy and see someone at a bus stop.', use: 'ou-est', exemplar: "Pardon, où est la pharmacie, s'il vous plaît ?", constructions: ['ou-est'] }
+		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Pardon, ___ est la gare ?', options: ['où', 'qui', 'quand'], answer: 'où', rule: '« Où » asks for a place: « Où est… ? » = "Where is…?" (« qui » = who, « quand » = when).', constructions: ['ou-est'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💊 You need a pharmacy and see someone at a bus stop.', use: 'ou-est', exemplar: "Pardon, où est la pharmacie, s'il vous plaît ?", constructions: ['ou-est'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚻 A café. You need the toilets — careful, les toilettes is plural.', use: 'ou-est', exemplar: "Où sont les toilettes, s'il vous plaît ?", constructions: ['ou-est'] }
 	]
 });
 
@@ -149,14 +167,15 @@ const l5 = d({
 	constructions: [
 		['un-billet-pour', 'un billet pour + place', 'buying a ticket somewhere'],
 		['a-quelle-heure', 'à quelle heure ?', 'asking at what time'],
-		['le-prochain', 'le prochain / la prochaine', 'the next one']
+		['le-prochain', 'le prochain / la prochaine', 'the next one'],
+		['a-heure', 'à + heure', 'stating at what time something happens']
 	],
 	lines: [
 		{ target: 'Bonjour. Un billet pour Lyon, s’il vous plaît.', english: 'Hello. One ticket to Lyon, please.', speaker: 'Voyageur', constructions: ['un-billet-pour'], chunks: ['Un billet', 'pour Lyon', "s'il vous plaît"] },
 		{ target: 'Aller simple ou aller-retour ?', english: 'One way or return?', speaker: 'Guichetier' },
 		{ target: 'Aller-retour.', english: 'Return.', speaker: 'Voyageur' },
 		{ target: 'À quelle heure part le prochain train ?', english: 'At what time does the next train leave?', speaker: 'Voyageur', constructions: ['a-quelle-heure', 'le-prochain'] },
-		{ target: 'À quatorze heures dix.', english: 'At ten past two.', speaker: 'Guichetier', notes: [{ type: 'culture', text: 'Timetables use the 24-hour clock. Quatorze heures is 2pm.', anchor: 'quatorze heures' }] },
+		{ target: 'À quatorze heures dix.', english: 'At ten past two.', speaker: 'Guichetier', constructions: ['a-heure'], notes: [{ type: 'culture', text: 'Timetables use the 24-hour clock. Quatorze heures is 2pm.', anchor: 'quatorze heures' }, { type: 'grammar', text: '« À + heure » states when something happens: à quatorze heures dix, à sept heures et demie (half past), à huit heures et quart (quarter past).', anchor: 'À quatorze heures' }] },
 		{ target: 'Quel quai ?', english: 'Which platform?', speaker: 'Voyageur' },
 		{ target: 'Quai numéro sept.', english: 'Platform number seven.', speaker: 'Guichetier' },
 		{ target: 'Merci. Bonne journée !', english: 'Thank you. Have a good day!', speaker: 'Voyageur' }
@@ -165,7 +184,8 @@ const l5 = d({
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"At what time does the next train leave?"', '"Which platform is the train?"', '"Is the next train late?"'], answerIndex: 0, constructions: ['a-quelle-heure'] },
 		{ kind: 'recall', prompt: 'Say it in French: "One ticket to Lyon, please."', canonical: "Un billet pour Lyon, s'il vous plaît.", accepted: ["Un billet pour Lyon, s'il vous plaît.", 'Un billet pour Lyon.'], hints: ['Un billet…'], constructions: ['un-billet-pour'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'À quelle ___ part le train ?', options: ['heure', 'temps', 'moment'], answer: 'heure', rule: 'Clock time is heure. Temps is weather or time-in-general.', constructions: ['a-quelle-heure'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 A bus station. You want a ticket to Nice.', use: 'un-billet-pour', exemplar: "Un billet pour Nice, s'il vous plaît.", constructions: ['un-billet-pour'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 A bus station. You want a ticket to Nice.', use: 'un-billet-pour', exemplar: "Un billet pour Nice, s'il vous plaît.", constructions: ['un-billet-pour'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '📞 A friend asks when the film starts tonight.', use: 'a-heure', exemplar: 'À vingt heures trente.', constructions: ['a-heure'] }
 	]
 });
 
@@ -183,7 +203,7 @@ const l6 = d({
 		{ target: 'Bonsoir ! Vous avez choisi ?', english: 'Good evening! Have you chosen?', speaker: 'Serveur' },
 		{ target: "Qu'est-ce que vous recommandez ?", english: 'What do you recommend?', speaker: 'Cliente', constructions: ['quest-ce-que'], chunks: ["Qu'est-ce que", 'vous recommandez'] },
 		{ target: 'Le poisson est très bon ce soir.', english: 'The fish is very good this evening.', speaker: 'Serveur', constructions: ['cest-adj'] },
-		{ target: 'Alors je prends le poisson.', english: "Then I'll have the fish.", speaker: 'Cliente', constructions: ['je-prends'], notes: [{ type: 'grammar', text: 'Je prends is the present tense doing the work of a decision made right now. French rarely needs a future here.', anchor: 'prends' }] },
+		{ target: 'Alors je prends le poisson.', english: "Then I'll have the fish.", speaker: 'Cliente', constructions: ['je-prends'], notes: [{ type: 'grammar', text: 'Je prends is the present tense doing the work of a decision made right now. French rarely needs a future here. In shops you will also hear the softer je vais prendre — "I’ll take".', anchor: 'prends' }] },
 		{ target: 'Et comme boisson ?', english: 'And to drink?', speaker: 'Serveur' },
 		{ target: 'Une carafe d’eau, s’il vous plaît.', english: 'A jug of water, please.', speaker: 'Cliente', notes: [{ type: 'culture', text: 'Tap water in a carafe is free and normal to ask for. You do not have to buy bottled water.', anchor: "carafe d'eau" }] },
 		{ target: 'Très bien.', english: 'Very good.', speaker: 'Serveur' },
@@ -305,7 +325,9 @@ const l10 = d({
 		{ kind: 'comprehension', lineIndex: 1, prompt: 'Line 2 means…', options: ['"There is no milk"', '"There is some milk"', '"I do not like milk"'], answerIndex: 0, constructions: ['il-y-a'] },
 		{ kind: 'recall', prompt: 'Say it in French: "There is no milk."', canonical: "Il n'y a pas de lait.", accepted: ["Il n'y a pas de lait."], hints: ['Il n’y a…'], constructions: ['il-y-a'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: "Il n'y a pas ___ lait.", options: ['de', 'du', 'des'], answer: 'de', rule: 'Negation flattens du/de la/des to de.', constructions: ['il-y-a'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 A kitchen. You notice there is no salt.', use: 'il-y-a', exemplar: "Il n'y a pas de sel.", constructions: ['il-y-a'] }
+		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: "___ une banque près d'ici ?", options: ['Il y a', 'Où est', "C'est combien"], answer: 'Il y a', rule: 'Asking whether something exists nearby uses il y a + noun with rising intonation; où est asks for the location of a specific known thing.', constructions: ['il-y-a'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 A kitchen. You notice there is no salt.', use: 'il-y-a', exemplar: "Il n'y a pas de sel.", constructions: ['il-y-a'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏧 Your phone is dead and you need cash. Ask a passer-by if there is an ATM (un distributeur) near here.', use: 'il-y-a', exemplar: "Il y a un distributeur près d'ici ?", constructions: ['il-y-a'] }
 	]
 });
 
@@ -345,7 +367,8 @@ const l12 = d({
 	constructions: [
 		['envoyer-a', 'envoyer + noun + à + place', 'sending something somewhere'],
 		['combien-ca-coute', 'combien ça coûte ?', 'asking the price'],
-		['le-moins-cher', 'le moins cher', 'the cheapest option']
+		['le-moins-cher', 'le moins cher', 'the cheapest option'],
+		['payer-par-carte', 'payer par carte', 'paying by card — « Je peux payer par carte ? »']
 	],
 	lines: [
 		{ target: 'Bonjour. Je voudrais envoyer ce colis au Canada.', english: 'Hello. I would like to send this parcel to Canada.', speaker: 'Cliente', constructions: ['je-voudrais-inf', 'envoyer-a'], chunks: ['Je voudrais envoyer', 'ce colis', 'au Canada'] },
@@ -355,11 +378,14 @@ const l12 = d({
 		{ target: "Et le moins cher ?", english: 'And the cheapest?', speaker: 'Cliente', constructions: ['le-moins-cher'] },
 		{ target: 'Par bateau, douze euros. Mais six semaines.', english: 'By sea, twelve euros. But six weeks.', speaker: 'Employé' },
 		{ target: 'Six semaines ! Par avion, alors.', english: 'Six weeks! By air, then.', speaker: 'Cliente' },
+		{ target: 'Je peux payer par carte ?', english: 'Can I pay by card?', speaker: 'Cliente', constructions: ['payer-par-carte', 'est-ce-que-je-peux'] },
+		{ target: 'Bien sûr. Vous pouvez taper votre code.', english: 'Of course. You can enter your PIN.', speaker: 'Employé', constructions: ['payer-par-carte'] },
 		{ target: 'Très bien. Signez ici, s’il vous plaît.', english: 'Very good. Sign here, please.', speaker: 'Employé' }
 	],
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"How much does it cost by air?"', '"How long does it take by air?"', '"Is it going by air?"'], answerIndex: 0, constructions: ['combien-ca-coute'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like to send this parcel to Canada."', canonical: 'Je voudrais envoyer ce colis au Canada.', accepted: ['Je voudrais envoyer ce colis au Canada.'], hints: ['Je voudrais envoyer…'], constructions: ['envoyer-a'] },
+		{ kind: 'recall', prompt: 'Ask if you can pay by card.', canonical: 'Je peux payer par carte ?', accepted: ['Je peux payer par carte ?', 'Est-ce que je peux payer par carte ?', 'On peut payer par carte ?'], hints: ['Start with « Je peux… »', '"By card" is par carte'], constructions: ['payer-par-carte'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je voudrais envoyer ce colis ___ Canada.', options: ['au', 'à', 'en'], answer: 'au', rule: 'Masculine countries take au: au Canada, au Portugal. Feminine take en: en France.', constructions: ['envoyer-a'] },
 		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💌 You want to send a letter to France.', use: 'envoyer-a', exemplar: 'Je voudrais envoyer cette lettre en France.', constructions: ['envoyer-a'] }
 	]
@@ -373,10 +399,13 @@ const l13 = d({
 	constructions: [
 		['vouloir-venir', 'tu veux venir ?', 'informal invitation'],
 		['je-peux-apporter', "qu'est-ce que je peux apporter ?", 'offering to bring something'],
-		['avec-plaisir', 'avec plaisir', 'accepting warmly']
+		['avec-plaisir', 'avec plaisir', 'accepting warmly'],
+		['ca-va', 'ça va ? / ça va bien', 'asking and answering "how’s it going?" — informal; bounce it back with et toi ?']
 	],
 	lines: [
-		{ target: 'Tu veux venir dîner samedi ?', english: 'Do you want to come for dinner on Saturday?', speaker: 'Claire', constructions: ['vouloir-venir'], chunks: ['Tu veux venir', 'dîner', 'samedi'] },
+		{ target: 'Salut Paul ! Ça va ?', english: 'Hi Paul! How’s it going?', speaker: 'Claire', constructions: ['ca-va'], notes: [{ type: 'grammar', text: 'The same two words ask and answer: ça va ? — ça va (bien). Salut and ça va are tu-register: use them with friends, not with the waiter from lesson 1.', anchor: 'Ça va' }] },
+		{ target: 'Ça va bien, merci. Et toi ?', english: 'Fine, thanks. And you?', speaker: 'Paul', constructions: ['ca-va'] },
+		{ target: 'Tu veux venir dîner samedi ?', english: 'Do you want to come for dinner on Saturday?', speaker: 'Claire', constructions: ['vouloir-venir'], chunks: ['Tu veux venir', 'dîner', 'samedi'], notes: [{ type: 'culture', text: 'Dîner is the evening meal (typically 19h30–20h30); the midday meal is le déjeuner. In parts of Belgium, Switzerland and Québec the names shift by one meal.', anchor: 'dîner' }] },
 		{ target: 'Avec plaisir ! À quelle heure ?', english: 'With pleasure! At what time?', speaker: 'Paul', constructions: ['avec-plaisir', 'a-quelle-heure'] },
 		{ target: 'Vers vingt heures.', english: 'Around eight.', speaker: 'Claire' },
 		{ target: "Qu'est-ce que je peux apporter ?", english: 'What can I bring?', speaker: 'Paul', constructions: ['je-peux-apporter', 'est-ce-que-je-peux'] },
@@ -386,8 +415,9 @@ const l13 = d({
 		{ target: 'À samedi !', english: 'See you Saturday!', speaker: 'Paul' }
 	],
 	exercises: [
-		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"What can I bring?"', '"What time should I come?"', '"Can I bring a friend?"'], answerIndex: 0, constructions: ['je-peux-apporter'] },
+		{ kind: 'comprehension', lineIndex: 5, prompt: 'Line 6 means…', options: ['"What can I bring?"', '"What time should I come?"', '"Can I bring a friend?"'], answerIndex: 0, constructions: ['je-peux-apporter'] },
 		{ kind: 'recall', prompt: 'Say it in French: "Do you want to come for dinner on Saturday?"', canonical: 'Tu veux venir dîner samedi ?', accepted: ['Tu veux venir dîner samedi ?', 'Tu veux venir dîner samedi.'], hints: ['Tu veux…'], constructions: ['vouloir-venir'] },
+		{ kind: 'recall', prompt: 'A friend greets you with « Ça va ? ». Answer, and bounce it back.', canonical: 'Ça va bien, merci. Et toi ?', accepted: ['Ça va bien, merci. Et toi ?', 'Ça va bien, et toi ?', 'Ça va. Et toi ?', 'Ça va bien, merci.'], hints: ['Ça va…', 'Bounce it back with « Et toi ? »'], constructions: ['ca-va'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Tu veux ___ dîner samedi ?', options: ['venir', 'viens', 'venu'], answer: 'venir', rule: 'After vouloir, the second verb stays in the infinitive.', constructions: ['vouloir-venir'] },
 		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 You want to invite a friend to the cinema on Friday.', use: 'vouloir-venir', exemplar: 'Tu veux venir au cinéma vendredi ?', constructions: ['vouloir-venir'] }
 	]
