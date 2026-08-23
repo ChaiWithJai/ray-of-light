@@ -10,7 +10,7 @@ Source read via `git show origin/claude-mac/issue-1-content:src/lib/content/fr/l
 - **PORT means "port via issue #9"**: re-authored into `fr.ts` under main's id conventions (`fr.<local-id>` minted for new constructions), with `carryConstructions` in l14 updated if a ported construction should be reviewed in synthesis.
 - Every candidate has exactly one disposition.
 
-**Global architectural rejects (apply to all seven lessons, counted once in the summary):** audio offset maps and chunk timings; per-line provenance blocks; per-line ids and `lineId` exercise references; the standalone-file/registry loading model (`import.meta.glob` manifest). Also flagged as a **risk, not a candidate**: PR #2 stamps every line `license: 'CC-BY-4.0'` while main's `FR_PROFILE` says `license: 'owned'` — any ported text silently changes license lineage unless issue #9 resolves this explicitly.
+**Global architectural rejects (apply to all seven lessons, counted once in the summary):** audio offset maps and chunk timings; per-line provenance blocks; per-line ids and `lineId` exercise references; the standalone-file/registry loading model (`import.meta.glob` manifest). Also flagged as a **risk, not a candidate**: PR #2 stamps every line `license: 'CC-BY-4.0'` while main's `FR_PROFILE` says `license: 'owned'` — resolved by the salvage ledger (`docs/salvage/ledger.json`), which records each ported fragment's true lineage (source commit, file, lesson, license-at-source); see the README's "Provenance and license lineage" section.
 
 ---
 
@@ -71,7 +71,7 @@ Function overlaps main l4 (Dans la rue: directions) and l5 (À la gare: tickets/
 | Construction `fr-prendre-transport` ("prendre + le/la + transport") + bus-91 exemplar line | Taking transport; distinct from main's `fr.je-prends` (choosing food) | PORT via issue #9 | l5 — mint `fr.prendre-transport`, cross-noted with l6's `fr.je-prends` (same verb, different function) | Name carefully so learners see prendre's two uses as related, not conflicting |
 | Construction `fr-il-faut-inf` | Duplicate of main's `fr.il-faut` (introduced l8) | REJECT | — (owned by `fr.il-faut`, main l8) | **Metadata conflict (issue #12):** PR declares introduction at fr-11; main introduces at l8. Also duplicate declaration carries a construction-level `notes` field main can't hold |
 | Completion "___ prendre un ticket à la machine." (Il faut …) | Extra drill for il-faut in a transactional context | PORT via issue #9 | l8 — extra exercise on existing `fr.il-faut` | Options mix construction-phrases rather than single words — restyle to main's option format |
-| Construction `fr-descendre-a` ("descendre à + stop") + comprehension ("c'est direct, vous descendez à…") | Getting off at a stop — missing in main | PORT via issue #9 | l4 — mint `fr.descendre-a`, completing the directions toolkit (`fr.a-gauche-droite` → arrival) | l4 dialogue is on foot; introduction line must be authored (e.g. bus/métro aside) or target l5 instead — port owner's call, single target only |
+| Construction `fr-descendre-a` ("descendre à + stop") + comprehension ("c'est direct, vous descendez à…") | Getting off at a stop — missing in main | PORT via issue #9 | l5 — mint `fr.descendre-a` beside the ported `fr.prendre-transport` (station/transport context) | Target resolved to l5 (single target): l4's dialogue is on foot, while l5 already hosts this lane's transport ports. Introduction line must be authored (e.g. bus/métro aside) |
 | Pronunciation note "quatre-vingt-onze = four-twenty-eleven; bus numbers read as one number" | Number-reading culture/phonology | PORT via issue #9 | l5 — attach near `fr.un-billet-pour` / platform-number line | None |
 | Transfer "Tu prends le métro, ligne un, et tu descends à Palais-Royal." | Combined-construction transfer (prendre + descendre) | PORT via issue #9 | l5 — transfer on minted `fr.prendre-transport` | Main transfers use one `use` construction; keep `fr.prendre-transport` as the `use`, mention descendre in the exemplar only |
 | Full 10-line métro-directions dialogue | Alternate scene | REJECT | — | Wholesale; overlaps main l4's function |
@@ -85,7 +85,7 @@ Function overlaps main l9 (Au téléphone: requests/permission) and l8 (Chez le 
 | Construction `fr-vous-pouvez-inf` ("vous pouvez + infinitive ?") + intonation-question note + recall with 4 variants (incl. inverted "pouvez-vous") | Asking others to act; main l9's `fr.est-ce-que-je-peux` covers only asking permission for oneself — this is the missing converse | PORT via issue #9 | l9 — mint `fr.vous-pouvez`, contrasted with `fr.est-ce-que-je-peux` | Commit message says PR unified this id across its files ("fr-vous-pouvez-inf" canonical); when porting, take fr-12's declaration, not fr-14's mutated one (see fr-14 row) |
 | Construction `fr-jai-perdu-noun` ("j'ai perdu + noun", passé composé) + grammar note + completion | First past-tense teaching | REJECT | — | No main l1–l14 lesson serves "reporting past events"; porting would smuggle the passé composé system into an A1 course that deliberately stays in present/near-future. Content-scope reject, not schema |
 | Construction `fr-je-cherche-noun` ("je cherche + noun") + "no pour" usage note | Looking-for pattern; genuinely useful and absent in main | PORT via issue #9 | l4 — mint `fr.je-cherche`, beside `fr.ou-est` (searching → asking where) | **Issue #12 flag:** declared in fr-12 but `introducedIn: 'fr-04'` — a re-declaration pointing at PR's lesson 4, i.e. declared where it is not introduced. Port must re-baseline introduction to the main lesson it lands in |
-| Construction `fr-quest-ce-quil-y-a` ("Qu'est-ce qu'il y a ?") + compression pronunciation note ("kess-kya") | What's-the-matter opener | PORT via issue #9 | l8 — as accepted variant + note on the existing "Qu'est-ce qui ne va pas ?" line; mint `fr.quest-ce-quil-y-a` only if given its own line | Near-synonym of main's existing opener; safest as a note/variant rather than a fourth l8 construction |
+| Construction `fr-quest-ce-quil-y-a` ("Qu'est-ce qu'il y a ?") + compression pronunciation note ("kess-kya") | What's-the-matter opener | PORT via issue #9 | l8 — accepted variant + note on the existing "Qu'est-ce qui ne va pas ?" line; **no new id** | Near-synonym of main's existing opener; resolved to note/variant rather than a fourth l8 construction |
 | Culture note "Oh là là = dismay, not excitement" | Corrects a common learner misreading | PORT via issue #9 | l8 — attach to a sympathy beat in the doctor dialogue (line to be chosen at port time) | Needs a host line; note is standalone-portable |
 | Transfer "je cherche le quai numéro sept. Vous pouvez m'aider ?" | Combines both ported constructions in a station scene | PORT via issue #9 | l4 — transfer on minted `fr.je-cherche` | Rewrite ids; station setting also echoes l5 vocabulary — fine |
 | Full 10-line lost-bag dialogue + comprehension fr-12-e01 | Alternate scene, built on the rejected passé composé | REJECT | — | Dialogue's dramatic spine is "j'ai perdu / je l'ai laissé" (passé composé + object pronoun) — unusable without the rejected grammar |
@@ -139,14 +139,18 @@ Main l14 is also a synthesis, but of main's l8–l13 topic map. PR fr-14 reviews
 
 | Lesson | PORT via issue #9 | REJECT | Total candidates |
 |---|---|---|---|
-| fr-08 | 7 | 1 | 8 |
+| fr-08 | 8 | 1 | 9 |
 | fr-09 | 7 | 2 | 9 |
 | fr-10 | 5 | 3 | 8 |
 | fr-11 | 6 | 2 | 8 |
 | fr-12 | 5 | 2 | 7 |
-| fr-13 | 7 | 2 | 9 |
+| fr-13 | 6 | 3 | 9 |
 | fr-14 | 3 | 5 | 8 |
 | Global architectural rejects (schema/registry/audio/ids) | 0 | 1 | 1 |
-| **Total** | **40** | **18** | **58** |
+| **Total** | **40** | **19** | **59** |
 
-New constructions to mint in main if all PORTs land: `fr.jaime-noun`, `fr.aimer-inf`, `fr.je-naime-pas`, `fr.adorer-detester`, `fr.moi-aussi-non-plus`, `fr.tu-es-libre`, `fr.ca-te-dit`, `fr.on-pourrait`, `fr.on-se-retrouve`, `fr.il-est-heure`, `fr.de-a-duree`, `fr.tous-les`, `fr.pour-aller-a`, `fr.prendre-transport`, `fr.descendre-a`, `fr.vous-pouvez`, `fr.je-cherche`, `fr.je-me-sens`, `fr.je-suis-adj-etat`, `fr.avoir-lair`, `fr.ca-va-mieux` (21; `fr.quest-ce-quil-y-a` optional, defaulting to variant-note). Main lessons touched: l4, l5, l6, l8, l9, l11, l13, plus l14 `carryConstructions` updates. No main lesson is replaced.
+(Counts corrected against the per-lesson tables and `ledger.json`: fr-08 has 9
+candidate rows of which 8 PORT; fr-13 has 6 PORT / 3 REJECT. The lane's PORT
+total of 40 is unchanged.)
+
+New constructions to mint in main if all PORTs land: `fr.jaime-noun`, `fr.aimer-inf`, `fr.je-naime-pas`, `fr.adorer-detester`, `fr.moi-aussi-non-plus`, `fr.tu-es-libre`, `fr.ca-te-dit`, `fr.on-pourrait`, `fr.on-se-retrouve`, `fr.il-est-heure`, `fr.de-a-duree`, `fr.tous-les`, `fr.pour-aller-a`, `fr.prendre-transport`, `fr.descendre-a`, `fr.vous-pouvez`, `fr.je-cherche`, `fr.je-me-sens`, `fr.je-suis-adj-etat`, `fr.avoir-lair`, `fr.ca-va-mieux` (21; `fr.quest-ce-quil-y-a` is **not** minted — that candidate ports as a variant/note). Main lessons touched: l4, l5, l6, l8, l9, l11, l13, plus l14 `carryConstructions` updates. No main lesson is replaced.
