@@ -24,12 +24,13 @@
 	let {
 		ref = $bindable(null),
 		active = false,
+		disabled = false,
 		onclick = undefined,
 		class: className,
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLElement>> &
-		Pick<HTMLButtonAttributes, 'onclick'> & { active?: boolean } = $props();
+		Pick<HTMLButtonAttributes, 'onclick' | 'disabled'> & { active?: boolean } = $props();
 </script>
 
 {#if onclick}
@@ -38,7 +39,12 @@
 		type="button"
 		data-slot="chip"
 		aria-pressed={active}
-		class={cn(chipVariants({ active, interactive: true }), className)}
+		class={cn(
+			chipVariants({ active, interactive: true }),
+			'disabled:pointer-events-none disabled:opacity-50',
+			className
+		)}
+		{disabled}
 		{onclick}
 		{...restProps}
 	>

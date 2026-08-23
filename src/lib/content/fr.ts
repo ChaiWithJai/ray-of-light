@@ -50,7 +50,7 @@ const l1 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I would like a coffee, please"', '"Do you have any coffee?"', '"The coffee is good"'], answerIndex: 0, constructions: ['je-voudrais'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like a coffee, please."', canonical: "Je voudrais un café, s'il vous plaît.", accepted: ["Je voudrais un café, s'il vous plaît.", 'Je voudrais un café.'], hints: ['Je…'], constructions: ['je-voudrais'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: '___ , monsieur. Je voudrais un café.', options: ['Bonjour', 'Merci', 'Voilà'], answer: 'Bonjour', rule: 'The greeting comes first, before any request.', constructions: ['bonjour-politesse'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🥐 A bakery, 8am. You want a croissant.', use: 'je-voudrais', exemplar: "Je voudrais un croissant, s'il vous plaît.", constructions: ['je-voudrais'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🥐 A bakery, 8am. You want a croissant.', use: 'je-voudrais', exemplar: "Je voudrais un croissant, s'il vous plaît.", criteria: { constructions: [{ construction: 'je-voudrais', orderedGroups: [['je voudrais']] }], contextGroups: [['croissant']] }, constructions: ['je-voudrais'] }
 	]
 });
 
@@ -79,7 +79,7 @@ const l2 = d({
 		{ kind: 'comprehension', lineIndex: 5, prompt: 'Line 6 means…', options: ['"Do you have a quiet room?"', '"The room is quiet"', '"I would like to sleep"'], answerIndex: 0, constructions: ['avez-vous'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like to book a room for two nights."', canonical: 'Je voudrais réserver une chambre pour deux nuits.', accepted: ['Je voudrais réserver une chambre pour deux nuits.', 'Je voudrais réserver une chambre.'], hints: ['Je voudrais…'], constructions: ['je-voudrais-inf', 'pour-duree'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je voudrais ___ une chambre.', options: ['réserver', 'réservation', 'réservé'], answer: 'réserver', rule: 'After je voudrais, a verb stays in the infinitive.', constructions: ['je-voudrais-inf'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍽️ A restaurant. You want to book a table for four.', use: 'je-voudrais-inf', exemplar: 'Je voudrais réserver une table pour quatre personnes.', constructions: ['je-voudrais-inf'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍽️ A restaurant. You want to book a table for four.', use: 'je-voudrais-inf', exemplar: 'Je voudrais réserver une table pour quatre personnes.', criteria: { constructions: [{ construction: 'je-voudrais-inf', orderedGroups: [['je voudrais'], ['réserver', 'reserver']] }], contextGroups: [['table']] }, constructions: ['je-voudrais-inf'] }
 	]
 });
 
@@ -108,7 +108,7 @@ const l3 = d({
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"Anything else?"', '"How much is it?"', '"Is that all?"'], answerIndex: 0, constructions: ['et-avec-ceci'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like a kilo of tomatoes."', canonical: 'Je voudrais un kilo de tomates.', accepted: ['Je voudrais un kilo de tomates.'], hints: ['Je voudrais un kilo…'], constructions: ['quantite-de'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je voudrais un kilo ___ tomates.', options: ['de', 'du', 'des'], answer: 'de', rule: 'After quantities → always de: un kilo de, beaucoup de, un peu de.', constructions: ['quantite-de'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧀 A cheese shop. You want 200 grams of comté.', use: 'quantite-de', exemplar: 'Je voudrais deux cents grammes de comté.', constructions: ['quantite-de'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧀 A cheese shop. You want 200 grams of comté.', use: 'quantite-de', exemplar: 'Je voudrais deux cents grammes de comté.', criteria: { constructions: [{ construction: 'quantite-de', orderedGroups: [['deux cents', '200'], ['grammes de']] }], contextGroups: [['comté', 'comte']] }, constructions: ['quantite-de'] }
 	]
 });
 
@@ -137,7 +137,7 @@ const l4 = d({
 		{ kind: 'comprehension', lineIndex: 4, prompt: 'Line 5 means…', options: ['"Is it far?"', '"Where is it?"', '"Is it open?"'], answerIndex: 0, constructions: ['cest-loin'] },
 		{ kind: 'recall', prompt: 'Say it in French: "Where is the station, please?"', canonical: "Où est la gare, s'il vous plaît ?", accepted: ["Où est la gare, s'il vous plaît ?", 'Où est la gare ?'], hints: ['Où…'], constructions: ['ou-est'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Tout droit, puis ___ gauche.', options: ['à', 'de', 'en'], answer: 'à', rule: 'Direction takes à: à gauche, à droite, à pied.', constructions: ['a-gauche-droite'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💊 You need a pharmacy and see someone at a bus stop.', use: 'ou-est', exemplar: "Pardon, où est la pharmacie, s'il vous plaît ?", constructions: ['ou-est'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💊 You need a pharmacy and see someone at a bus stop.', use: 'ou-est', exemplar: "Pardon, où est la pharmacie, s'il vous plaît ?", criteria: { constructions: [{ construction: 'ou-est', orderedGroups: [['où est', 'ou est']] }], contextGroups: [['pharmacie']] }, constructions: ['ou-est'] }
 	]
 });
 
@@ -165,7 +165,7 @@ const l5 = d({
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"At what time does the next train leave?"', '"Which platform is the train?"', '"Is the next train late?"'], answerIndex: 0, constructions: ['a-quelle-heure'] },
 		{ kind: 'recall', prompt: 'Say it in French: "One ticket to Lyon, please."', canonical: "Un billet pour Lyon, s'il vous plaît.", accepted: ["Un billet pour Lyon, s'il vous plaît.", 'Un billet pour Lyon.'], hints: ['Un billet…'], constructions: ['un-billet-pour'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'À quelle ___ part le train ?', options: ['heure', 'temps', 'moment'], answer: 'heure', rule: 'Clock time is heure. Temps is weather or time-in-general.', constructions: ['a-quelle-heure'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 A bus station. You want a ticket to Nice.', use: 'un-billet-pour', exemplar: "Un billet pour Nice, s'il vous plaît.", constructions: ['un-billet-pour'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 A bus station. You want a ticket to Nice.', use: 'un-billet-pour', exemplar: "Un billet pour Nice, s'il vous plaît.", criteria: { constructions: [{ construction: 'un-billet-pour', orderedGroups: [['un billet pour']] }], contextGroups: [['nice']] }, constructions: ['un-billet-pour'] }
 	]
 });
 
@@ -194,7 +194,7 @@ const l6 = d({
 		{ kind: 'comprehension', lineIndex: 1, prompt: 'Line 2 means…', options: ['"What do you recommend?"', '"What time do you close?"', '"Do you have a table?"'], answerIndex: 0, constructions: ['quest-ce-que'] },
 		{ kind: 'recall', prompt: 'Say it in French: "The bill, please."', canonical: "L'addition, s'il vous plaît.", accepted: ["L'addition, s'il vous plaît.", "L'addition."], hints: ["L'…"], constructions: ['laddition'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Alors je ___ le poisson.', options: ['prends', 'prendre', 'pris'], answer: 'prends', rule: 'Je prends — present tense, first person. The decision is happening now.', constructions: ['je-prends'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ A café. You want to ask what kind of tea they have.', use: 'quest-ce-que', exemplar: "Qu'est-ce que vous avez comme thé ?", constructions: ['quest-ce-que'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ A café. You want to ask what kind of tea they have.', use: 'quest-ce-que', exemplar: "Qu'est-ce que vous avez comme thé ?", criteria: { constructions: [{ construction: 'quest-ce-que', orderedGroups: [["qu'est-ce que"]] }], contextGroups: [['thé', 'the']] }, constructions: ['quest-ce-que'] }
 	]
 });
 
@@ -215,7 +215,7 @@ const l7 = {
 			{ target: "Et avec ceci ? — C'est tout, merci.", english: "Anything else? — That's all, thanks.", speaker: 'Serveur' }
 		],
 		exercises: [
-			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🚉 The same station, but you are going to Marseille and you want tea.', use: 'un-billet-pour', exemplar: "Un billet pour Marseille, s'il vous plaît. Je voudrais un thé.", constructions: [] }
+			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🚉 The same station, but you are going to Marseille and you want tea.', use: 'un-billet-pour', exemplar: "Un billet pour Marseille, s'il vous plaît. Je voudrais un thé.", criteria: { constructions: [{ construction: 'un-billet-pour', orderedGroups: [['un billet pour']] }, { construction: 'je-voudrais', orderedGroups: [['je voudrais']] }], contextGroups: [['marseille'], ['thé', 'the']] }, constructions: ['je-voudrais'] }
 		]
 	}),
 	constructions: carryConstructions(
@@ -249,7 +249,7 @@ const l8 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I have a headache"', '"I have a sore throat"', '"My head is fine"'], answerIndex: 0, constructions: ['jai-mal-a'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I have a headache, for three days."', canonical: "J'ai mal à la tête depuis trois jours.", accepted: ["J'ai mal à la tête depuis trois jours.", "J'ai mal à la tête."], hints: ["J'ai mal…"], constructions: ['jai-mal-a', 'depuis'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: "J'ai mal ___ la tête.", options: ['à', 'de', 'en'], answer: 'à', rule: 'avoir mal à + body part. The pain is located "at" the part.', constructions: ['jai-mal-a'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🦷 A dentist. Your tooth has hurt since yesterday.', use: 'jai-mal-a', exemplar: "J'ai mal aux dents depuis hier.", constructions: ['jai-mal-a', 'depuis'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🦷 A dentist. Your tooth has hurt since yesterday.', use: 'jai-mal-a', exemplar: "J'ai mal aux dents depuis hier.", criteria: { constructions: [{ construction: 'jai-mal-a', orderedGroups: [["j'ai mal"], ['aux dents', 'à la dent']] }, { construction: 'depuis', orderedGroups: [['depuis']] }], contextGroups: [['hier']] }, constructions: ['jai-mal-a', 'depuis'] }
 	]
 });
 
@@ -277,7 +277,7 @@ const l9 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"Hold the line, please"', '"Please call back"', '"She has left"'], answerIndex: 0, constructions: ['ne-quittez-pas'] },
 		{ kind: 'recall', prompt: 'Say it in French: "May I speak to Mrs Martin?"', canonical: 'Est-ce que je peux parler à madame Martin ?', accepted: ['Est-ce que je peux parler à madame Martin ?', 'Je peux parler à madame Martin ?'], hints: ['Est-ce que…'], constructions: ['est-ce-que-je-peux'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Est-ce que je peux ___ plus tard ?', options: ['rappeler', 'rappelle', 'rappelé'], answer: 'rappeler', rule: 'After pouvoir, the second verb stays in the infinitive.', constructions: ['rappeler'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏨 A hotel desk. You want to ask whether you can leave your bag.', use: 'est-ce-que-je-peux', exemplar: 'Est-ce que je peux laisser mon sac ici ?', constructions: ['est-ce-que-je-peux'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏨 A hotel desk. You want to ask whether you can leave your bag.', use: 'est-ce-que-je-peux', exemplar: 'Est-ce que je peux laisser mon sac ici ?', criteria: { constructions: [{ construction: 'est-ce-que-je-peux', orderedGroups: [['est-ce que je peux']] }], contextGroups: [['laisser'], ['sac']] }, constructions: ['est-ce-que-je-peux'] }
 	]
 });
 
@@ -305,7 +305,7 @@ const l10 = d({
 		{ kind: 'comprehension', lineIndex: 1, prompt: 'Line 2 means…', options: ['"There is no milk"', '"There is some milk"', '"I do not like milk"'], answerIndex: 0, constructions: ['il-y-a'] },
 		{ kind: 'recall', prompt: 'Say it in French: "There is no milk."', canonical: "Il n'y a pas de lait.", accepted: ["Il n'y a pas de lait."], hints: ['Il n’y a…'], constructions: ['il-y-a'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: "Il n'y a pas ___ lait.", options: ['de', 'du', 'des'], answer: 'de', rule: 'Negation flattens du/de la/des to de.', constructions: ['il-y-a'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 A kitchen. You notice there is no salt.', use: 'il-y-a', exemplar: "Il n'y a pas de sel.", constructions: ['il-y-a'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 A kitchen. You notice there is no salt.', use: 'il-y-a', exemplar: "Il n'y a pas de sel.", criteria: { constructions: [{ construction: 'il-y-a', orderedGroups: [["il n'y a pas de"]] }], contextGroups: [['sel']] }, constructions: ['il-y-a'] }
 	]
 });
 
@@ -333,7 +333,7 @@ const l11 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I’m going to work on Saturday morning"', '"I worked on Saturday morning"', '"I want to work on Saturday"'], answerIndex: 0, constructions: ['aller-inf'] },
 		{ kind: 'recall', prompt: 'Say it in French: "Shall we visit the museum?"', canonical: 'On va visiter le musée ?', accepted: ['On va visiter le musée ?', 'On va visiter le musée.'], hints: ['On va…'], constructions: ['on-va'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je ___ travailler samedi.', options: ['vais', 'va', 'allez'], answer: 'vais', rule: 'aller conjugates, the second verb does not: je vais, tu vas, on va + infinitive.', constructions: ['aller-inf'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍿 A friend asks about tonight. You are going to watch a film.', use: 'aller-inf', exemplar: 'Je vais regarder un film ce soir.', constructions: ['aller-inf'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍿 A friend asks about tonight. You are going to watch a film.', use: 'aller-inf', exemplar: 'Je vais regarder un film ce soir.', criteria: { constructions: [{ construction: 'aller-inf', orderedGroups: [['je vais'], ['regarder', 'voir']] }], contextGroups: [['film']] }, constructions: ['aller-inf'] }
 	]
 });
 
@@ -361,7 +361,7 @@ const l12 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"How much does it cost by air?"', '"How long does it take by air?"', '"Is it going by air?"'], answerIndex: 0, constructions: ['combien-ca-coute'] },
 		{ kind: 'recall', prompt: 'Say it in French: "I would like to send this parcel to Canada."', canonical: 'Je voudrais envoyer ce colis au Canada.', accepted: ['Je voudrais envoyer ce colis au Canada.'], hints: ['Je voudrais envoyer…'], constructions: ['envoyer-a'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Je voudrais envoyer ce colis ___ Canada.', options: ['au', 'à', 'en'], answer: 'au', rule: 'Masculine countries take au: au Canada, au Portugal. Feminine take en: en France.', constructions: ['envoyer-a'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💌 You want to send a letter to France.', use: 'envoyer-a', exemplar: 'Je voudrais envoyer cette lettre en France.', constructions: ['envoyer-a'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💌 You want to send a letter to France.', use: 'envoyer-a', exemplar: 'Je voudrais envoyer cette lettre en France.', criteria: { constructions: [{ construction: 'envoyer-a', orderedGroups: [['envoyer'], ['en france']] }], contextGroups: [['lettre']] }, constructions: ['envoyer-a'] }
 	]
 });
 
@@ -389,7 +389,7 @@ const l13 = d({
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"What can I bring?"', '"What time should I come?"', '"Can I bring a friend?"'], answerIndex: 0, constructions: ['je-peux-apporter'] },
 		{ kind: 'recall', prompt: 'Say it in French: "Do you want to come for dinner on Saturday?"', canonical: 'Tu veux venir dîner samedi ?', accepted: ['Tu veux venir dîner samedi ?', 'Tu veux venir dîner samedi.'], hints: ['Tu veux…'], constructions: ['vouloir-venir'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'Tu veux ___ dîner samedi ?', options: ['venir', 'viens', 'venu'], answer: 'venir', rule: 'After vouloir, the second verb stays in the infinitive.', constructions: ['vouloir-venir'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 You want to invite a friend to the cinema on Friday.', use: 'vouloir-venir', exemplar: 'Tu veux venir au cinéma vendredi ?', constructions: ['vouloir-venir'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 You want to invite a friend to the cinema on Friday.', use: 'vouloir-venir', exemplar: 'Tu veux venir au cinéma vendredi ?', criteria: { constructions: [{ construction: 'vouloir-venir', orderedGroups: [['tu veux venir']] }], contextGroups: [['cinéma', 'cinema'], ['vendredi']] }, constructions: ['vouloir-venir'] }
 	]
 });
 
@@ -411,7 +411,7 @@ const l14 = {
 			{ target: 'Alors : café, puis musée. Avec plaisir.', english: 'So: coffee, then museum. With pleasure.', speaker: 'Paul' }
 		],
 		exercises: [
-			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🌧️ Same Sunday, but it is raining and you have a sore throat.', use: 'jai-mal-a', exemplar: "J'ai mal à la gorge depuis hier. On doit rester à la maison.", constructions: [] }
+			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🌧️ Same Sunday, but it is raining and you have a sore throat.', use: 'jai-mal-a', exemplar: "J'ai mal à la gorge depuis hier. On doit rester à la maison.", criteria: { constructions: [{ construction: 'jai-mal-a', orderedGroups: [["j'ai mal"], ['à la gorge']] }], contextGroups: [['depuis'], ['rester'], ['maison']] }, constructions: [] }
 		]
 	}),
 	constructions: carryConstructions(

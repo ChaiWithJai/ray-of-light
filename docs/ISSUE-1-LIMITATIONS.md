@@ -129,6 +129,16 @@ lines. Small, owned outright, correct register, and no licence encumbrance.
 
 ## Not blocked, deliberately deferred
 
+- **Automated proof of transferable production.** The transfer exercise can
+  detect only an explicitly authored sequence of whole-token patterns (including
+  authored Tamil script/transliteration alternatives). A match records
+  `transfer-pattern-matched`, which grants at most `recognized`; it does not count
+  as retrieval-day evidence and cannot grant `transferable`. Full grammatical,
+  semantic, pragmatic and native-quality validity still requires human or safely
+  constrained expert evaluation. `transfer-correct` remains reserved for that
+  stronger future evidence source and is accepted only with explicit
+  `expert-review` provenance. Legacy heuristic events are retained for audit as
+  `transfer-legacy-unverified` and grant no capability state.
 - **Speech recognition for answer comparison (1n).** Capture and by-ear comparison
   are built; transcription needs a provider decision. The hard constraint from the
   spec is that recognition may transcribe but must never *score* pronunciation.

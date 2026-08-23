@@ -20,11 +20,13 @@ export class LessonPlayer {
 	/** Index into lesson.lines currently sounding, -1 when none. */
 	activeLine = $state(-1);
 	rate = $state(1);
+	/** Transient playback problem — retrying is reasonable. */
+	error = $state<string | null>(null);
 	/**
-	 * The recording failed to load. Audio is generated locally and untracked
-	 * (issue #19), so offsets can exist while the file does not — a fresh clone
-	 * before `npx tsx scripts/generate-audio.mts`. Surfaces the honest
-	 * "no recording on this machine" state instead of a dead play button.
+	 * The recording itself is missing or unreadable. Audio is generated locally
+	 * and untracked (issue #19), so offsets can exist while the file does not —
+	 * a fresh clone before `npx tsx scripts/generate-audio.mts`. Surfaces the
+	 * honest "no recording on this machine" state instead of a dead play button.
 	 */
 	failed = $state(false);
 
@@ -61,16 +63,35 @@ export class LessonPlayer {
 			a.addEventListener('timeupdate', () => this.#tick(a));
 			a.addEventListener('ended', () => this.#finish());
 			a.addEventListener('pause', () => (this.playing = false));
-			a.addEventListener('play', () => (this.playing = true));
-			a.addEventListener('error', () => {
-				this.failed = true;
-				this.playing = false;
-				this.activeLine = -1;
+			a.addEventListener('play', () => {
+				this.error = null;
+				this.playing = true;
 			});
+			a.addEventListener('error', () => this.#reportError());
 			this.#audio = a;
 		}
 		this.#audio.playbackRate = this.rate;
 		return this.#audio;
+	}
+
+	#reportError() {
+		this.playing = false;
+		this.activeLine = -1;
+		// A missing/unreadable source is permanent unavailability (untracked
+		// local audio not generated on this machine); anything else is transient.
+		const code = this.#audio?.error?.code;
+		if (code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED || code === MediaError.MEDIA_ERR_NETWORK) {
+			this.failed = true;
+			return;
+		}
+		this.error = 'Audio could not play. Try the line again.';
+	}
+
+	#play(a: HTMLAudioElement) {
+		this.error = null;
+		void a.play().catch(() => {
+			if (this.#audio === a) this.#reportError();
+		});
 	}
 
 	#tick(a: HTMLAudioElement) {
@@ -105,7 +126,7 @@ export class LessonPlayer {
 		this.#stopAtMs = null;
 		this.#onEnded = onEnded ?? null;
 		a.currentTime = 0;
-		void a.play();
+		this.#play(a);
 	}
 
 	/** Play a single line's slice (AC 3: audio can follow the active line). */
@@ -116,7 +137,7 @@ export class LessonPlayer {
 		this.#stopAtMs = line.audio.endMs;
 		this.#onEnded = onEnded ?? null;
 		a.currentTime = line.audio.startMs / 1000;
-		void a.play();
+		this.#play(a);
 	}
 
 	pause() {
@@ -124,7 +145,7 @@ export class LessonPlayer {
 	}
 
 	resume() {
-		void this.#audio?.play();
+		if (this.#audio) this.#play(this.#audio);
 	}
 
 	/** Play/pause from one button: pause if sounding, resume if mid-way, else start over. */
