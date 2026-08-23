@@ -164,3 +164,29 @@ test('no lesson-level completion badge is presented as progress', async ({ page 
 	await expect(page.getByText('%')).toHaveCount(0);
 	await expect(page.getByText(/streak/i)).toHaveCount(0);
 });
+
+test('P1 regression: both listens complete through the main Play button', async ({ page }) => {
+	// Two real end-to-end playthroughs of fr-01 (~16s each) plus build slack.
+	test.setTimeout(180_000);
+	await onboard(page);
+	await page.getByRole('button', { name: 'Start', exact: true }).click();
+	await expect(page).toHaveURL(/\/learn\/fr-01\/preview\/?$/);
+
+	// First listen: only a completed playthrough counts.
+	await page.getByRole('button', { name: 'Play the lesson' }).click();
+	await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
+	await expect(page.getByText('listen 1 of 2')).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Play the lesson' })).toBeVisible({
+		timeout: 60_000
+	});
+	await expect(page.getByText('listen 2 of 2')).toBeVisible();
+
+	// Second listen through the SAME button. The regression: after `ended` the
+	// button resumed at EOF, played nothing, and the second listen never
+	// completed — Pause never appearing again is exactly that failure.
+	await page.getByRole('button', { name: 'Play the lesson' }).click();
+	await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
+	await expect(page.getByRole('button', { name: "I've listened twice →" })).toBeVisible({
+		timeout: 60_000
+	});
+});

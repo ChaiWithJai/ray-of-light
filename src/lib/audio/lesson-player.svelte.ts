@@ -35,8 +35,15 @@ export class LessonPlayer {
 		return !(this.#lesson.lines[0]?.audio.pending ?? true);
 	}
 
+	/**
+	 * True only while there is something to resume. A finished recording reports
+	 * `ended`, and resuming at EOF plays nothing — the second listen would be
+	 * unreachable from the main button — so `ended` counts as not-started and
+	 * toggle() restarts from the top instead.
+	 */
 	get started(): boolean {
-		return (this.#audio?.currentTime ?? 0) > 0;
+		const a = this.#audio;
+		return a !== null && a.currentTime > 0 && !a.ended;
 	}
 
 	#ensure(): HTMLAudioElement | null {

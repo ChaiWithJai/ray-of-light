@@ -10,6 +10,7 @@
 	 */
 	import { LessonPlayer } from '$lib/audio/lesson-player.svelte.js';
 	import * as W from '$lib/components/wireframe/index.js';
+	import audioProvenance from '$lib/content/audio-provenance.json';
 	import type { Lesson } from '$lib/schemas/content.js';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
@@ -66,6 +67,12 @@
 				↺ replay
 			</button>
 		</div>
+		{#if audioProvenance.synthesized}
+			<W.Muted class="text-center text-[11px] text-note">
+				draft synthesized voice ({audioProvenance.voices[lesson.language]}) — native
+				recording pending
+			</W.Muted>
+		{/if}
 	{/if}
 
 	<div class="flex items-center justify-center gap-2">

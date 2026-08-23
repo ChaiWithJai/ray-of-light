@@ -76,3 +76,22 @@ writeFileSync(
 	JSON.stringify(offsets, null, '\t') + '\n'
 );
 console.log('wrote src/lib/content/audio-offsets.json');
+
+// Provenance travels with the assets: the UI discloses synthesized audio from
+// this file, and it is rewritten by whichever pipeline produced the recordings.
+writeFileSync(
+	join(import.meta.dirname, '..', 'src', 'lib', 'content', 'audio-provenance.json'),
+	JSON.stringify(
+		{
+			synthesized: true,
+			engine: 'macOS say',
+			voices: Object.fromEntries(
+				Object.entries(VOICES).map(([lang, voice]) => [lang, voice + (lang === 'fr' ? ' (fr_FR)' : ' (ta_IN)')])
+			),
+			note: 'Draft placeholder pending native recordings — see docs/ISSUE-1-LIMITATIONS.md L1.'
+		},
+		null,
+		'\t'
+	) + '\n'
+);
+console.log('wrote src/lib/content/audio-provenance.json');
