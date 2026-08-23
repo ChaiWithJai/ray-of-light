@@ -4,24 +4,41 @@
 	 * scheduler. There is deliberately no lesson picker here.
 	 */
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import * as W from '$lib/components/ui/index.js';
-	import { COURSES, getLessonByIndex } from '$lib/content/index.js';
-	import { flowFor } from '$lib/flow.js';
-	import { planToday, toDayKey } from '$lib/schemas/schedule.js';
+	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
+	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
+	import { planToday, POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	$effect(() => {
 		if (profile.loaded && !profile.onboarded) goto('/onboarding/language', { replaceState: true });
 	});
 
+	let clock = $state(new Date());
 	const course = $derived(COURSES[profile.language]);
+	const day = $derived(toDayKey(clock));
+	onMount(() => {
+		const refreshClock = () => (clock = new Date());
+		const timer = window.setInterval(refreshClock, 30_000);
+		window.addEventListener('focus', refreshClock);
+		document.addEventListener('visibilitychange', refreshClock);
+		return () => {
+			window.clearInterval(timer);
+			window.removeEventListener('focus', refreshClock);
+			document.removeEventListener('visibilitychange', refreshClock);
+		};
+	});
+	const activeLesson = $derived(
+		profile.activeSession ? getLesson(profile.language, profile.activeSession.lessonId) : undefined
+	);
 
 	const plan = $derived(
 		profile.plan
 			? planToday({
 					language: profile.language,
 					startedOn: profile.plan.startedOn,
-					today: toDayKey(new Date()),
+					today: day,
 					lessonCount: course.lessons.length,
 					completedCount: profile.completedLessons.length
 				})
@@ -31,13 +48,40 @@
 	const newLesson = $derived(
 		plan?.newLessonIndex ? getLessonByIndex(profile.language, plan.newLessonIndex) : undefined
 	);
-	const recallLesson = $derived(
-		plan?.recallLessonIndex
-			? getLessonByIndex(profile.language, plan.recallLessonIndex)
-			: undefined
-	);
+	const recallLesson = $derived.by(() => {
+		if (!plan) return undefined;
+		const ceiling = plan.courseComplete
+			? course.lessons.length
+			: Math.max(0, (plan.newLessonIndex ?? 1) - POC_WAVE_CONFIG.activeWaveLagLessons);
+		return course.lessons.find(
+			(candidate) =>
+				candidate.index <= ceiling &&
+				profile.completedLessons.includes(candidate.id) &&
+				!profile.completedRecallLessons.includes(candidate.id) &&
+				candidate.exercises.some((exercise) => exercise.kind === 'recall')
+		);
+	});
 
 	const minutes = $derived(profile.plan?.dailyMinutes ?? 25);
+	const assignment = $derived(profile.dailyAssignment(day));
+	const assignedNewLesson = $derived(
+		assignment?.newLessonId ? getLesson(profile.language, assignment.newLessonId) : undefined
+	);
+	const assignedRecallLesson = $derived(
+		assignment?.recallLessonId ? getLesson(profile.language, assignment.recallLessonId) : undefined
+	);
+	const newDone = $derived(assignment?.completedModes.includes('learn') ?? false);
+	const recallDone = $derived(assignment?.completedModes.includes('recall') ?? false);
+	const assignmentComplete = $derived(
+		Boolean(assignment) &&
+			(!assignment?.newLessonId || newDone) &&
+			(!assignment?.recallLessonId || recallDone)
+	);
+
+	$effect(() => {
+		if (!profile.loaded || !plan || assignment || profile.activeSession) return;
+		profile.ensureDailyAssignment(day, newLesson?.id ?? null, recallLesson?.id ?? null);
+	});
 </script>
 
 <svelte:head><title>Today</title></svelte:head>
@@ -70,9 +114,43 @@
 		{/if}
 	</div>
 
-	{#if !plan}
+	{#if !plan || (!assignment && !profile.activeSession)}
 		<W.Muted>Loading your plan…</W.Muted>
-	{:else if plan.courseComplete}
+	{:else if profile.activeSession && activeLesson}
+		<W.Card thick tone="parchment" class="anim-rise anim-d1 gap-3 p-5">
+			<div class="flex items-center justify-between gap-2">
+				<div class="font-display text-xl leading-tight font-semibold">
+					Resume · {activeLesson.title}
+				</div>
+				<W.Pill active>{profile.activeSession.mode}</W.Pill>
+			</div>
+			<W.Muted>
+				Your unfinished session is saved at {profile.activeSession.currentStep}.
+			</W.Muted>
+			<W.Button
+				tone="primary"
+				class="mt-1.5"
+				onclick={() => profile.activeSessionHref && goto(profile.activeSessionHref)}
+			>
+				Resume lesson
+			</W.Button>
+			<W.Button onclick={() => profile.abandonSession()}>Abandon session</W.Button>
+			<W.Muted>
+				Your saved progress and evidence are kept. You can start this assignment again.
+			</W.Muted>
+		</W.Card>
+	{:else if plan.courseComplete && assignment && !assignment.newLessonId && !assignment.recallLessonId}
+		<W.Card tone="good" class="anim-rise anim-d1 p-5">
+			<div class="font-display text-xl font-semibold text-insight">Course complete</div>
+			<W.Muted>You've worked through and recalled every authored lesson in this course.</W.Muted>
+			<W.Button class="mt-1.5" onclick={() => goto('/progress')}>See what stuck</W.Button>
+		</W.Card>
+	{:else if assignmentComplete}
+		<W.Card tone="good" class="anim-rise anim-d1 p-5">
+			<div class="font-display text-xl font-semibold text-insight">Today's session complete</div>
+			<W.Muted>Your next two-wave assignment will be prepared tomorrow.</W.Muted>
+		</W.Card>
+	{:else if plan.courseComplete && !assignedRecallLesson}
 		<W.Card tone="good" class="anim-rise anim-d1 p-5">
 			<div class="font-display text-xl font-semibold text-insight">Course complete</div>
 			<W.Muted>
@@ -84,51 +162,62 @@
 			</W.Button>
 		</W.Card>
 	{:else}
-		{#if newLesson}
+		{#if assignedNewLesson && !newDone}
 			<W.Card thick class="anim-rise anim-d1 gap-3 p-5">
 				<div>
 					<div class="flex items-baseline justify-between gap-2">
 						<div class="text-2xs font-bold tracking-[0.14em] text-brand uppercase">
-							Lesson {newLesson.index} · {newLesson.kind === 'synthesis' ? 'review' : 'new'}
+							Lesson {assignedNewLesson.index} · {assignedNewLesson.kind === 'synthesis'
+								? 'review'
+								: 'new'}
 						</div>
 						<span class="text-xs text-text-faint">~{Math.round(minutes * 0.6)} min</span>
 					</div>
 					<div class="font-display text-xl leading-tight font-semibold">
-						{newLesson.title}
+						{assignedNewLesson.title}
 					</div>
 				</div>
 				<W.Muted>
-					{newLesson.kind === 'synthesis'
+					{assignedNewLesson.kind === 'synthesis'
 						? 'Nothing new — only reassembly'
 						: 'Passive procedure: listen, read, retrieve'}
 				</W.Muted>
 				<W.Button
 					tone="primary"
 					class="mt-1.5"
-					onclick={() => goto(`/learn/${newLesson.id}/${flowFor(newLesson.kind)[0]}`)}
+					onclick={() =>
+						goto(
+							profile.startSession(
+								'learn',
+								assignedNewLesson.id,
+								flowFor(assignedNewLesson.kind),
+								day
+							)
+						)}
 				>
 					Start
 				</W.Button>
 			</W.Card>
 		{/if}
 
-		{#if recallLesson}
+		{#if assignedRecallLesson && !recallDone}
 			<W.Card class="anim-rise anim-d2 gap-3 p-5">
 				<div>
 					<div class="flex items-baseline justify-between gap-2">
 						<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
-							Lesson {recallLesson.index} · recall
+							Lesson {assignedRecallLesson.index} · recall
 						</div>
 						<span class="text-xs text-text-faint">~{Math.round(minutes * 0.4)} min</span>
 					</div>
 					<div class="font-display text-xl leading-tight font-semibold">
-						{recallLesson.title}
+						{assignedRecallLesson.title}
 					</div>
 				</div>
 				<W.Muted>Active wave: say it from the English — from memory.</W.Muted>
 				<W.Button
 					class="mt-1.5"
-					onclick={() => goto(`/recall/${recallLesson.id}/recall`)}
+					onclick={() =>
+						goto(profile.startSession('recall', assignedRecallLesson.id, RECALL_FLOW, day))}
 				>
 					Start recall
 				</W.Button>

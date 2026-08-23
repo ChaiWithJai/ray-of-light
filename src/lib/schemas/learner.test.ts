@@ -3,12 +3,16 @@ import {
 	deriveAllStates,
 	deriveConstructionState,
 	emptyProfile,
+	EvidenceEvent,
 	LearnerProfile,
-	type EvidenceEvent
+	migrateLegacyTransferEvidence,
+	type EvidenceEvent as EvidenceEventType
 } from './learner.js';
 
 let seq = 0;
-function ev(partial: Partial<EvidenceEvent> & Pick<EvidenceEvent, 'kind'>): EvidenceEvent {
+function ev(
+	partial: Partial<EvidenceEventType> & Pick<EvidenceEventType, 'kind'>
+): EvidenceEventType {
 	return {
 		id: `e${seq++}`,
 		constructionId: 'fr.je-voudrais',
@@ -29,8 +33,41 @@ describe('deriveConstructionState', () => {
 	it('grants the highest state any single event justifies', () => {
 		expect(deriveConstructionState([ev({ kind: 'parallel-read' })])).toBe('exposed');
 		expect(deriveConstructionState([ev({ kind: 'comprehension-correct' })])).toBe('recognized');
+		expect(
+			deriveConstructionState([
+				ev({ kind: 'transfer-pattern-matched', assessmentSource: 'authored-pattern' })
+			])
+		).toBe('recognized');
 		expect(deriveConstructionState([ev({ kind: 'recall-correct' })])).toBe('recalled');
-		expect(deriveConstructionState([ev({ kind: 'transfer-correct' })])).toBe('transferable');
+		expect(
+			deriveConstructionState([
+				ev({ kind: 'transfer-correct', assessmentSource: 'expert-review' })
+			])
+		).toBe('transferable');
+	});
+
+	it('never treats heuristic pattern matches as transfer or retrieval-day evidence', () => {
+		expect(
+			deriveConstructionState([
+				ev({
+					kind: 'transfer-pattern-matched',
+					day: '2026-01-01',
+					assessmentSource: 'authored-pattern'
+				}),
+				ev({
+					kind: 'transfer-pattern-matched',
+					day: '2026-01-08',
+					assessmentSource: 'authored-pattern'
+				})
+			])
+	).toBe('recognized');
+	});
+
+	it('quarantines unverified legacy transfer claims', () => {
+		expect(deriveConstructionState([ev({ kind: 'transfer-correct' })])).toBeNull();
+		expect(
+			deriveConstructionState([ev({ kind: 'transfer-legacy-unverified' })])
+		).toBeNull();
 	});
 
 	it('never regresses when weaker evidence arrives later', () => {
@@ -95,7 +132,7 @@ describe('deriveConstructionState', () => {
 
 		it('does not downgrade a construction that already transferred', () => {
 			const state = deriveConstructionState([
-				ev({ kind: 'transfer-correct', day: '2026-01-01' }),
+				ev({ kind: 'transfer-correct', day: '2026-01-01', assessmentSource: 'expert-review' }),
 				ev({ kind: 'recall-correct', day: '2026-01-08' })
 			]);
 			expect(state).toBe('transferable');
@@ -119,6 +156,69 @@ describe('deriveAllStates', () => {
 });
 
 describe('LearnerProfile', () => {
+	it('migrates legacy heuristic transfer claims without losing their audit record', () => {
+		const profile = emptyProfile();
+		const legacy = ev({ kind: 'transfer-correct' });
+		const migrated = migrateLegacyTransferEvidence({ ...profile, evidence: [legacy] });
+		const parsed = LearnerProfile.parse(migrated);
+		expect(parsed.evidence[0]).toMatchObject({
+			id: legacy.id,
+			kind: 'transfer-legacy-unverified',
+			assessmentSource: 'legacy-heuristic'
+		});
+		expect(deriveConstructionState(parsed.evidence)).toBeNull();
+	});
+
+	it('preserves genuinely expert-reviewed transfer evidence', () => {
+		const profile = emptyProfile();
+		const expert = ev({ kind: 'transfer-correct', assessmentSource: 'expert-review' });
+		const migrated = migrateLegacyTransferEvidence({ ...profile, evidence: [expert] });
+		expect(LearnerProfile.parse(migrated).evidence[0]).toEqual(expert);
+	});
+
+	it('requires explicit expert provenance for future transfer-correct evidence', () => {
+		expect(EvidenceEvent.safeParse(ev({ kind: 'transfer-correct' })).success).toBe(false);
+		expect(
+			EvidenceEvent.safeParse(
+				ev({ kind: 'transfer-correct', assessmentSource: 'expert-review' })
+			).success
+		).toBe(true);
+	});
+
+	it('binds every transfer evidence kind to its exact assessment provenance', () => {
+		const cases = [
+			['transfer-pattern-matched', 'authored-pattern'],
+			['transfer-legacy-unverified', 'legacy-heuristic'],
+			['transfer-correct', 'expert-review']
+		] as const;
+		for (const [kind, assessmentSource] of cases) {
+			expect(EvidenceEvent.safeParse(ev({ kind, assessmentSource })).success).toBe(true);
+			expect(EvidenceEvent.safeParse(ev({ kind })).success).toBe(false);
+			expect(
+				EvidenceEvent.safeParse(ev({ kind, assessmentSource: 'expert-review' })).success,
+				kind
+			).toBe(kind === 'transfer-correct');
+		}
+		expect(
+			EvidenceEvent.safeParse(
+				ev({ kind: 'recall-correct', assessmentSource: 'expert-review' })
+			).success
+		).toBe(false);
+	});
+
+	it('defensively refuses grants from mismatched transfer provenance', () => {
+		expect(
+			deriveConstructionState([
+				ev({ kind: 'transfer-pattern-matched', assessmentSource: 'expert-review' })
+			])
+		).toBeNull();
+		expect(
+			deriveConstructionState([
+				ev({ kind: 'transfer-correct', assessmentSource: 'authored-pattern' })
+			])
+		).toBeNull();
+	});
+
 	it('builds an empty profile with defaults applied', () => {
 		const profile = emptyProfile('ta');
 		expect(profile.activeLanguage).toBe('ta');

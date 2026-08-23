@@ -14,9 +14,10 @@ import {
 } from '$lib/schemas/content.js';
 import { FR_LESSONS, FR_PROFILE } from './fr.js';
 import { TA_LESSONS, TA_PROFILE } from './ta.js';
+import { validateReviewGate } from './review-gate.js';
 
 /** Bumped whenever content changes, so evidence can cite what it was recorded against. */
-export const CONTENT_VERSION = '2026.08.23-poc.1';
+export const CONTENT_VERSION = '2026.08.23-poc.2';
 
 export type Course = {
 	language: LanguageCode;
@@ -32,23 +33,57 @@ export type Course = {
  * exercises `fr.je-voudrais` from lesson 1 is correct content, not an error. What
  * would be an error is referencing an id that is never defined anywhere, because
  * the progress map would then render a state for something with no label.
+ *
+ * The one place references are lesson-local: a construction must be exercised by
+ * its own `introducedIn` lesson, which must exist — "introduced in" means taught
+ * there, not merely claimed there.
  */
-function validateCourse(language: LanguageCode, lessons: Lesson[]): Course {
+export function validateCourse(language: LanguageCode, lessons: Lesson[]): Course {
+	// One id, one meaning (issue #12). A construction may be re-declared — a
+	// synthesis lesson carrying an earlier construction is correct content — but
+	// only verbatim. Two declarations that disagree about label, gloss or origin
+	// are not a tie to break silently; last-writer-wins here would let a review
+	// lesson quietly redefine what the progress map says the learner knows.
 	const constructions = new Map<string, Construction>();
+	const conflicts: string[] = [];
 	for (const lesson of lessons) {
 		for (const construction of lesson.constructions) {
-			constructions.set(construction.id, construction);
+			const existing = constructions.get(construction.id);
+			if (existing === undefined) {
+				constructions.set(construction.id, construction);
+				continue;
+			}
+			for (const field of ['label', 'gloss', 'introducedIn'] as const) {
+				if (existing[field] !== construction[field]) {
+					conflicts.push(
+						`${construction.id}: ${lesson.id} re-declares ${field} as ${JSON.stringify(construction[field])}, ` +
+							`but it is ${JSON.stringify(existing[field])}`
+					);
+				}
+			}
 		}
+	}
+	if (conflicts.length > 0) {
+		throw new Error(
+			`Course "${language}" has conflicting construction metadata:\n  ${conflicts.join('\n  ')}`
+		);
 	}
 
 	const dangling: string[] = [];
+	const referencedIds = new Set<string>();
+	/** Which constructions each lesson actually touches in a line or exercise. */
+	const referencedByLesson = new Map<string, Set<string>>();
 	for (const lesson of lessons) {
 		const referenced = [
 			...lesson.lines.flatMap((l) => l.constructions),
 			...lesson.exercises.flatMap((e) => e.constructions),
 			...lesson.exercises.flatMap((e) => (e.kind === 'transfer' ? [e.useConstruction] : []))
 		];
+		const inThisLesson = new Set<string>();
+		referencedByLesson.set(lesson.id, inThisLesson);
 		for (const id of referenced) {
+			referencedIds.add(id);
+			inThisLesson.add(id);
 			if (!constructions.has(id)) dangling.push(`${lesson.id} → ${id}`);
 		}
 	}
@@ -56,6 +91,44 @@ function validateCourse(language: LanguageCode, lessons: Lesson[]): Course {
 	if (dangling.length > 0) {
 		throw new Error(
 			`Course "${language}" references constructions that are never defined:\n  ${dangling.join('\n  ')}`
+		);
+	}
+
+	// Reachability runs the other way too (issue #12): a declared construction
+	// no line or exercise ever touches can never generate learner evidence, so
+	// it would sit on the progress map forever as unearnable state. Declared
+	// means teachable and observable, not merely counted.
+	const phantoms = [...constructions.keys()].filter((id) => !referencedIds.has(id));
+	if (phantoms.length > 0) {
+		throw new Error(
+			`Course "${language}" declares constructions no line or exercise references:\n  ${phantoms.join('\n  ')}`
+		);
+	}
+
+	// "Introduced in" must mean taught there (issue #12, PR review). A
+	// construction's `introducedIn` names the lesson the progress map credits
+	// with teaching it, so that lesson must exist and must actually exercise the
+	// construction in at least one line or exercise — being referenced only by
+	// some later lesson would make the introduction a claim with no teaching
+	// behind it.
+	const lessonIds = new Set(lessons.map((l) => l.id));
+	const untaught: string[] = [];
+	for (const construction of constructions.values()) {
+		if (!lessonIds.has(construction.introducedIn)) {
+			untaught.push(
+				`${construction.id}: introducedIn "${construction.introducedIn}" is not a lesson in this course`
+			);
+			continue;
+		}
+		if (!referencedByLesson.get(construction.introducedIn)?.has(construction.id)) {
+			untaught.push(
+				`${construction.id}: introducedIn "${construction.introducedIn}", but no line or exercise in that lesson references it`
+			);
+		}
+	}
+	if (untaught.length > 0) {
+		throw new Error(
+			`Course "${language}" has constructions not taught in their introducing lesson:\n  ${untaught.join('\n  ')}`
 		);
 	}
 
@@ -82,6 +155,15 @@ export const COURSES: Record<LanguageCode, Course> = {
 	fr: buildCourse('fr', FR_LESSONS),
 	ta: buildCourse('ta', TA_LESSONS)
 };
+
+/**
+ * The native-review promotion gate runs here, at module init, so a
+ * `reviewStatus` claim without hash-matched approved records fails at app
+ * import time exactly like a dangling construction reference — not only in
+ * tests. `review-gate.ts` is pure (it does not import this module), which is
+ * what makes this call cycle-free. See docs/NATIVE-REVIEW.md.
+ */
+validateReviewGate(COURSES);
 
 export const LANGUAGE_PROFILES = { fr: FR_PROFILE, ta: TA_PROFILE };
 

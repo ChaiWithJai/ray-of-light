@@ -88,6 +88,10 @@ export type AuthoredExercise =
 			situation: string;
 			use: string;
 			exemplar: string;
+			criteria: {
+				constructions: { construction: string; orderedGroups: string[][] }[];
+				contextGroups?: string[][];
+			};
 			constructions?: string[];
 	  };
 
@@ -213,7 +217,14 @@ function buildExercise(
 				prompt: ex.prompt,
 				situation: ex.situation,
 				useConstruction: constructionId(profile, ex.use),
-				exemplar: ex.exemplar
+				exemplar: ex.exemplar,
+				criteria: {
+					constructions: ex.criteria.constructions.map((criterion) => ({
+						constructionId: constructionId(profile, criterion.construction),
+						orderedGroups: criterion.orderedGroups
+					})),
+					contextGroups: ex.criteria.contextGroups ?? []
+				}
 			};
 	}
 }

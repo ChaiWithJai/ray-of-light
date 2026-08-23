@@ -25,3 +25,13 @@ vite.config.ts.timestamp-*
 # Playwright
 /test-results
 /playwright-report
+
+# Personal-voice audio (issue #19): generated locally, never committed.
+/static/audio/
+
+# Private voice references and derived voice artifacts must never enter the
+# repo — reference recordings live outside it (~/.ray-of-light/voice/).
+/voice/
+*.voice-ref.*
+scripts/audio/.venv/
+scripts/audio/uv.lock

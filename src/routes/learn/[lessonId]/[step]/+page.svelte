@@ -16,7 +16,7 @@
 	import Closure from '$lib/components/steps/closure.svelte';
 	import Synthesis from '$lib/components/steps/synthesis.svelte';
 	import { getLesson } from '$lib/content/index.js';
-	import { afterStep, flowFor, isStepId, stepDef, stepProgress } from '$lib/flow.js';
+	import { flowFor, isStepId, stepDef, stepProgress } from '$lib/flow.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	const lessonId = $derived(page.params.lessonId!);
@@ -25,9 +25,20 @@
 	const flow = $derived(lesson ? flowFor(lesson.kind) : []);
 	const step = $derived(isStepId(rawStep) && flow.includes(rawStep) ? rawStep : null);
 	const progress = $derived(step ? stepProgress(flow, step) : null);
+	const access = $derived(
+		lesson && step ? profile.sessionAccess('learn', lesson.id, step, flow) : 'forbidden'
+	);
+
+	$effect(() => {
+		if (profile.loaded && lesson && step && access === 'forbidden') {
+			goto(profile.activeSessionHref ?? '/today', { replaceState: true });
+		}
+	});
 
 	const advance = () => {
-		if (lesson && step) goto(afterStep('learn', lesson.id, flow, step));
+		if (!lesson || !step) return;
+		const destination = profile.advanceSession('learn', lesson.id, step, flow);
+		if (destination) goto(destination);
 	};
 </script>
 
@@ -35,7 +46,11 @@
 	<title>{lesson ? `${lesson.title} · ${step ?? ''}` : 'Lesson'}</title>
 </svelte:head>
 
-{#if !lesson}
+{#if !profile.loaded}
+	<W.Shell title="Lesson" back="/today" backKind="close">
+		<W.Muted>Restoring your lesson…</W.Muted>
+	</W.Shell>
+{:else if !lesson}
 	<W.Shell title="Not found" back="/today" backKind="close">
 		<W.Muted>
 			No lesson <code>{lessonId}</code> in the {profile.language === 'ta' ? 'Tamil' : 'French'}
@@ -50,6 +65,25 @@
 		</W.Muted>
 		<W.Button href="/learn/{lesson.id}/{flow[0]}">
 			Start at the beginning
+		</W.Button>
+	</W.Shell>
+{:else if access === 'forbidden'}
+	<W.Shell title="{lesson.title} · {stepDef(step).label}" back="/today" backKind="close">
+		<W.Muted>Returning to your authorized session step…</W.Muted>
+	</W.Shell>
+{:else if access === 'completed'}
+	<W.Shell title="Completed step" back="/today" backKind="close">
+		<!-- Kept on one line: the e2e guard asserts this copy with a regex, and regex
+		     text matching does not normalize source-formatting whitespace. -->
+		<W.Muted>
+			This step is complete. Return to the current step to continue; completed-step review is not available in this POC.
+		</W.Muted>
+		<W.Button
+			tone="primary"
+			class="mt-auto"
+			onclick={() => profile.activeSessionHref && goto(profile.activeSessionHref)}
+		>
+			Resume current step
 		</W.Button>
 	</W.Shell>
 {:else}
@@ -113,8 +147,8 @@
 				<Transfer {lesson} onDone={advance} />
 			{:else if step === 'synthesis'}
 				<Synthesis {lesson} onDone={advance} />
-			{:else if step === 'closure'}
-				<Closure {lesson} onDone={advance} />
+				{:else if step === 'closure'}
+					<Closure {lesson} mode="learn" {flow} onDone={() => goto('/today')} />
 			{/if}
 			</div>
 		{/key}

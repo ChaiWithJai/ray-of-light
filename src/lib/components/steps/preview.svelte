@@ -111,9 +111,9 @@
 	{#if !player.available}
 		<W.Card tone="warn">
 			<W.Muted class="text-2xs text-caution">
-				No recording exists for this lesson yet, so the player is inert. The step is kept in
-				the flow because removing it would put orthography first and break the method. See
-				docs/ISSUE-1-LIMITATIONS.md L1.
+				No recording is available on this machine — audio is generated locally and never
+				committed (docs/AUDIO.md). Run the generator, then reload. The step is kept in the
+				flow because removing it would put orthography first and break the method.
 			</W.Muted>
 		</W.Card>
 	{/if}

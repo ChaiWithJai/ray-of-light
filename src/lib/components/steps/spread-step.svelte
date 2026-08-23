@@ -6,10 +6,12 @@
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
 	import * as W from '$lib/components/ui/index.js';
+	import { LessonPlayer } from '$lib/audio/lesson-player.svelte.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import { describe } from '$lib/morphology.js';
 	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { SvelteSet } from 'svelte/reactivity';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
 
@@ -18,7 +20,17 @@
 	let coverSource = $state(false);
 	let coverTarget = $state(false);
 	const line = $derived(lesson.lines[index]);
-	const read = new Set<string>();
+	const read = new SvelteSet<string>();
+	const player = $derived(new LessonPlayer(lesson));
+
+	$effect(() => {
+		const current = player;
+		return () => current.destroy();
+	});
+
+	$effect(() => {
+		player.setRate(profile.settings.audioSpeed);
+	});
 
 	// NB: must not be called `state` — declaring that identifier makes Svelte parse
 	// `$state` as store-subscription syntax and every rune in this file breaks.
@@ -44,11 +56,17 @@
 	);
 
 	function onlineactivate(l: LessonLine) {
+		const lineIndex = lesson.lines.findIndex((candidate) => candidate.id === l.id);
+		if (lineIndex >= 0) player.playLine(lineIndex);
 		if (l.notes.length > 0) overlay = 'notes';
 	}
 </script>
 
 <Spread {lesson} state={spreadState} bind:index settings={profile.settings} {onlineactivate} />
+
+{#if player.error}
+	<W.Muted role="alert" class="text-center text-caution">{player.error}</W.Muted>
+{/if}
 
 <div class="flex flex-wrap items-center justify-center gap-2">
 	<W.Chip active={coverSource} onclick={() => ((coverSource = !coverSource), (coverTarget = false))}>

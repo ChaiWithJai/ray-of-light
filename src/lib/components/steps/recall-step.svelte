@@ -8,15 +8,28 @@
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
 	import * as W from '$lib/components/ui/index.js';
-	import { evaluateRecallAttempt, normalise, type RecallAttempt } from '$lib/answers.js';
-	import { CONTENT_VERSION } from '$lib/content/index.js';
+	import {
+		evaluateRecallAttempt,
+		hasRecallAttempt,
+		normalise,
+		type RecallAttempt,
+		type RecallEvaluation
+	} from '$lib/answers.js';
 	import type { Lesson, RecallPrompt } from '$lib/schemas/content.js';
+	import type { RecallSessionDraft } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	let {
 		lesson,
+		initialDraft,
+		onDraftChange,
 		onDone
-	}: { lesson: Lesson; onDone: (attempt: RecallAttempt) => void } = $props();
+	}: {
+		lesson: Lesson;
+		initialDraft?: RecallSessionDraft;
+		onDraftChange?: (draft: RecallSessionDraft) => void;
+		onDone: (attempt: RecallAttempt, evaluation: RecallEvaluation, hinted: boolean) => void;
+	} = $props();
 
 	const recallPrompt = $derived(
 		lesson.exercises.find((exercise): exercise is RecallPrompt => exercise.kind === 'recall')
@@ -37,38 +50,51 @@
 		})()
 	);
 
-	let index = $state(0);
-	let initializedLessonId = $state<string | null>(null);
-	let hinted = $state(false);
-	let revealed = $state(false);
-	let attempt = $state('');
+	const initial = (() => {
+		const restoredLineIndex = initialDraft
+			? lesson.lines.findIndex((candidate) => candidate.id === initialDraft.lineId)
+			: -1;
+		return {
+			index: restoredLineIndex >= 0 ? restoredLineIndex : promptedLineIndex,
+			hinted: initialDraft?.hinted ?? false,
+			revealed: initialDraft?.revealed ?? false,
+			attempt: initialDraft?.text ?? ''
+		};
+	})();
+	let index = $state(initial.index);
+	let hinted = $state(initial.hinted);
+	let revealed = $state(initial.revealed);
+	let attempt = $state(initial.attempt);
+	let submitted = $state(false);
 
 	const line = $derived(lesson.lines[index]);
 	const daysAgo = $derived(lesson.index);
+	const hasAttempt = $derived(hasRecallAttempt(attempt));
+	const showReveal = $derived(revealed && hasAttempt);
+
+	function persistDraft() {
+		if (!line) return;
+		onDraftChange?.({ lineId: line.id, text: attempt, hinted, revealed });
+	}
 
 	$effect(() => {
-		if (initializedLessonId === lesson.id) return;
-		index = promptedLineIndex;
-		hinted = false;
-		revealed = false;
-		attempt = '';
-		initializedLessonId = lesson.id;
+		index;
+		hinted;
+		revealed;
+		persistDraft();
 	});
 
 	function produce() {
-		if (attempt.trim() === '') return;
+		if (!hasAttempt || submitted) return;
 
 		const evaluation = evaluateRecallAttempt(attempt, recallPrompt, line);
-		profile.record(evaluation.kind, lesson.id, evaluation.constructionIds, {
-			hinted,
-			contentVersion: CONTENT_VERSION
-		});
+		submitted = true;
 		onDone({
 			lineId: line.id,
 			text: attempt,
 			canonicalAnswer: evaluation.canonicalAnswer,
 			matchedAcceptedAnswer: evaluation.matchedAcceptedAnswer
-		});
+		}, evaluation, hinted);
 	}
 </script>
 
@@ -82,13 +108,20 @@
 	</W.Card>
 {/if}
 
-<Spread {lesson} state="active-retrieval" bind:index settings={profile.settings} />
+<Spread
+	{lesson}
+	state="active-retrieval"
+	bind:index
+	settings={profile.settings}
+	onlineactivate={persistDraft}
+/>
 
 <W.AnswerField
 	bind:value={attempt}
 	placeholder="say or type the line…"
 	minHeight={56}
 	aria-label="Your production"
+	oninput={persistDraft}
 />
 <W.MicButton />
 
@@ -97,19 +130,25 @@
 		active={hinted}
 		onclick={() => {
 			hinted = true;
+			persistDraft();
 		}}
 	>
 		hint: first word
 	</W.Chip>
-	<W.Chip
-		active={revealed}
-		onclick={() => {
-			hinted = true;
-			revealed = true;
-		}}
-	>
-		reveal
-	</W.Chip>
+	{#if hasAttempt}
+		<W.Chip
+			active={revealed}
+			onclick={() => {
+				hinted = true;
+				revealed = true;
+				persistDraft();
+			}}
+		>
+			reveal
+		</W.Chip>
+	{:else}
+		<W.Chip disabled onclick={() => {}}>reveal</W.Chip>
+	{/if}
 </div>
 
 {#if hinted}
@@ -118,7 +157,7 @@
 			Hint used — this line won't count as recalled.
 		</W.Muted>
 		<W.Fr class="text-sm">
-			{revealed
+			{showReveal
 				? (recallPrompt?.canonicalAnswer ?? line.targetScript)
 				: (recallPrompt?.hints[0] ?? `${line.targetScript.split(' ')[0]}…`)}
 		</W.Fr>
@@ -128,7 +167,7 @@
 <W.Button
 	tone="primary"
 	class="mt-auto"
-	disabled={attempt.trim() === ''}
+	disabled={!hasAttempt || submitted}
 	onclick={produce}
 >
 	Compare with the canonical line →
