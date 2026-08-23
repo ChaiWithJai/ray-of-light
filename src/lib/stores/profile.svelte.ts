@@ -22,10 +22,10 @@ import {
 	type RecallSessionDraft,
 	type SessionMode
 } from '$lib/schemas/learner.js';
-import { toDayKey } from '$lib/schemas/schedule.js';
+import { POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
 import type { LanguageCode } from '$lib/schemas/content.js';
 import { flowFor, RECALL_FLOW, type StepId } from '$lib/flow.js';
-import { getLesson } from '$lib/content/index.js';
+import { COURSES, getLesson } from '$lib/content/index.js';
 import {
 	accessFor,
 	advanceSession as advanceSessionState,
@@ -50,6 +50,57 @@ function sessionMatchesCourse(session: ActiveSession, activeLanguage: LanguageCo
 	return currentSessionMatchesExpected(session, activeLanguage, expectedFlow);
 }
 
+function todaysAssignmentIsValid(profile: LearnerProfile, day: string): boolean {
+	const assignment = profile.dailyAssignments[profile.activeLanguage]?.[day];
+	if (!assignment) return true;
+	if (assignment.day !== day || new Set(assignment.completedModes).size !== assignment.completedModes.length) {
+		return false;
+	}
+	const learnDone = assignment.completedModes.includes('learn');
+	const recallDone = assignment.completedModes.includes('recall');
+	if ((learnDone && !assignment.newLessonId) || (recallDone && !assignment.recallLessonId)) return false;
+
+	const course = COURSES[profile.activeLanguage];
+	const completedLessons = profile.completedLessons[profile.activeLanguage] ?? [];
+	const completedRecall = profile.completedRecallLessons[profile.activeLanguage] ?? [];
+	const newLesson = assignment.newLessonId
+		? getLesson(profile.activeLanguage, assignment.newLessonId)
+		: undefined;
+	const recallLesson = assignment.recallLessonId
+		? getLesson(profile.activeLanguage, assignment.recallLessonId)
+		: undefined;
+	if (assignment.newLessonId && !newLesson) return false;
+	if (
+		assignment.recallLessonId &&
+		(!recallLesson || !recallLesson.exercises.some((exercise) => exercise.kind === 'recall'))
+	) return false;
+
+	const courseComplete = completedLessons.length >= course.lessons.length;
+	if (!learnDone) {
+		const expectedNew = courseComplete ? undefined : course.lessons[completedLessons.length];
+		if (assignment.newLessonId !== (expectedNew?.id ?? null)) return false;
+	} else if (!newLesson || !completedLessons.includes(newLesson.id)) return false;
+
+	const ceiling = courseComplete
+		? course.lessons.length
+		: Math.max(
+				0,
+				(newLesson?.index ?? completedLessons.length + 1) - POC_WAVE_CONFIG.activeWaveLagLessons
+			);
+	const expectedRecall = course.lessons.find(
+		(candidate) =>
+			candidate.index <= ceiling &&
+			completedLessons.includes(candidate.id) &&
+			!completedRecall.includes(candidate.id) &&
+			candidate.exercises.some((exercise) => exercise.kind === 'recall')
+	);
+	if (!recallDone) {
+		if (assignment.recallLessonId !== (expectedRecall?.id ?? null)) return false;
+	} else if (!recallLesson || !completedRecall.includes(recallLesson.id)) return false;
+
+	return true;
+}
+
 function load(): LearnerProfile {
 	if (!browser) return emptyProfile();
 	try {
@@ -60,11 +111,25 @@ function load(): LearnerProfile {
 		// Starting clean loses progress, but silently running on malformed state
 		// would corrupt the evidence log, which is worse.
 		if (!parsed.success) return emptyProfile();
-		if (
+		const day = toDayKey(new Date());
+		const invalidSession = Boolean(
 			parsed.data.activeSession &&
-			!sessionMatchesCourse(parsed.data.activeSession, parsed.data.activeLanguage)
-		) {
-			const recovered = { ...parsed.data, activeSession: null };
+				!sessionMatchesCourse(parsed.data.activeSession, parsed.data.activeLanguage)
+		);
+		const invalidToday = !todaysAssignmentIsValid(parsed.data, day);
+		if (invalidSession || invalidToday) {
+			const languageAssignments = parsed.data.dailyAssignments[parsed.data.activeLanguage] ?? {};
+			const { [day]: _invalid, ...validAssignments } = languageAssignments;
+			const recovered = {
+				...parsed.data,
+				activeSession: invalidSession ? null : parsed.data.activeSession,
+				dailyAssignments: invalidToday
+					? {
+							...parsed.data.dailyAssignments,
+							[parsed.data.activeLanguage]: validAssignments
+						}
+					: parsed.data.dailyAssignments
+			};
 			try {
 				localStorage.setItem(STORAGE_KEY, JSON.stringify(recovered));
 			} catch {
@@ -247,13 +312,20 @@ class ProfileStore {
 		}));
 	}
 
-	startSession(mode: SessionMode, lessonId: string, flow: readonly StepId[], day = toDayKey(new Date())): string {
+	startSession(mode: SessionMode, lessonId: string, flow: readonly StepId[], assignmentDay?: string): string {
 		if (this.activeSession) {
 			const href = this.activeSessionHref;
 			if (href) return href;
 			this.#update((p) => ({ ...p, activeSession: null }));
 		}
-		const session = createSession(mode, this.#profile.activeLanguage, lessonId, flow, Date.now(), day);
+		const session = createSession(
+			mode,
+			this.#profile.activeLanguage,
+			lessonId,
+			flow,
+			Date.now(),
+			assignmentDay
+		);
 		this.#update((p) => ({ ...p, activeSession: session }));
 		return resumeHref(session);
 	}
@@ -385,9 +457,9 @@ class ProfileStore {
 				mode === 'recall' && !recalled.includes(lessonId)
 					? { ...p.completedRecallLessons, [p.activeLanguage]: [...recalled, lessonId] }
 					: p.completedRecallLessons;
-			const assignmentDay = session.assignmentDay ?? toDayKey(new Date(session.startedAt));
+			const assignmentDay = session.assignmentDay;
 			const languageAssignments = p.dailyAssignments[p.activeLanguage] ?? {};
-			const assignment = languageAssignments[assignmentDay];
+			const assignment = assignmentDay ? languageAssignments[assignmentDay] : undefined;
 			const expectedLessonId = mode === 'learn' ? assignment?.newLessonId : assignment?.recallLessonId;
 			const updatedAssignment =
 				assignment && expectedLessonId === lessonId && !assignment.completedModes.includes(mode)
@@ -398,7 +470,7 @@ class ProfileStore {
 						...p.dailyAssignments,
 						[p.activeLanguage]: {
 							...languageAssignments,
-							[assignmentDay]: updatedAssignment
+							[assignmentDay!]: updatedAssignment
 						}
 					}
 				: p.dailyAssignments;

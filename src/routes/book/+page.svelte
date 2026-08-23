@@ -3,13 +3,22 @@
 	 * Book · browse the canonical course. Reviewing a finished lesson is allowed;
 	 * jumping ahead is not — the whole scheduling model depends on the order.
 	 */
+	import { goto } from '$app/navigation';
 	import * as W from '$lib/components/wireframe/index.js';
 	import { COURSES, audioPending } from '$lib/content/index.js';
 	import { flowFor } from '$lib/flow.js';
+	import { toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	const course = $derived(COURSES[profile.language]);
 	const nextIndex = $derived(profile.completedLessons.length + 1);
+	const activeLessonId = $derived(profile.activeSession?.lessonId);
+
+	function start(lessonId: string, kind: 'regular' | 'synthesis') {
+		const dayKey = toDayKey(new Date());
+		const assignmentDay = profile.dailyAssignment(dayKey)?.newLessonId === lessonId ? dayKey : undefined;
+		goto(profile.startSession('learn', lessonId, flowFor(kind), assignmentDay));
+	}
 </script>
 
 <svelte:head><title>Book</title></svelte:head>
@@ -18,6 +27,10 @@
 	<W.TitleBar left="☰" center="Book" />
 	<W.Muted>
 		{course.lessons.length} lessons · {course.constructions.size} constructions
+	</W.Muted>
+	<W.Muted class="text-[11px]">
+		Reviews stay separate from Today. Starting Today's assigned new lesson here still counts
+		toward that frozen assignment.
 	</W.Muted>
 
 	{#if audioPending(profile.language)}
@@ -49,12 +62,22 @@
 				</div>
 				<W.Muted class="text-[11px]">{lesson.situation}</W.Muted>
 				{#if open}
-					<W.SketchButton
-						class="mt-[4px] text-[13px]"
-						href="/learn/{lesson.id}/{flowFor(lesson.kind)[0]}"
-					>
-						{done ? 'Review' : 'Start'}
-					</W.SketchButton>
+					{#if profile.activeSession}
+						{#if activeLessonId === lesson.id}
+							<W.SketchButton
+								class="mt-[4px] text-[13px]"
+								onclick={() => profile.activeSessionHref && goto(profile.activeSessionHref)}
+							>
+								Resume current session
+							</W.SketchButton>
+						{:else}
+							<W.Muted class="text-[11px]">Another session is in progress.</W.Muted>
+						{/if}
+					{:else}
+						<W.SketchButton class="mt-[4px] text-[13px]" onclick={() => start(lesson.id, lesson.kind)}>
+							{done ? 'Review' : 'Start'}
+						</W.SketchButton>
+					{/if}
 				{:else}
 					<W.Muted class="text-[11px]">
 						Opens after lesson {lesson.index - 1}.

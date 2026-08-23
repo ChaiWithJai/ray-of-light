@@ -373,3 +373,116 @@ test('post-course recall advances past synthesis lessons and reaches true comple
 	await page.reload();
 	await expect(page.getByText('Course complete', { exact: true })).toBeVisible();
 });
+
+test('invalid current daily assignments recover without rewriting history', async ({ page }) => {
+	await onboard(page);
+	const corruptions = [
+		{ name: 'missing new lesson', patch: { newLessonId: 'fr-99' } },
+		{ name: 'missing recall lesson', patch: { recallLessonId: 'fr-99' } },
+		{ name: 'wrong recall cursor', patch: { recallLessonId: 'fr-02' } },
+		{ name: 'wrong-language recall', patch: { recallLessonId: 'ta-01' } },
+		{ name: 'synthesis without recall', patch: { recallLessonId: 'fr-07' } },
+		{ name: 'mismatched assignment day', patch: { day: '2026-08-22' } },
+		{ name: 'completed absent mode', patch: { recallLessonId: null, completedModes: ['recall'] } }
+	];
+
+	for (const corruption of corruptions) {
+		await page.evaluate(
+			({ key, patch }) => {
+				const stored = JSON.parse(localStorage.getItem(key)!);
+				const now = new Date();
+				const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+				stored.completedLessons.fr = ['fr-01', 'fr-02', 'fr-03'];
+				stored.completedRecallLessons = { fr: [] };
+				stored.activeSession = null;
+				stored.dailyAssignments.fr = {
+					'2026-08-01': {
+						day: '2026-08-01', newLessonId: 'historical-removed-id',
+						recallLessonId: null, completedModes: []
+					},
+					[today]: {
+						day: today, newLessonId: 'fr-04', recallLessonId: 'fr-01',
+						completedModes: [], ...patch
+					}
+				};
+				localStorage.setItem(key, JSON.stringify(stored));
+			},
+			{ key: STORAGE_KEY, patch: corruption.patch }
+		);
+		await page.reload();
+		await expect(page.getByText(/Lesson 4 ·/), corruption.name).toBeVisible();
+		await expect(page.getByText(/Lesson 1 · Au café/), corruption.name).toBeVisible();
+		const assignments = await page.evaluate(
+			(key) => JSON.parse(localStorage.getItem(key)!).dailyAssignments.fr,
+			STORAGE_KEY
+		);
+		expect(assignments['2026-08-01'], corruption.name).toEqual({
+			day: '2026-08-01', newLessonId: 'historical-removed-id',
+			recallLessonId: null, completedModes: []
+		});
+	}
+});
+
+test('daily-assignment cleanup write failure still regenerates Today in memory', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate((key) => {
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		const now = new Date();
+		const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+		stored.dailyAssignments.fr[today].newLessonId = 'fr-99';
+		localStorage.setItem(key, JSON.stringify(stored));
+	}, STORAGE_KEY);
+	await page.addInitScript(() => {
+		Storage.prototype.setItem = () => {
+			throw new DOMException('blocked', 'QuotaExceededError');
+		};
+	});
+	await page.reload();
+	await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
+	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+});
+
+test('Book Start creates an authorized session tied to the matching Today assignment', async ({ page }) => {
+	await onboard(page);
+	await page.goto('/book');
+	await page.getByRole('button', { name: 'Start', exact: true }).click();
+	await expect(page).toHaveURL(/\/learn\/fr-01\/preview/);
+	const session = await page.evaluate(
+		(key) => JSON.parse(localStorage.getItem(key)!).activeSession,
+		STORAGE_KEY
+	);
+	expect(session.lessonId).toBe('fr-01');
+	expect(session.assignmentDay).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('Book truthfully resumes an active session and does not offer a conflicting start', async ({ page }) => {
+	await onboard(page);
+	await page.getByRole('button', { name: 'Start', exact: true }).click();
+	await page.goto('/book');
+	await expect(page.getByRole('button', { name: 'Resume current session' })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toHaveCount(0);
+	await page.getByRole('button', { name: 'Resume current session' }).click();
+	await expect(page).toHaveURL(/\/learn\/fr-01\/preview/);
+});
+
+test('Book review is off-assignment and preserves the frozen new lesson', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate((key) => {
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		const now = new Date();
+		const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+		stored.completedLessons.fr = ['fr-01'];
+		stored.dailyAssignments.fr[today] = {
+			day: today, newLessonId: 'fr-02', recallLessonId: null, completedModes: []
+		};
+		localStorage.setItem(key, JSON.stringify(stored));
+	}, STORAGE_KEY);
+	await page.goto('/book');
+	await page.getByRole('button', { name: 'Review' }).click();
+	await expect(page).toHaveURL(/\/learn\/fr-01\/preview/);
+	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+	expect(stored.activeSession.assignmentDay).toBeUndefined();
+	expect(Object.values(stored.dailyAssignments.fr)[0]).toEqual(
+		expect.objectContaining({ newLessonId: 'fr-02', completedModes: [] })
+	);
+});
