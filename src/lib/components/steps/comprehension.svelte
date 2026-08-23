@@ -4,7 +4,7 @@
 	 * A peeked line records a hint and cannot grant `recognized` on that attempt.
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import type { ComprehensionCheck, Lesson } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -54,45 +54,45 @@
 {#if check}
 	<Spread {lesson} state="comprehension" bind:index settings={profile.settings} />
 
-	<W.SketchCard>
-		<div class="text-[13.5px]">{check.prompt}</div>
+	<W.Card>
+		<div class="text-sm">{check.prompt}</div>
 		{#each check.options as option, i (option)}
 			{@const isAnswer = i === check.answerIndex}
 			{@const revealed = picked !== null}
-			<W.SketchButton
+			<W.Button
 				tone={revealed && isAnswer ? 'primary' : 'outline'}
-				class="text-[13.5px] {revealed && picked === i && !isAnswer ? 'border-bad text-bad' : ''}"
+				class="text-sm {revealed && picked === i && !isAnswer ? 'border-miss text-miss' : ''}"
 				disabled={revealed}
 				onclick={() => pick(i)}
 			>
 				{option}
-			</W.SketchButton>
+			</W.Button>
 		{/each}
-	</W.SketchCard>
+	</W.Card>
 
 	{#if picked === null}
 		<W.Chip class="mx-auto" onclick={() => (peeked = true)}>
 			{peeked ? 'hint used — this one won’t count' : 'peek (counts as a hint)'}
 		</W.Chip>
 		{#if peeked}
-			<W.SketchCard>
+			<W.Card>
 				<W.En>{lesson.lines[lineIndex].naturalEnglish}</W.En>
-			</W.SketchCard>
+			</W.Card>
 		{/if}
 	{:else}
-		<W.SketchCard tone={picked === check.answerIndex ? 'good' : 'warn'}>
-			<div class="text-[13px] {picked === check.answerIndex ? 'text-good' : 'text-note'}">
+		<W.Card tone={picked === check.answerIndex ? 'good' : 'warn'} class="anim-uncover">
+			<div class="text-sm {picked === check.answerIndex ? 'text-insight' : 'text-caution'}">
 				{picked === check.answerIndex ? '✓ ' : '→ '}{lesson.lines[lineIndex].naturalEnglish}
 			</div>
 			{#if lesson.lines[lineIndex].literalEnglish}
-				<W.Muted class="text-[12px]">lit. {lesson.lines[lineIndex].literalEnglish}</W.Muted>
+				<W.Muted class="text-xs">lit. {lesson.lines[lineIndex].literalEnglish}</W.Muted>
 			{/if}
-		</W.SketchCard>
-		<W.SketchButton tone="primary" onclick={next}>
+		</W.Card>
+		<W.Button tone="primary" onclick={next}>
 			{current < checks.length - 1 ? 'Next' : 'Continue'}
-		</W.SketchButton>
+		</W.Button>
 	{/if}
 {:else}
 	<W.Muted>No comprehension check in this lesson.</W.Muted>
-	<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>Continue</W.SketchButton>
+	<W.Button tone="primary" class="mt-auto" onclick={onDone}>Continue</W.Button>
 {/if}

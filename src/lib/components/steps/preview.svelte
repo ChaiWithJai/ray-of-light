@@ -9,7 +9,7 @@
 	 * slow recording).
 	 */
 	import { LessonPlayer } from '$lib/audio/lesson-player.svelte.js';
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import audioProvenance from '$lib/content/audio-provenance.json';
 	import type { Lesson } from '$lib/schemas/content.js';
 
@@ -36,67 +36,89 @@
 	}
 </script>
 
-<div class="flex flex-1 flex-col items-center justify-center gap-[18px]">
-	<W.PlayButton
-		size="lg"
-		glyph={player.playing ? '❚❚' : '▶'}
-		label={player.playing ? 'Pause' : 'Play the lesson'}
-		onclick={play}
-	/>
-	<div class="text-center text-[16px]">Just listen.</div>
-	<W.Muted class="text-center">No text yet — let your ears go first.</W.Muted>
+<!-- Immersion: the lights dim. The stage is the only dark surface in the app,
+     and the recording is the only actor on it. -->
+<div class="flex flex-1 flex-col justify-center gap-4">
+	<W.Card tone="stage" class="items-center gap-6 px-6 py-12 sm:py-16">
+		<div class="relative">
+			{#if player.playing}
+				<span
+					class="anim-breathe pointer-events-none absolute -inset-3 rounded-full border-2 border-stage-muted"
+					aria-hidden="true"
+				></span>
+			{/if}
+			<W.PlayButton
+				size="lg"
+				tone="stage"
+				glyph={player.playing ? '❚❚' : '▶'}
+				label={player.playing ? 'Pause' : 'Play the lesson'}
+				onclick={play}
+			/>
+		</div>
 
-	{#if player.available}
-		<div class="flex items-center justify-center gap-2">
-			{#each RATES as rate (rate)}
+		<div class="text-center">
+			<div class="font-display text-2xl font-semibold text-stage-text">Just listen.</div>
+			<div class="mt-1.5 text-sm text-stage-muted">No text yet — let your ears go first.</div>
+		</div>
+
+		{#if player.available}
+			<div class="flex items-center justify-center gap-2">
+				{#each RATES as rate (rate)}
+					<button
+						type="button"
+						class="rounded-full border px-3 py-1 text-xs transition-colors duration-(--duration-quick) outline-none focus-visible:ring-2 focus-visible:ring-stage-text {player.rate ===
+						rate
+							? 'border-stage-text font-bold text-stage-text'
+							: 'border-stage-muted/50 text-stage-muted hover:text-stage-text'}"
+						onclick={() => player.setRate(rate)}
+					>
+						{rate === 1 ? '1×' : `${rate}×`}
+					</button>
+				{/each}
 				<button
 					type="button"
-					class="rounded-full border-[1.5px] px-3 py-1 text-[12px] {player.rate === rate
-						? 'border-accent-blue text-accent-blue'
-						: 'border-ink-faint text-ink-faint'}"
-					onclick={() => player.setRate(rate)}
+					class="rounded-full border border-stage-muted/50 px-3 py-1 text-xs text-stage-muted transition-colors duration-(--duration-quick) outline-none hover:text-stage-text focus-visible:ring-2 focus-visible:ring-stage-text"
+					onclick={() => player.playAll(() => (listens = Math.min(2, listens + 1)))}
 				>
-					{rate === 1 ? '1×' : `${rate}×`}
+					↺ replay
 				</button>
-			{/each}
-			<button
-				type="button"
-				class="rounded-full border-[1.5px] border-ink-faint px-3 py-1 text-[12px]"
-				onclick={() => player.playAll(() => (listens = Math.min(2, listens + 1)))}
-			>
-				↺ replay
-			</button>
-		</div>
-		{#if audioProvenance.synthesized}
-			<W.Muted class="text-center text-[11px] text-note">
-				draft synthesized voice ({audioProvenance.voices[lesson.language]}) — native
-				recording pending
-			</W.Muted>
+			</div>
 		{/if}
+
+		<div class="flex flex-col items-center gap-2">
+			<div class="flex items-center justify-center gap-2">
+				{#each [0, 1] as i (i)}
+					<div
+						class="size-2 rounded-full transition-colors duration-(--duration-move) {listens > i
+							? 'bg-stage-text'
+							: 'border border-stage-muted/60'}"
+					></div>
+				{/each}
+			</div>
+			<div class="text-sm text-stage-muted">
+				listen {Math.min(listens + (enough ? 0 : 1), 2)} of 2
+			</div>
+		</div>
+	</W.Card>
+
+	{#if player.available && audioProvenance.synthesized}
+		<W.Muted class="text-center text-2xs text-caution">
+			draft synthesized voice ({audioProvenance.voices[lesson.language]}) — native
+			recording pending
+		</W.Muted>
 	{/if}
 
-	<div class="flex items-center justify-center gap-2">
-		{#each [0, 1] as i (i)}
-			<div
-				class="size-[8px] rounded-full {listens > i
-					? 'bg-accent-blue'
-					: 'border-[1.5px] border-ink-faint'}"
-			></div>
-		{/each}
-	</div>
-	<W.Muted class="text-center">listen {Math.min(listens + (enough ? 0 : 1), 2)} of 2</W.Muted>
-
 	{#if !player.available}
-		<W.SketchCard tone="warn">
-			<W.Muted class="text-[11.5px] text-note">
+		<W.Card tone="warn">
+			<W.Muted class="text-2xs text-caution">
 				No recording exists for this lesson yet, so the player is inert. The step is kept in
 				the flow because removing it would put orthography first and break the method. See
 				docs/ISSUE-1-LIMITATIONS.md L1.
 			</W.Muted>
-		</W.SketchCard>
+		</W.Card>
 	{/if}
 </div>
 
-<W.SketchButton tone={enough ? 'primary' : 'outline'} onclick={onDone}>
+<W.Button tone={enough ? 'primary' : 'outline'} onclick={onDone}>
 	{enough ? "I've listened twice →" : 'Skip ahead →'}
-</W.SketchButton>
+</W.Button>

@@ -3,7 +3,7 @@
 	 * 1t · Phrase library. Only constructions the learner has actually met, each
 	 * keeping its source lesson and original context. Not a flashcard deck.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { COURSES, getLesson } from '$lib/content/index.js';
 	import { normalise } from '$lib/answers.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -50,48 +50,50 @@
 
 <svelte:head><title>Phrases</title></svelte:head>
 
-<W.Phone>
-	<W.TitleBar left="☰" center="Phrases" />
+<W.Shell brand title="Phrases" nav settingsLink>
+	<div class="anim-rise pt-2">
+		<W.Heading>Phrases</W.Heading>
+		<W.Muted class="mt-1">Your own material — everything here, you have met.</W.Muted>
+	</div>
 
 	<W.SearchField bind:value={query} placeholder={'🔍 "how do I ask for…"'} aria-label="Search phrases" />
 
 	{#if met.length === 0}
-		<W.SketchCard>
+		<W.Card>
 			<W.Muted>
 				Empty until you've met something. Constructions land here as you work through
 				lessons — this is your own material, not a word list.
 			</W.Muted>
-		</W.SketchCard>
+		</W.Card>
 	{:else}
-		<div class="flex flex-col gap-[6px]">
+		<div class="flex flex-col gap-2">
 			{#each results as construction (construction.id)}
 				{@const example = exampleFor(construction.id, construction.introducedIn)}
 				{@const lesson = getLesson(profile.language, construction.introducedIn)}
-				<W.SketchCard
+				<W.Card
 					tone={selected.has(construction.id) ? 'accent' : 'default'}
 					class="cursor-pointer"
 					onclick={() => toggle(construction.id)}
 				>
 					<div class="flex items-center justify-between gap-2">
-						<W.Fr class="text-[14px]">{example?.targetScript ?? construction.label}</W.Fr>
+						<W.Fr class="text-sm">{example?.targetScript ?? construction.label}</W.Fr>
 						<W.PlayButton size="sm" label="Play phrase" />
 					</div>
 					{#if example?.transliteration}
-						<W.Muted class="text-[11px] italic">{example.transliteration}</W.Muted>
+						<W.Muted class="text-2xs italic">{example.transliteration}</W.Muted>
 					{/if}
 					<W.Muted>
 						{example?.naturalEnglish ?? construction.gloss} · from L{lesson?.index}, {lesson?.title}
 					</W.Muted>
-				</W.SketchCard>
+				</W.Card>
 			{:else}
 				<W.Muted>Nothing matches "{query}".</W.Muted>
 			{/each}
 		</div>
 
 		{#if selected.size > 0}
-			<W.SketchButton>Rehearse these {selected.size} 🎙</W.SketchButton>
+			<W.Button>Rehearse these {selected.size} 🎙</W.Button>
 		{/if}
 	{/if}
 
-	<W.TabBar />
-</W.Phone>
+</W.Shell>

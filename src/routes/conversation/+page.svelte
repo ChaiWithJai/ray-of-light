@@ -5,7 +5,7 @@
 	 * corpus, not by asking a model nicely. See docs/ISSUE-1-LIMITATIONS.md for
 	 * why the model-backed version is deferred.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { COURSES, getLesson, linesMetBy } from '$lib/content/index.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -40,45 +40,47 @@
 
 <svelte:head><title>Conversation</title></svelte:head>
 
-<W.Phone>
-	<W.TitleBar left="✕" center="🏪 At the market" />
+<W.Shell title="At the market" back="/today" backKind="close">
+	<div class="anim-rise pt-2">
+		<W.Heading>At the market</W.Heading>
+	</div>
 
 	{#if metIndex === 0}
-		<W.SketchCard>
+		<W.Card>
 			<W.Muted>
 				Nothing to talk with yet. Finish a lesson first — the partner is built only from
 				material you've met, so an empty course means an empty conversation.
 			</W.Muted>
-		</W.SketchCard>
-		<W.SketchButton class="mt-auto" href="/today">Back to Today</W.SketchButton>
+		</W.Card>
+		<W.Button class="mt-auto" href="/today">Back to Today</W.Button>
 	{:else}
 		<W.Muted>
 			Built only from lessons 1–{metIndex}. Nothing you haven't met.
 		</W.Muted>
 
-		<div class="flex flex-1 flex-col gap-[6px]">
+		<div class="flex flex-1 flex-col gap-2">
 			{#each turns as turn, i (i)}
-				<W.SketchCard
+				<W.Card
 					tone={turn.who === 'you' ? 'accent' : 'default'}
 					class="max-w-[85%] {turn.who === 'you' ? 'self-end' : 'self-start'}"
 				>
-					<W.Fr class="text-[13.5px]">
+					<W.Fr class="text-sm">
 						{turn.who === 'you' ? '🎙 ' : ''}{turn.text}
 					</W.Fr>
-				</W.SketchCard>
+				</W.Card>
 			{/each}
 		</div>
 
 		<W.AnswerField bind:value={said} placeholder="say your line…" minHeight={44} aria-label="Your turn" />
 		<div class="flex items-center gap-2">
 			<W.MicButton />
-			<W.SketchButton tone="primary" onclick={send} disabled={said.trim() === ''}>
+			<W.Button tone="primary" onclick={send} disabled={said.trim() === ''}>
 				Send
-			</W.SketchButton>
+			</W.Button>
 		</div>
 
-		<W.Muted class="text-center text-[11px]">
+		<W.Muted class="text-center text-2xs">
 			Stuck? Every phrase you need is in Phrases — {corpus.length} lines are in play.
 		</W.Muted>
 	{/if}
-</W.Phone>
+</W.Shell>

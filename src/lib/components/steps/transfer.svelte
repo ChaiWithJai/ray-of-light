@@ -4,7 +4,7 @@
 	 * prompt. Validity is judged on whether the owned construction was used, not
 	 * on exact string match — otherwise it would be recall wearing a new hat.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION, getConstruction } from '$lib/content/index.js';
 	import { normalise } from '$lib/answers.js';
 	import type { Lesson, TransferPrompt } from '$lib/schemas/content.js';
@@ -51,15 +51,15 @@
 </script>
 
 {#if prompt}
-	<W.SketchCard tone="parchment">
-		<div class="text-[13px]">{prompt.situation}</div>
+	<W.Card tone="parchment">
+		<div class="text-sm">{prompt.situation}</div>
 		<W.Muted>{prompt.prompt}</W.Muted>
-	</W.SketchCard>
+	</W.Card>
 
 	<W.Muted>Use a construction you already own:</W.Muted>
 	<W.Chip active class="self-start">{construction?.label ?? prompt.useConstruction}</W.Chip>
 	{#if construction}
-		<W.Muted class="text-[11.5px]">{construction.gloss}</W.Muted>
+		<W.Muted class="text-2xs">{construction.gloss}</W.Muted>
 	{/if}
 
 	<W.AnswerField
@@ -72,24 +72,24 @@
 	<W.MicButton />
 
 	{#if submitted}
-		<W.SketchCard tone={usedConstruction ? 'good' : 'warn'}>
-			<div class="text-[13px] {usedConstruction ? 'text-good' : 'text-note'}">
+		<W.Card tone={usedConstruction ? 'good' : 'warn'} class="anim-uncover">
+			<div class="text-sm {usedConstruction ? 'text-insight' : 'text-caution'}">
 				{usedConstruction
 					? '✓ You reused the construction in a new situation.'
 					: '→ That did not use the construction. Compare:'}
 			</div>
-			<W.Fr class="text-[13.5px]">{prompt.exemplar}</W.Fr>
-			<W.Muted class="text-[11.5px]">
+			<W.Fr class="text-sm">{prompt.exemplar}</W.Fr>
+			<W.Muted class="text-2xs">
 				One valid answer, not the only one — yours can differ.
 			</W.Muted>
-		</W.SketchCard>
-		<W.SketchButton tone="primary" onclick={onDone}>Continue</W.SketchButton>
+		</W.Card>
+		<W.Button tone="primary" onclick={onDone}>Continue</W.Button>
 	{:else}
-		<W.SketchButton tone="primary" disabled={answer.trim() === ''} onclick={submit}>
+		<W.Button tone="primary" disabled={answer.trim() === ''} onclick={submit}>
 			Check
-		</W.SketchButton>
+		</W.Button>
 	{/if}
 {:else}
 	<W.Muted>No transfer prompt in this lesson.</W.Muted>
-	<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>Continue</W.SketchButton>
+	<W.Button tone="primary" class="mt-auto" onclick={onDone}>Continue</W.Button>
 {/if}

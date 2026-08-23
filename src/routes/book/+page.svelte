@@ -3,7 +3,7 @@
 	 * Book · browse the canonical course. Reviewing a finished lesson is allowed;
 	 * jumping ahead is not — the whole scheduling model depends on the order.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { COURSES, audioPending } from '$lib/content/index.js';
 	import { flowFor } from '$lib/flow.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -14,31 +14,33 @@
 
 <svelte:head><title>Book</title></svelte:head>
 
-<W.Phone>
-	<W.TitleBar left="☰" center="Book" />
+<W.Shell brand title="Book" nav settingsLink>
+	<div class="anim-rise flex items-baseline justify-between gap-2 pt-2">
+		<W.Heading>The book</W.Heading>
+	</div>
 	<W.Muted>
 		{course.lessons.length} lessons · {course.constructions.size} constructions
 	</W.Muted>
 
 	{#if audioPending(profile.language)}
-		<W.SketchCard tone="warn">
-			<W.Muted class="text-[11.5px] text-note">
+		<W.Card tone="warn">
+			<W.Muted class="text-2xs text-caution">
 				No native recordings exist yet, so audio is inert throughout. Text, notes and
 				exercises all work. See docs/ISSUE-1-LIMITATIONS.md L1.
 			</W.Muted>
-		</W.SketchCard>
+		</W.Card>
 	{/if}
 
-	<div class="flex flex-col gap-[6px]">
+	<div class="flex flex-col gap-2">
 		{#each course.lessons as lesson (lesson.id)}
 			{@const done = profile.hasCompleted(lesson.id)}
 			{@const open = done || lesson.index <= nextIndex}
-			<W.SketchCard
+			<W.Card
 				tone={lesson.kind === 'synthesis' ? 'parchment' : 'default'}
-				class="p-[8px] {open ? '' : 'opacity-45'}"
+				class="p-3 {open ? '' : 'opacity-45'}"
 			>
 				<div class="flex items-center justify-between gap-2">
-					<div class="text-[13.5px]">
+					<div class="text-sm">
 						{lesson.index}. {lesson.title}
 					</div>
 					{#if lesson.kind === 'synthesis'}
@@ -47,22 +49,21 @@
 						<W.Pill active>done</W.Pill>
 					{/if}
 				</div>
-				<W.Muted class="text-[11px]">{lesson.situation}</W.Muted>
+				<W.Muted class="text-2xs">{lesson.situation}</W.Muted>
 				{#if open}
-					<W.SketchButton
-						class="mt-[4px] text-[13px]"
+					<W.Button
+						class="mt-1.5 text-sm"
 						href="/learn/{lesson.id}/{flowFor(lesson.kind)[0]}"
 					>
 						{done ? 'Review' : 'Start'}
-					</W.SketchButton>
+					</W.Button>
 				{:else}
-					<W.Muted class="text-[11px]">
+					<W.Muted class="text-2xs">
 						Opens after lesson {lesson.index - 1}.
 					</W.Muted>
 				{/if}
-			</W.SketchCard>
+			</W.Card>
 		{/each}
 	</div>
 
-	<W.TabBar />
-</W.Phone>
+</W.Shell>

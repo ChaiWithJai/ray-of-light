@@ -3,7 +3,7 @@
 	 * 1n · Answer comparison. The learner notices the difference *before* being
 	 * told what it was — error discrimination, not red X's. No score is shown.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { diffWords, normalise, type RecallAttempt } from '$lib/answers.js';
 	import type { Lesson } from '$lib/schemas/content.js';
 
@@ -35,20 +35,20 @@
 	let noticed = $state(false);
 </script>
 
-<W.SketchCard>
-	<W.Muted class="text-[12px]">YOU SAID</W.Muted>
+<W.Card>
+	<W.Muted class="text-xs">YOU SAID</W.Muted>
 	<W.Fr>
 		{#each diff.attempt as word, i (i)}
 			{#if word.same}{word.text}{:else}<W.Diff tone="bad">{word.text}</W.Diff>{/if}{' '}
 		{/each}
 	</W.Fr>
-</W.SketchCard>
+</W.Card>
 
-<div class="text-center text-ink-soft">↕ spot the difference</div>
+<div class="text-center text-text-soft">↕ spot the difference</div>
 
 {#if noticed}
-	<W.SketchCard class="border-good">
-		<W.Muted class="text-[12px]">
+	<W.Card tone="good" class="anim-uncover">
+		<W.Muted class="text-xs">
 			{acceptedFormDiffers ? 'ACCEPTED FORM ▶' : 'CANONICAL ▶'}
 		</W.Muted>
 		<W.Fr>
@@ -57,14 +57,14 @@
 			{/each}
 		</W.Fr>
 		{#if canonicalMatchesLine && line.transliteration}
-			<W.Muted class="text-[12px] italic">{line.transliteration}</W.Muted>
+			<W.Muted class="text-xs italic">{line.transliteration}</W.Muted>
 		{/if}
 		{#if acceptedFormDiffers}
-			<W.Muted class="text-[12px]">Canonical script: {canonicalAnswer}</W.Muted>
+			<W.Muted class="text-xs">Canonical script: {canonicalAnswer}</W.Muted>
 		{/if}
-	</W.SketchCard>
+	</W.Card>
 
-	<W.SketchCard>
+	<W.Card>
 		<W.Muted>
 			{#if identical}
 				That matches {acceptedFormDiffers ? 'an authored accepted form' : 'the canonical line'}.
@@ -73,19 +73,19 @@
 				change the sound are worth saying aloud again.
 			{/if}
 		</W.Muted>
-	</W.SketchCard>
+	</W.Card>
 
-	<W.SketchButton tone="primary" onclick={onDone}>Say the corrected line 🎙</W.SketchButton>
-	<W.Muted class="text-center text-[11px]">
+	<W.Button tone="primary" onclick={onDone}>Say the corrected line 🎙</W.Button>
+	<W.Muted class="text-center text-2xs">
 		Tricky lines come back in 1 · 3 · 7 days.
 	</W.Muted>
 {:else}
-	<W.SketchCard>
+	<W.Card>
 		<W.Muted>
 			Look at your line again first. What would you change before you see the original?
 		</W.Muted>
-	</W.SketchCard>
-	<W.SketchButton class="mt-auto" onclick={() => (noticed = true)}>
+	</W.Card>
+	<W.Button class="mt-auto" onclick={() => (noticed = true)}>
 		Show the canonical line
-	</W.SketchButton>
+	</W.Button>
 {/if}

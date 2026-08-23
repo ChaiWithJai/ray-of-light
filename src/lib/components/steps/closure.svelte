@@ -4,7 +4,7 @@
 	 * The ratings tune when lines resurface, which is what makes honest
 	 * self-rating instrumentally rational for the learner.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import type { Lesson } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -29,20 +29,34 @@
 	}
 </script>
 
-<W.Heading>Before you go —</W.Heading>
+<!-- The quiet completion moment: dusk, not confetti. The session settles into
+     place, acknowledges the work, and asks for one honest calibration. -->
+<div
+	class="anim-settle flex flex-col items-center gap-1.5 rounded-2xl bg-linear-to-b from-dusk-a to-dusk-b px-6 py-10 text-center shadow-stage"
+>
+	<div class="text-2xs font-bold tracking-[0.2em] text-stage-muted uppercase">
+		The session is done
+	</div>
+	<div class="font-display text-2xl font-semibold text-stage-text">{lesson.title}</div>
+	<div class="mt-1 font-script text-lg text-stage-muted">
+		that's the day's work — the rest happens while you sleep
+	</div>
+</div>
 
-<W.SketchCard>
-	<div class="text-[13.5px]">I understood the dialogue</div>
-	<W.SketchSlider bind:value={understood} label="How well you understood the dialogue" />
-</W.SketchCard>
+<W.Heading class="anim-rise anim-d1 pt-2 text-xl">Before you go —</W.Heading>
 
-<W.SketchCard>
-	<div class="text-[13.5px]">I could say the key lines myself</div>
-	<W.SketchSlider bind:value={couldProduce} label="How well you could produce the key lines" />
-</W.SketchCard>
+<W.Card class="anim-rise anim-d2">
+	<div class="text-sm font-bold">I understood the dialogue</div>
+	<W.Slider bind:value={understood} label="How well you understood the dialogue" />
+</W.Card>
 
-<W.SketchCard>
-	<div class="text-[13.5px]">Effort today felt…</div>
+<W.Card class="anim-rise anim-d2">
+	<div class="text-sm font-bold">I could say the key lines myself</div>
+	<W.Slider bind:value={couldProduce} label="How well you could produce the key lines" />
+</W.Card>
+
+<W.Card class="anim-rise anim-d3">
+	<div class="text-sm font-bold">Effort today felt…</div>
 	<div class="flex items-center gap-2">
 		{#each EFFORTS as option (option)}
 			<W.Chip active={effort === option} onclick={() => (effort = option)}>
@@ -50,8 +64,12 @@
 			</W.Chip>
 		{/each}
 	</div>
-</W.SketchCard>
+</W.Card>
 
-<W.Muted>Your ratings tune when lines resurface — be honest, not kind.</W.Muted>
+<W.Muted class="anim-rise anim-d3">
+	Your ratings tune when lines resurface — be honest, not kind.
+</W.Muted>
 
-<W.SketchButton tone="primary" class="mt-auto" onclick={finish}>Done for today</W.SketchButton>
+<W.Button tone="primary" class="anim-rise anim-d4 mt-auto" onclick={finish}>
+	Done for today
+</W.Button>

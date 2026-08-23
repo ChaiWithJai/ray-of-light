@@ -8,7 +8,7 @@
 	 * belongs to the active wave. Mixing them would quietly turn a comprehension
 	 * check into a production test.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import { normalise } from '$lib/answers.js';
 	import type { Lesson } from '$lib/schemas/content.js';
@@ -44,12 +44,12 @@
 
 <W.Muted>Translate into English:</W.Muted>
 
-<W.SketchCard tone="accent">
-	<W.Fr class="text-[16px]">{line.targetScript}</W.Fr>
+<W.Card tone="accent">
+	<W.Fr class="text-lg">{line.targetScript}</W.Fr>
 	{#if line.transliteration}
-		<W.Muted class="text-[12px] italic">{line.transliteration}</W.Muted>
+		<W.Muted class="text-xs italic">{line.transliteration}</W.Muted>
 	{/if}
-</W.SketchCard>
+</W.Card>
 
 <W.AnswerField
 	bind:value={answer}
@@ -60,29 +60,29 @@
 />
 
 <div class="flex items-center gap-2">
-	<W.SketchButton class="flex-1" aria-label="Dictate">🎙</W.SketchButton>
-	<W.SketchButton
+	<W.Button class="flex-1" aria-label="Dictate">🎙</W.Button>
+	<W.Button
 		tone="primary"
 		class="flex-3"
 		disabled={checked || answer.trim() === ''}
 		onclick={check}
 	>
 		Check
-	</W.SketchButton>
+	</W.Button>
 </div>
 
 {#if checked}
-	<W.SketchCard tone={correct ? 'good' : 'warn'}>
-		<div data-testid="reveal" class="text-[13px] {correct ? 'text-good' : 'text-note'}">
+	<W.Card tone={correct ? 'good' : 'warn'} class="anim-uncover">
+		<div data-testid="reveal" class="text-sm {correct ? 'text-insight' : 'text-caution'}">
 			{correct ? '✓' : '→'} "{line.naturalEnglish}"
 		</div>
 		{#if line.literalEnglish}
-			<W.Muted class="text-[12px]">literal: "{line.literalEnglish}"</W.Muted>
+			<W.Muted class="text-xs">literal: "{line.literalEnglish}"</W.Muted>
 		{/if}
-	</W.SketchCard>
-	<W.SketchButton tone="primary" onclick={onDone}>Continue</W.SketchButton>
+	</W.Card>
+	<W.Button tone="primary" onclick={onDone}>Continue</W.Button>
 {:else}
-	<W.Muted class="text-center text-[11px]">
+	<W.Muted class="text-center text-2xs">
 		Answer before you check — the reveal is the point of the exercise.
 	</W.Muted>
 {/if}

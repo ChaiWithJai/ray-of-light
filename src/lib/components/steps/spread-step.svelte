@@ -5,7 +5,7 @@
 	 * not separate screens — the layout never changes underneath them.
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import { describe } from '$lib/morphology.js';
 	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
@@ -73,18 +73,18 @@
 
 {#if overlay === 'notes'}
 	<!-- 1h · anchored to the exact word, opened only on demand -->
-	<W.SketchCard thick class="rounded-t-[14px]">
+	<W.Card thick class="rounded-t-[14px]">
 		<div class="flex items-center justify-between gap-2">
-			<div class="text-[14px] font-semibold">
+			<div class="text-sm font-semibold">
 				📎 {line?.notes[0]?.anchor ?? `Line ${index + 1}`}
 			</div>
-			<button class="text-ink-soft" onclick={() => (overlay = 'none')} aria-label="Close notes">
+			<button class="text-text-soft" onclick={() => (overlay = 'none')} aria-label="Close notes">
 				✕
 			</button>
 		</div>
 		{#if line?.notes.length}
 			{#each line.notes as note (note.text)}
-				<div class="text-[13px] leading-[1.35]">
+				<div class="text-sm leading-[1.35]">
 					<W.Pill class="mr-1">{note.type}</W.Pill>
 					{note.text}
 				</div>
@@ -97,25 +97,25 @@
 		     teaching content. Only shown for the anchored word, so it stays
 		     just-in-time rather than becoming a grammar table. -->
 		{#if morphology}
-			<W.Muted class="border-t border-rule pt-[6px] text-[11.5px]">
+			<W.Muted class="border-t border-line pt-2 text-2xs">
 				<span class="font-mono">{anchorWord}</span> — {morphology}
 			</W.Muted>
 		{/if}
-	</W.SketchCard>
+	</W.Card>
 {:else if overlay === 'pronounce'}
 	<!-- 1g · imitation over evaluation: no score, no red marks -->
-	<W.SketchCard tone="accent">
-		<W.Fr class="text-[16px]">{line?.targetScript}</W.Fr>
+	<W.Card tone="accent">
+		<W.Fr class="text-lg">{line?.targetScript}</W.Fr>
 		{#if line?.transliteration}<W.Muted>{line.transliteration}</W.Muted>{/if}
-		<W.Muted class="text-[12px]">native</W.Muted>
+		<W.Muted class="text-xs">native</W.Muted>
 		<W.Waveform bars={[{ h: 10 }, { h: 24 }, { h: 30 }, { h: 14 }, { h: 26 }, { h: 8 }]} />
-		<W.Muted class="text-[12px]">you</W.Muted>
+		<W.Muted class="text-xs">you</W.Muted>
 		<W.Waveform tone="blue" bars={[{ h: 8 }, { h: 20 }, { h: 31 }, { h: 10 }, { h: 28 }, { h: 6 }]} />
 		<W.MicButton />
 		<W.Muted class="text-center">compare by ear — no scores, no red marks</W.Muted>
-	</W.SketchCard>
+	</W.Card>
 {/if}
 
-<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>
+<W.Button tone="primary" class="mt-auto" onclick={onDone}>
 	I've read the spread →
-</W.SketchButton>
+</W.Button>

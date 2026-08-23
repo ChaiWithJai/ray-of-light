@@ -14,6 +14,6 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<main class="flex min-h-screen items-start justify-center bg-paper px-4 pt-[40px] pb-[32px] sm:px-[44px]">
-	{@render children()}
-</main>
+<!-- Composition belongs to each route's Shell (or, for the /surfaces wireframe
+     gallery, to its own layout) — the root stays a bare themed ground. -->
+{@render children()}
