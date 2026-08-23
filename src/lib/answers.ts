@@ -35,6 +35,11 @@ export function matchesAccepted(attempt: string, accepted: readonly string[]): b
 
 export type RecallEvidenceKind = 'recall-correct' | 'attempt-incorrect';
 
+/** A reveal is earned by producing something, not by whitespace or an empty submission. */
+export function hasRecallAttempt(attempt: string): boolean {
+	return attempt.trim().length > 0;
+}
+
 export type RecallAttempt = {
 	lineId: string;
 	text: string;

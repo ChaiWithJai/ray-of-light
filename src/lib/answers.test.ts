@@ -1,7 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { COURSES } from './content/index.js';
 import type { RecallPrompt } from './schemas/content.js';
-import { evaluateRecallAttempt, normalise, recallEvidenceKind } from './answers.js';
+import {
+	evaluateRecallAttempt,
+	hasRecallAttempt,
+	normalise,
+	recallEvidenceKind
+} from './answers.js';
+
+describe('hasRecallAttempt', () => {
+	it('rejects empty and whitespace-only productions before reveal', () => {
+		expect(hasRecallAttempt('')).toBe(false);
+		expect(hasRecallAttempt('  \n\t ')).toBe(false);
+	});
+
+	it('allows reveal after a nonblank learner production', () => {
+		expect(hasRecallAttempt('Je voudrais essayer.')).toBe(true);
+	});
+});
 
 describe('recallEvidenceKind', () => {
 	it('classifies an authored accepted answer as truthful recall evidence', () => {

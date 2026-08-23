@@ -8,7 +8,13 @@
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
 	import * as W from '$lib/components/wireframe/index.js';
-	import { evaluateRecallAttempt, normalise, type RecallAttempt, type RecallEvaluation } from '$lib/answers.js';
+	import {
+		evaluateRecallAttempt,
+		hasRecallAttempt,
+		normalise,
+		type RecallAttempt,
+		type RecallEvaluation
+	} from '$lib/answers.js';
 	import type { Lesson, RecallPrompt } from '$lib/schemas/content.js';
 	import type { RecallSessionDraft } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -63,6 +69,8 @@
 
 	const line = $derived(lesson.lines[index]);
 	const daysAgo = $derived(lesson.index);
+	const hasAttempt = $derived(hasRecallAttempt(attempt));
+	const showReveal = $derived(revealed && hasAttempt);
 
 	function persistDraft() {
 		if (!line) return;
@@ -77,7 +85,7 @@
 	});
 
 	function produce() {
-		if (attempt.trim() === '' || submitted) return;
+		if (!hasAttempt || submitted) return;
 
 		const evaluation = evaluateRecallAttempt(attempt, recallPrompt, line);
 		submitted = true;
@@ -100,43 +108,47 @@
 	</W.SketchCard>
 {/if}
 
-	<Spread
-		{lesson}
-		state="active-retrieval"
-		bind:index
-		settings={profile.settings}
-		onlineactivate={persistDraft}
-	/>
+<Spread
+	{lesson}
+	state="active-retrieval"
+	bind:index
+	settings={profile.settings}
+	onlineactivate={persistDraft}
+/>
 
 <W.AnswerField
 	bind:value={attempt}
 	placeholder="say or type the line…"
 	minHeight={56}
-		aria-label="Your production"
-		oninput={persistDraft}
+	aria-label="Your production"
+	oninput={persistDraft}
 />
 <W.MicButton />
 
 <div class="flex flex-wrap items-center justify-center gap-2">
 	<W.Chip
 		active={hinted}
-			onclick={() => {
-				hinted = true;
-				persistDraft();
+		onclick={() => {
+			hinted = true;
+			persistDraft();
 		}}
 	>
 		hint: first word
 	</W.Chip>
-	<W.Chip
-		active={revealed}
+	{#if hasAttempt}
+		<W.Chip
+			active={revealed}
 			onclick={() => {
 				hinted = true;
 				revealed = true;
 				persistDraft();
-		}}
-	>
-		reveal
-	</W.Chip>
+			}}
+		>
+			reveal
+		</W.Chip>
+	{:else}
+		<W.Chip disabled onclick={() => {}}>reveal</W.Chip>
+	{/if}
 </div>
 
 {#if hinted}
@@ -145,7 +157,7 @@
 			Hint used — this line won't count as recalled.
 		</W.Muted>
 		<W.Fr class="text-[13.5px]">
-			{revealed
+			{showReveal
 				? (recallPrompt?.canonicalAnswer ?? line.targetScript)
 				: (recallPrompt?.hints[0] ?? `${line.targetScript.split(' ')[0]}…`)}
 		</W.Fr>
@@ -155,7 +167,7 @@
 <W.SketchButton
 	tone="primary"
 	class="mt-auto"
-	disabled={attempt.trim() === '' || submitted}
+	disabled={!hasAttempt || submitted}
 	onclick={produce}
 >
 	Compare with the canonical line →
