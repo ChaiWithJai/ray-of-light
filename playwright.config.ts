@@ -20,9 +20,10 @@ export default defineConfig({
 			name: 'chromium',
 			use: {
 				...devices['Desktop Chrome'],
-				launchOptions: chromiumExecutablePath
-					? { executablePath: chromiumExecutablePath }
-					: undefined
+				launchOptions: {
+					args: ['--autoplay-policy=no-user-gesture-required'],
+					...(chromiumExecutablePath ? { executablePath: chromiumExecutablePath } : {})
+				}
 			}
 		}
 	],
