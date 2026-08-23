@@ -116,6 +116,11 @@ def main() -> None:
         model=model_dir,
         ref_audio=ref_audio,
         ref_text=ref_text,
+        # OmniVoice otherwise truncates reference audio to 10 seconds while
+        # still conditioning on the full transcript. The documented private
+        # reference contract allows up to 30 seconds, so keep both surfaces
+        # aligned for every supported sample.
+        ref_audio_max_duration_s=30.0,
         lang_code=LANG_TAGS[args.lang],
         file_prefix=str(out.with_suffix("")),
         audio_format="wav",

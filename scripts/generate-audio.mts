@@ -78,11 +78,22 @@ for (const [lang, lessons] of [['fr', FR_LESSONS], ['ta', TA_LESSONS]] as const)
 		let cursor = 0;
 
 		lesson.lines.forEach((line, i) => {
-			const aiff = join(work, `${lid}-l${i + 1}.aiff`);
-			execFileSync('say', ['-v', VOICES[lang], '-r', String(RATE[lang]), '-o', aiff, line.targetScript]);
-			const wav = join(work, `${lid}-l${i + 1}.wav`);
+			const raw = join(work, `${lid}-l${i + 1}-raw.wav`);
+			const synthesized = synthesize(lang, line.targetScript, raw);
+			const wav = join(work, `${lid}-l${i + 1}-normalized.wav`);
 			// normalize to a common format for clean concat
-			execFileSync('ffmpeg', ['-y', '-v', 'error', '-i', aiff, '-ar', '44100', '-ac', '1', wav]);
+			execFileSync('ffmpeg', [
+				'-y',
+				'-v',
+				'error',
+				'-i',
+				synthesized,
+				'-ar',
+				'44100',
+				'-ac',
+				'1',
+				wav
+			]);
 			const dur = durationMs(wav);
 			lineOffsets.push({ startMs: cursor, endMs: cursor + dur });
 			cursor += dur + GAP_MS;
@@ -132,6 +143,12 @@ const provenance =
 		: {
 				synthesized: true,
 				engine: 'mlx-audio (local Apple Silicon inference)',
+				voices: NO_CLONE
+					? { fr: 'model default (unreviewed)', ta: 'model default (unreviewed)' }
+					: {
+							fr: 'personal owner zero-shot clone (unreviewed)',
+							ta: 'personal owner zero-shot clone (unreviewed)'
+						},
 				model: {
 					id: MODEL_LOCK.model,
 					revision: MODEL_LOCK.revision,
