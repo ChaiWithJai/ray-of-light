@@ -7,7 +7,7 @@
 	import * as W from '$lib/components/wireframe/index.js';
 	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
 	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
-	import { planToday, toDayKey } from '$lib/schemas/schedule.js';
+	import { planToday, POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	$effect(() => {
@@ -15,6 +15,7 @@
 	});
 
 	const course = $derived(COURSES[profile.language]);
+	const day = $derived(toDayKey(new Date()));
 	const activeLesson = $derived(
 		profile.activeSession ? getLesson(profile.language, profile.activeSession.lessonId) : undefined
 	);
@@ -34,13 +35,40 @@
 	const newLesson = $derived(
 		plan?.newLessonIndex ? getLessonByIndex(profile.language, plan.newLessonIndex) : undefined
 	);
-	const recallLesson = $derived(
-		plan?.recallLessonIndex
-			? getLessonByIndex(profile.language, plan.recallLessonIndex)
-			: undefined
-	);
+	const recallLesson = $derived.by(() => {
+		if (!plan) return undefined;
+		const ceiling = plan.courseComplete
+			? course.lessons.length
+			: Math.max(0, (plan.newLessonIndex ?? 1) - POC_WAVE_CONFIG.activeWaveLagLessons);
+		return course.lessons.find(
+			(candidate) =>
+				candidate.index <= ceiling &&
+				profile.completedLessons.includes(candidate.id) &&
+				!profile.completedRecallLessons.includes(candidate.id) &&
+				candidate.exercises.some((exercise) => exercise.kind === 'recall')
+		);
+	});
 
 	const minutes = $derived(profile.plan?.dailyMinutes ?? 25);
+	const assignment = $derived(profile.dailyAssignment(day));
+	const assignedNewLesson = $derived(
+		assignment?.newLessonId ? getLesson(profile.language, assignment.newLessonId) : undefined
+	);
+	const assignedRecallLesson = $derived(
+		assignment?.recallLessonId ? getLesson(profile.language, assignment.recallLessonId) : undefined
+	);
+	const newDone = $derived(assignment?.completedModes.includes('learn') ?? false);
+	const recallDone = $derived(assignment?.completedModes.includes('recall') ?? false);
+	const assignmentComplete = $derived(
+		Boolean(assignment) &&
+			(!assignment?.newLessonId || newDone) &&
+			(!assignment?.recallLessonId || recallDone)
+	);
+
+	$effect(() => {
+		if (!profile.loaded || !plan || assignment || profile.activeSession) return;
+		profile.ensureDailyAssignment(day, newLesson?.id ?? null, recallLesson?.id ?? null);
+	});
 </script>
 
 <svelte:head><title>Today</title></svelte:head>
@@ -49,7 +77,7 @@
 	<W.TitleBar left="☰" center={plan ? `Day ${plan.dayNumber}` : ''} right="⚙" />
 	<W.Heading>Today</W.Heading>
 
-	{#if !plan}
+	{#if !plan || (!assignment && !profile.activeSession)}
 		<W.Muted>Loading your plan…</W.Muted>
 		{:else if profile.activeSession && activeLesson}
 			<W.SketchCard thick tone="parchment">
@@ -67,8 +95,23 @@
 				>
 					Resume lesson
 				</W.SketchButton>
+				<W.SketchButton onclick={() => profile.abandonSession()}>
+					Abandon session
+				</W.SketchButton>
+				<W.Muted>Your saved progress and evidence are kept. You can start this assignment again.</W.Muted>
 			</W.SketchCard>
-		{:else if plan.courseComplete}
+		{:else if plan.courseComplete && assignment && !assignment.newLessonId && !assignment.recallLessonId}
+		<W.SketchCard tone="good">
+			<div class="font-semibold text-good">Course complete</div>
+			<W.Muted>You've worked through and recalled every authored lesson in this course.</W.Muted>
+			<W.SketchButton class="mt-[4px]" onclick={() => goto('/progress')}>See what stuck</W.SketchButton>
+		</W.SketchCard>
+		{:else if assignmentComplete}
+			<W.SketchCard tone="good">
+				<div class="font-semibold text-good">Today's session complete</div>
+				<W.Muted>Your next two-wave assignment will be prepared tomorrow.</W.Muted>
+			</W.SketchCard>
+		{:else if plan.courseComplete && !assignedRecallLesson}
 		<W.SketchCard tone="good">
 			<div class="font-semibold text-good">Course complete</div>
 			<W.Muted>
@@ -80,31 +123,31 @@
 			</W.SketchButton>
 		</W.SketchCard>
 	{:else}
-		{#if newLesson}
+		{#if assignedNewLesson && !newDone}
 			<W.SketchCard thick>
 				<div class="flex items-center justify-between gap-2">
-					<div class="font-semibold">Lesson {newLesson.index} · {newLesson.title}</div>
-					<W.Pill>{newLesson.kind === 'synthesis' ? 'review' : 'new'}</W.Pill>
+					<div class="font-semibold">Lesson {assignedNewLesson.index} · {assignedNewLesson.title}</div>
+					<W.Pill>{assignedNewLesson.kind === 'synthesis' ? 'review' : 'new'}</W.Pill>
 				</div>
 				<W.Muted>
-					{newLesson.kind === 'synthesis'
+					{assignedNewLesson.kind === 'synthesis'
 						? 'Nothing new — only reassembly'
 						: 'Passive procedure'} · ~{Math.round(minutes * 0.6)} min
 				</W.Muted>
 				<W.SketchButton
 					tone="primary"
 					class="mt-[4px]"
-						onclick={() => goto(profile.startSession('learn', newLesson.id, flowFor(newLesson.kind)))}
+						onclick={() => goto(profile.startSession('learn', assignedNewLesson.id, flowFor(assignedNewLesson.kind), day))}
 				>
 					Start
 				</W.SketchButton>
 			</W.SketchCard>
 		{/if}
 
-		{#if recallLesson}
+		{#if assignedRecallLesson && !recallDone}
 			<W.SketchCard>
 				<div class="flex items-center justify-between gap-2">
-					<div class="font-semibold">Lesson {recallLesson.index} · {recallLesson.title}</div>
+					<div class="font-semibold">Lesson {assignedRecallLesson.index} · {assignedRecallLesson.title}</div>
 					<W.Pill active>recall</W.Pill>
 				</div>
 				<W.Muted>
@@ -112,7 +155,7 @@
 				</W.Muted>
 				<W.SketchButton
 					class="mt-[4px]"
-						onclick={() => goto(profile.startSession('recall', recallLesson.id, RECALL_FLOW))}
+						onclick={() => goto(profile.startSession('recall', assignedRecallLesson.id, RECALL_FLOW, day))}
 				>
 					Start recall
 				</W.SketchButton>

@@ -1,7 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { RECALL_FLOW, PASSIVE_FLOW } from './flow.js';
+import { RECALL_FLOW, PASSIVE_FLOW, SYNTHESIS_FLOW } from './flow.js';
 import type { ActiveSession } from './schemas/learner.js';
-import { accessFor, advanceSession, canFinishSession, createSession, resumeHref } from './session.js';
+import {
+	accessFor,
+	advanceSession,
+	canFinishSession,
+	createSession,
+	currentSessionMatchesExpected,
+	resumeHref
+} from './session.js';
 
 describe('persisted session state', () => {
 	const recallDraft = {
@@ -69,5 +76,25 @@ describe('persisted session state', () => {
 				PASSIVE_FLOW
 			)
 		).toBe(false);
+	});
+
+	it('rejects sessions that do not match the active course and lesson kind', () => {
+		expect(
+			currentSessionMatchesExpected(createSession('learn', 'fr', 'missing', PASSIVE_FLOW, 1), 'fr', null)
+		).toBe(false);
+		expect(
+			currentSessionMatchesExpected(createSession('learn', 'ta', 'ta-01', PASSIVE_FLOW, 1), 'fr', PASSIVE_FLOW)
+		).toBe(false);
+		expect(
+			currentSessionMatchesExpected(createSession('learn', 'fr', 'fr-07', PASSIVE_FLOW, 1), 'fr', SYNTHESIS_FLOW)
+		).toBe(false);
+		expect(
+			currentSessionMatchesExpected(createSession('learn', 'fr', 'fr-07', SYNTHESIS_FLOW, 1), 'fr', SYNTHESIS_FLOW)
+		).toBe(true);
+	});
+
+	it('keeps the assignment day on the persisted session', () => {
+		const session = createSession('learn', 'fr', 'fr-01', PASSIVE_FLOW, 1, '2026-08-23');
+		expect(session.assignmentDay).toBe('2026-08-23');
 	});
 });

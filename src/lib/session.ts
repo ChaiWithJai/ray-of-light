@@ -28,12 +28,27 @@ export function currentSessionIsValid(session: ActiveSession): boolean {
 	);
 }
 
+/** Validate persisted routing state against the actual active course. */
+export function currentSessionMatchesExpected(
+	session: ActiveSession,
+	activeLanguage: LanguageCode,
+	expectedFlow: readonly StepId[] | null
+): boolean {
+	return Boolean(
+		expectedFlow &&
+			currentSessionIsValid(session) &&
+			session.language === activeLanguage &&
+			sameFlow(session.flow, expectedFlow)
+	);
+}
+
 export function createSession(
 	mode: SessionMode,
 	language: LanguageCode,
 	lessonId: string,
 	flow: readonly StepId[],
-	now = Date.now()
+	now = Date.now(),
+	assignmentDay?: string
 ): ActiveSession {
 	const first = flow[0];
 	if (!first) throw new Error('Cannot start an empty session flow');
@@ -45,6 +60,7 @@ export function createSession(
 		flow: [...flow],
 		currentStep: first,
 		completedSteps: [],
+		assignmentDay,
 		startedAt: now,
 		updatedAt: now
 	};

@@ -28,13 +28,15 @@
 		<div class="text-[13.5px]">Language</div>
 		<div class="flex items-center gap-2">
 			{#each ['fr', 'ta'] as const as code (code)}
+					{@const blocked = Boolean(profile.activeSession) && profile.language !== code}
 					<W.Chip
 						active={profile.language === code}
-						aria-disabled={Boolean(profile.activeSession) && profile.language !== code}
-						class={profile.activeSession && profile.language !== code ? 'opacity-45' : ''}
-						onclick={profile.activeSession && profile.language !== code
-							? undefined
-							: () => profile.setLanguage(code as LanguageCode)}
+						aria-disabled={blocked}
+						disabled={blocked}
+						class={blocked ? 'opacity-45' : ''}
+						onclick={() => {
+							if (!blocked) profile.setLanguage(code as LanguageCode);
+						}}
 				>
 					{LANGUAGE_LABELS[code]}
 				</W.Chip>

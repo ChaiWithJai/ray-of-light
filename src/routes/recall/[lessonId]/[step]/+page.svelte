@@ -9,8 +9,8 @@
 	import RecallStep from '$lib/components/steps/recall-step.svelte';
 	import Compare from '$lib/components/steps/compare.svelte';
 	import Closure from '$lib/components/steps/closure.svelte';
-	import { getLesson } from '$lib/content/index.js';
-	import type { RecallAttempt } from '$lib/answers.js';
+	import { CONTENT_VERSION, getLesson } from '$lib/content/index.js';
+	import type { RecallAttempt, RecallEvaluation } from '$lib/answers.js';
 	import { isStepId, RECALL_FLOW, stepDef, stepProgress } from '$lib/flow.js';
 	import type { RecallSessionDraft } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -60,6 +60,26 @@
 		const destination = profile.advanceSession('recall', lesson.id, step, RECALL_FLOW, finalDraft);
 		if (destination) goto(destination);
 	}
+
+	function submitRecall(finalAttempt: RecallAttempt, evaluation: RecallEvaluation, hinted: boolean) {
+		if (!lesson) return;
+		const persistedDraft = profile.activeSession?.recallDraft;
+		const finalDraft: RecallSessionDraft = {
+			...persistedDraft,
+			...finalAttempt,
+			hinted,
+			revealed: persistedDraft?.revealed ?? false
+		};
+		const destination = profile.submitRecallAttempt(
+			lesson.id,
+			RECALL_FLOW,
+			finalDraft,
+			evaluation.kind,
+			evaluation.constructionIds,
+			CONTENT_VERSION
+		);
+		if (destination) goto(destination);
+	}
 </script>
 
 <svelte:head>
@@ -77,7 +97,7 @@
 			<W.Muted>Returning to your authorized session step…</W.Muted>
 		{:else if access === 'completed'}
 			<W.TitleBar left="✕" center="Completed step" />
-			<W.Muted>This step is available for review, but cannot record evidence again.</W.Muted>
+			<W.Muted>This step is complete. Return to the current step to continue; completed-step review is not available in this POC.</W.Muted>
 			<W.SketchButton
 				tone="primary"
 				class="mt-auto"
@@ -98,7 +118,7 @@
 						{lesson}
 						initialDraft={draft}
 						onDraftChange={saveDraft}
-						onDone={(a) => advance(a)}
+						onDone={submitRecall}
 					/>
 				{/key}
 			{:else if step === 'compare'}

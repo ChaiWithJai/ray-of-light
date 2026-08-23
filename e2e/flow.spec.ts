@@ -97,7 +97,7 @@ test('AC1 + AC2 + AC7: a full daily session, audio first and transfer last', asy
 	await expect(page).toHaveURL(/\/closure/);
 	await page.getByRole('button', { name: 'Done for today' }).click();
 	await expect(page).toHaveURL(/\/today/);
-	await expect(page.getByText('Lesson 2 ·')).toBeVisible();
+	await expect(page.getByText("Today's session complete")).toBeVisible();
 });
 
 test('AC3: the spread is trackable by keyboard alone', async ({ page }) => {

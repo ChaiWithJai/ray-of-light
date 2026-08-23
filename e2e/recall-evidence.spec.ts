@@ -5,6 +5,7 @@ async function onboard(page: Page) {
 	await page.getByRole('button', { name: 'Start French' }).click();
 	await page.getByRole('button', { name: 'Continue' }).click();
 	await page.getByRole('button', { name: 'Set my plan' }).click();
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 }
 
 async function startRecall(page: Page, lessonId: string, language: 'fr' | 'ta' = 'fr') {
@@ -126,4 +127,19 @@ test('an authored Tamil transliteration is accepted and compared as accepted', a
 	await expect(acceptedCard).toBeVisible();
 	await expect(acceptedCard.getByText('room irukkā', { exact: true })).toBeVisible();
 	await expect(page.getByText('Canonical script: ரூம் இருக்கா?')).toBeVisible();
+});
+
+test('rapid duplicate recall submission appends one evidence batch', async ({ page }) => {
+	await onboard(page);
+	await startRecall(page, 'fr-02');
+	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
+	await page.getByRole('button', { name: /Compare with the canonical line/ }).evaluate((button) => {
+		(button as HTMLButtonElement).click();
+		(button as HTMLButtonElement).click();
+	});
+	await expect(page).toHaveURL(/\/recall\/fr-02\/compare/);
+	expect((await persistedEvidence(page)).map((event) => event.constructionId)).toEqual([
+		'fr.je-voudrais-inf',
+		'fr.pour-duree'
+	]);
 });

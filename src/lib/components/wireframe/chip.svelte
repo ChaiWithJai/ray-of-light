@@ -29,7 +29,7 @@
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLElement>> &
-		Pick<HTMLButtonAttributes, 'onclick'> & { active?: boolean } = $props();
+		Pick<HTMLButtonAttributes, 'onclick' | 'disabled'> & { active?: boolean } = $props();
 </script>
 
 {#if onclick}

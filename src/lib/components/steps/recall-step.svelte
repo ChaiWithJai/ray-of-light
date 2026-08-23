@@ -8,8 +8,7 @@
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
 	import * as W from '$lib/components/wireframe/index.js';
-	import { evaluateRecallAttempt, normalise, type RecallAttempt } from '$lib/answers.js';
-	import { CONTENT_VERSION } from '$lib/content/index.js';
+	import { evaluateRecallAttempt, normalise, type RecallAttempt, type RecallEvaluation } from '$lib/answers.js';
 	import type { Lesson, RecallPrompt } from '$lib/schemas/content.js';
 	import type { RecallSessionDraft } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -23,7 +22,7 @@
 		lesson: Lesson;
 		initialDraft?: RecallSessionDraft;
 		onDraftChange?: (draft: RecallSessionDraft) => void;
-		onDone: (attempt: RecallAttempt) => void;
+		onDone: (attempt: RecallAttempt, evaluation: RecallEvaluation, hinted: boolean) => void;
 	} = $props();
 
 	const recallPrompt = $derived(
@@ -60,6 +59,7 @@
 	let hinted = $state(initial.hinted);
 	let revealed = $state(initial.revealed);
 	let attempt = $state(initial.attempt);
+	let submitted = $state(false);
 
 	const line = $derived(lesson.lines[index]);
 	const daysAgo = $derived(lesson.index);
@@ -77,19 +77,16 @@
 	});
 
 	function produce() {
-		if (attempt.trim() === '') return;
+		if (attempt.trim() === '' || submitted) return;
 
 		const evaluation = evaluateRecallAttempt(attempt, recallPrompt, line);
-		profile.record(evaluation.kind, lesson.id, evaluation.constructionIds, {
-			hinted,
-			contentVersion: CONTENT_VERSION
-		});
+		submitted = true;
 		onDone({
 			lineId: line.id,
 			text: attempt,
 			canonicalAnswer: evaluation.canonicalAnswer,
 			matchedAcceptedAnswer: evaluation.matchedAcceptedAnswer
-		});
+		}, evaluation, hinted);
 	}
 </script>
 
@@ -158,7 +155,7 @@
 <W.SketchButton
 	tone="primary"
 	class="mt-auto"
-	disabled={attempt.trim() === ''}
+	disabled={attempt.trim() === '' || submitted}
 	onclick={produce}
 >
 	Compare with the canonical line →

@@ -64,9 +64,9 @@
 			<W.SketchButton class="mt-auto" href="/today">Back to Today</W.SketchButton>
 		{:else if access === 'forbidden'}
 			<W.Muted>Returning to your authorized session step…</W.Muted>
-		{:else if access === 'completed'}
-			<W.TitleBar left="✕" center="Completed step" />
-			<W.Muted>This step is available for review, but cannot record progress again.</W.Muted>
+			{:else if access === 'completed'}
+				<W.TitleBar left="✕" center="Completed step" />
+				<W.Muted>This step is complete. Return to the current step to continue; completed-step review is not available in this POC.</W.Muted>
 			<W.SketchButton
 				tone="primary"
 				class="mt-auto"
