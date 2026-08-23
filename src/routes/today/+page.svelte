@@ -40,7 +40,8 @@
 					startedOn: profile.plan.startedOn,
 					today: day,
 					lessonCount: course.lessons.length,
-					completedCount: profile.completedLessons.length
+					completedCount: profile.completedLessons.length,
+					entryLessonIndex: profile.plan.entryLessonIndex
 				})
 			: null
 	);
@@ -82,6 +83,18 @@
 		if (!profile.loaded || !plan || assignment || profile.activeSession) return;
 		profile.ensureDailyAssignment(day, newLesson?.id ?? null, recallLesson?.id ?? null);
 	});
+
+	// Missed constructions due for another retrieval — derived from evidence,
+	// never a persisted deck. At most one lesson is offered at a time.
+	const dueResurface = $derived(profile.loaded ? profile.dueResurfaceItems(day) : []);
+	const resurfaceLesson = $derived(
+		dueResurface.length > 0 ? getLesson(profile.language, dueResurface[0].lessonId) : undefined
+	);
+	const resurfaceCount = $derived(
+		resurfaceLesson
+			? dueResurface.filter((item) => item.lessonId === resurfaceLesson.id).length
+			: 0
+	);
 </script>
 
 <svelte:head><title>Today</title></svelte:head>
@@ -227,5 +240,33 @@
 		<W.Muted class="anim-rise anim-d3 pt-2 text-center">
 			Nothing else to choose. That's the point.
 		</W.Muted>
+	{/if}
+
+	{#if plan && !profile.activeSession && resurfaceLesson}
+		<W.Card class="anim-rise anim-d3 gap-3 p-5">
+			<div>
+				<div class="flex items-baseline justify-between gap-2">
+					<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
+						Worth another look
+					</div>
+					<span class="text-xs text-text-faint">~5 min</span>
+				</div>
+				<div class="font-display text-xl leading-tight font-semibold">
+					{resurfaceLesson.title}
+				</div>
+			</div>
+			<W.Muted>
+				{resurfaceCount === 1 ? 'A line' : `${resurfaceCount} lines`} you stumbled on {resurfaceCount ===
+				1
+					? 'is'
+					: 'are'} due for another retrieval — from memory, no judgement.
+			</W.Muted>
+			<W.Button
+				class="mt-1.5"
+				onclick={() => goto(profile.startResurfaceSession(resurfaceLesson.id))}
+			>
+				Retrieve it again
+			</W.Button>
+		</W.Card>
 	{/if}
 </W.Shell>

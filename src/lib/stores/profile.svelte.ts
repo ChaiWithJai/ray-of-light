@@ -25,7 +25,13 @@ import {
 	type RecallSessionDraft,
 	type SessionMode
 } from '$lib/schemas/learner.js';
-import { POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
+import {
+	deriveResurfaceQueue,
+	dueResurfaces,
+	POC_WAVE_CONFIG,
+	toDayKey,
+	type ResurfaceQueueItem
+} from '$lib/schemas/schedule.js';
 import type { LanguageCode } from '$lib/schemas/content.js';
 import { flowFor, RECALL_FLOW, type StepId } from '$lib/flow.js';
 import { COURSES, getLesson } from '$lib/content/index.js';
@@ -42,6 +48,16 @@ import {
 const STORAGE_KEY = 'ray-of-light.profile.v1';
 let loadPersistenceFailed = false;
 
+/**
+ * Lessons the entry assessment placed the learner past. They count as met for
+ * scheduling only — placement grants no evidence, so `completedLessons` starts
+ * at the placed lesson and stays a strict in-order prefix from there.
+ */
+function placementOffset(profile: LearnerProfile, language: LanguageCode): number {
+	const entry = profile.plans[language]?.entryLessonIndex ?? 1;
+	return Math.min(Math.max(0, entry - 1), COURSES[language].lessons.length);
+}
+
 function sessionMatchesCourse(
 	session: ActiveSession,
 	activeLanguage: LanguageCode,
@@ -57,6 +73,16 @@ function sessionMatchesCourse(
 		: null;
 	if (!currentSessionMatchesExpected(session, activeLanguage, expectedFlow)) return false;
 	const origin = session.origin ?? (session.assignmentDay ? 'today' : 'book');
+	if (origin === 'resurface') {
+		// A resurface retrieval revisits a worked lesson outside the daily
+		// assignment; it never belongs to a frozen Today assignment.
+		return Boolean(
+			!session.assignmentDay &&
+				profile &&
+				session.mode === 'recall' &&
+				(profile.completedLessons[activeLanguage] ?? []).includes(session.lessonId)
+		);
+	}
 	if (origin === 'book') {
 		return Boolean(
 			!session.assignmentDay &&
@@ -81,10 +107,11 @@ function recoverSequencing(profile: LearnerProfile): LearnerProfile {
 	const completedRecallLessons = { ...profile.completedRecallLessons };
 	for (const language of ['fr', 'ta'] as const) {
 		const course = COURSES[language];
+		const offset = placementOffset(profile, language);
 		const storedLessons = profile.completedLessons[language] ?? [];
 		const validLessons: string[] = [];
 		for (let index = 0; index < storedLessons.length; index += 1) {
-			if (storedLessons[index] !== course.lessons[index]?.id) break;
+			if (storedLessons[index] !== course.lessons[offset + index]?.id) break;
 			validLessons.push(storedLessons[index]);
 		}
 		if (validLessons.length !== storedLessons.length) {
@@ -142,9 +169,12 @@ function todaysAssignmentIsValid(
 		(!recallLesson || !recallLesson.exercises.some((exercise) => exercise.kind === 'recall'))
 	) return false;
 
-	const courseComplete = completedLessons.length >= course.lessons.length;
+	const offset = placementOffset(profile, language);
+	const courseComplete = offset + completedLessons.length >= course.lessons.length;
 	if (!learnDone) {
-		const expectedNew = courseComplete ? undefined : course.lessons[completedLessons.length];
+		const expectedNew = courseComplete
+			? undefined
+			: course.lessons[offset + completedLessons.length];
 		if (assignment.newLessonId !== (expectedNew?.id ?? null)) return false;
 	} else if (!newLesson || !completedLessons.includes(newLesson.id)) return false;
 
@@ -152,7 +182,8 @@ function todaysAssignmentIsValid(
 		? course.lessons.length
 		: Math.max(
 				0,
-				(newLesson?.index ?? completedLessons.length + 1) - POC_WAVE_CONFIG.activeWaveLagLessons
+				(newLesson?.index ?? offset + completedLessons.length + 1) -
+					POC_WAVE_CONFIG.activeWaveLagLessons
 			);
 	const expectedRecall = course.lessons.find(
 		(candidate) =>
@@ -432,7 +463,13 @@ class ProfileStore {
 		}));
 	}
 
-	startSession(mode: SessionMode, lessonId: string, flow: readonly StepId[], assignmentDay?: string): string {
+	startSession(
+		mode: SessionMode,
+		lessonId: string,
+		flow: readonly StepId[],
+		assignmentDay?: string,
+		origin?: 'today' | 'book' | 'resurface'
+	): string {
 		if (this.activeSession) {
 			const href = this.activeSessionHref;
 			if (href) return href;
@@ -444,10 +481,34 @@ class ProfileStore {
 			lessonId,
 			flow,
 			Date.now(),
-			assignmentDay
+			assignmentDay,
+			origin ?? (assignmentDay ? 'today' : 'book')
 		);
 		this.#update((p) => ({ ...p, activeSession: session }));
 		return resumeHref(session);
+	}
+
+	/**
+	 * Retrieval of a missed construction, outside the daily assignment. The
+	 * outcome lands in the evidence log like any recall; finishing never touches
+	 * the recall wave's sequencing.
+	 */
+	startResurfaceSession(lessonId: string): string {
+		return this.startSession('recall', lessonId, RECALL_FLOW, undefined, 'resurface');
+	}
+
+	/** Missed constructions due for another retrieval, derived from evidence. */
+	dueResurfaceItems(day: string): ResurfaceQueueItem[] {
+		const language = this.#profile.activeLanguage;
+		const queue = deriveResurfaceQueue(
+			this.#profile.evidence.filter((event) => event.language === language)
+		);
+		const completed = this.completedLessons;
+		return dueResurfaces(queue, day).filter((item) => {
+			if (!completed.includes(item.lessonId)) return false;
+			const lesson = getLesson(language, item.lessonId);
+			return Boolean(lesson?.exercises.some((exercise) => exercise.kind === 'recall'));
+		});
 	}
 
 	/** Leave the active route without deleting evidence, progress, or today's assignment. */
@@ -573,8 +634,10 @@ class ProfileStore {
 					? { ...p.completedLessons, [p.activeLanguage]: [...completed, lessonId] }
 					: p.completedLessons;
 			const recalled = p.completedRecallLessons[p.activeLanguage] ?? [];
+			// A resurface retrieval is extra practice: it must not advance the
+			// active wave's sequencing, only append evidence and a closure.
 			const completedRecallLessons =
-				mode === 'recall' && !recalled.includes(lessonId)
+				mode === 'recall' && session.origin !== 'resurface' && !recalled.includes(lessonId)
 					? { ...p.completedRecallLessons, [p.activeLanguage]: [...recalled, lessonId] }
 					: p.completedRecallLessons;
 			const assignmentDay = session.assignmentDay;

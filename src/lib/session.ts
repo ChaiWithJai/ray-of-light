@@ -49,7 +49,7 @@ export function createSession(
 	flow: readonly StepId[],
 	now = Date.now(),
 	assignmentDay?: string,
-	origin: 'today' | 'book' = assignmentDay ? 'today' : 'book'
+	origin: 'today' | 'book' | 'resurface' = assignmentDay ? 'today' : 'book'
 ): ActiveSession {
 	const first = flow[0];
 	if (!first) throw new Error('Cannot start an empty session flow');

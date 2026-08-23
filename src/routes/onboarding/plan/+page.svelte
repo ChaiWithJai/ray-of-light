@@ -1,8 +1,9 @@
 <script lang="ts">
 	/** 1b · Learning plan. The commitment sets scheduler pacing; it is not cosmetic. */
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import * as W from '$lib/components/ui/index.js';
-	import { COURSES } from '$lib/content/index.js';
+	import { COURSES, getLessonByIndex } from '$lib/content/index.js';
 	import type { DailyMinutes, LearningGoal } from '$lib/schemas/learner.js';
 	import { POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -22,12 +23,20 @@
 	const activeWaveAt = $derived(POC_WAVE_CONFIG.activeWaveStartsAtLesson);
 	const passivePercent = $derived(Math.round(((activeWaveAt - 1) / total) * 100));
 
+	// Placement from the entry assessment. It only moves where the passive wave
+	// starts — the skipped lessons stay unworked and grant no evidence.
+	const entryLessonIndex = $derived.by(() => {
+		const raw = Number(page.url.searchParams.get('entry'));
+		return Number.isInteger(raw) ? Math.min(Math.max(1, raw), total) : 1;
+	});
+	const entryLesson = $derived(getLessonByIndex(profile.language, entryLessonIndex));
+
 	function commit() {
 		profile.setPlan({
 			dailyMinutes: minutes,
 			goal,
 			startedOn: toDayKey(new Date()),
-			entryLessonIndex: 1
+			entryLessonIndex
 		});
 		goto('/today');
 	}
@@ -87,6 +96,16 @@
 			{/each}
 		</div>
 	</W.Card>
+
+	{#if entryLessonIndex > 1 && entryLesson}
+		<W.Card tone="parchment">
+			<div class="text-sm font-semibold">Your starting point</div>
+			<W.Muted>
+				The assessment places you at lesson {entryLessonIndex} · {entryLesson.title}. Earlier
+				lessons won't be scheduled — and nothing is marked as learned that you haven't shown.
+			</W.Muted>
+		</W.Card>
+	{/if}
 
 	<W.Muted>Every 7th lesson is a review day — that's built in, not extra.</W.Muted>
 
