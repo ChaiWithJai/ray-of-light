@@ -4,7 +4,7 @@
 	 * told what it was — error discrimination, not red X's. No score is shown.
 	 */
 	import * as W from '$lib/components/wireframe/index.js';
-	import { diffWords } from '$lib/answers.js';
+	import { diffWords, normalise, type RecallAttempt } from '$lib/answers.js';
 	import type { Lesson } from '$lib/schemas/content.js';
 
 	let {
@@ -13,14 +13,23 @@
 		onDone
 	}: {
 		lesson: Lesson;
-		attempt: { lineId: string; text: string } | null;
+		attempt: RecallAttempt | null;
 		onDone: () => void;
 	} = $props();
 
 	const line = $derived(
 		lesson.lines.find((l) => l.id === attempt?.lineId) ?? lesson.lines[0]
 	);
-	const diff = $derived(diffWords(attempt?.text ?? '', line.targetScript));
+	const canonicalAnswer = $derived(attempt?.canonicalAnswer ?? line.targetScript);
+	const comparisonAnswer = $derived(attempt?.matchedAcceptedAnswer ?? canonicalAnswer);
+	const acceptedFormDiffers = $derived(
+		Boolean(attempt?.matchedAcceptedAnswer) &&
+			normalise(comparisonAnswer) !== normalise(canonicalAnswer)
+	);
+	const canonicalMatchesLine = $derived(
+		normalise(canonicalAnswer) === normalise(line.targetScript)
+	);
+	const diff = $derived(diffWords(attempt?.text ?? '', comparisonAnswer));
 	const identical = $derived(diff.attempt.every((w) => w.same) && diff.canonical.every((w) => w.same));
 
 	let noticed = $state(false);
@@ -39,21 +48,26 @@
 
 {#if noticed}
 	<W.SketchCard class="border-good">
-		<W.Muted class="text-[12px]">CANONICAL ▶</W.Muted>
+		<W.Muted class="text-[12px]">
+			{acceptedFormDiffers ? 'ACCEPTED FORM ▶' : 'CANONICAL ▶'}
+		</W.Muted>
 		<W.Fr>
 			{#each diff.canonical as word, i (i)}
 				{#if word.same}{word.text}{:else}<W.Diff tone="good">{word.text}</W.Diff>{/if}{' '}
 			{/each}
 		</W.Fr>
-		{#if line.transliteration}
+		{#if canonicalMatchesLine && line.transliteration}
 			<W.Muted class="text-[12px] italic">{line.transliteration}</W.Muted>
+		{/if}
+		{#if acceptedFormDiffers}
+			<W.Muted class="text-[12px]">Canonical script: {canonicalAnswer}</W.Muted>
 		{/if}
 	</W.SketchCard>
 
 	<W.SketchCard>
 		<W.Muted>
 			{#if identical}
-				That matches the canonical line.
+				That matches {acceptedFormDiffers ? 'an authored accepted form' : 'the canonical line'}.
 			{:else}
 				Compare word by word. Differences that sound identical are spelling only; ones that
 				change the sound are worth saying aloud again.

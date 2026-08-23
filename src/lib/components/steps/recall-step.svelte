@@ -8,16 +8,37 @@
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
 	import * as W from '$lib/components/wireframe/index.js';
+	import { evaluateRecallAttempt, normalise, type RecallAttempt } from '$lib/answers.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
-	import type { Lesson } from '$lib/schemas/content.js';
+	import type { Lesson, RecallPrompt } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	let {
 		lesson,
 		onDone
-	}: { lesson: Lesson; onDone: (attempt: { lineId: string; text: string }) => void } = $props();
+	}: { lesson: Lesson; onDone: (attempt: RecallAttempt) => void } = $props();
+
+	const recallPrompt = $derived(
+		lesson.exercises.find((exercise): exercise is RecallPrompt => exercise.kind === 'recall')
+	);
+	const promptedLineIndex = $derived(
+		(() => {
+			const exact = lesson.lines.findIndex(
+			(line) =>
+				line.id === recallPrompt?.lineId ||
+				normalise(line.targetScript) === normalise(recallPrompt?.canonicalAnswer ?? '')
+			);
+			if (exact >= 0) return exact;
+
+			const contextual = lesson.lines.findIndex((line) =>
+				line.constructions.some((id) => recallPrompt?.constructions.includes(id))
+			);
+			return Math.max(0, contextual);
+		})()
+	);
 
 	let index = $state(0);
+	let initializedLessonId = $state<string | null>(null);
 	let hinted = $state(false);
 	let revealed = $state(false);
 	let attempt = $state('');
@@ -25,19 +46,41 @@
 	const line = $derived(lesson.lines[index]);
 	const daysAgo = $derived(lesson.index);
 
+	$effect(() => {
+		if (initializedLessonId === lesson.id) return;
+		index = promptedLineIndex;
+		hinted = false;
+		revealed = false;
+		attempt = '';
+		initializedLessonId = lesson.id;
+	});
+
 	function produce() {
 		if (attempt.trim() === '') return;
-		profile.record('recall-correct', lesson.id, line.constructions, {
+
+		const evaluation = evaluateRecallAttempt(attempt, recallPrompt, line);
+		profile.record(evaluation.kind, lesson.id, evaluation.constructionIds, {
 			hinted,
 			contentVersion: CONTENT_VERSION
 		});
-		onDone({ lineId: line.id, text: attempt });
+		onDone({
+			lineId: line.id,
+			text: attempt,
+			canonicalAnswer: evaluation.canonicalAnswer,
+			matchedAcceptedAnswer: evaluation.matchedAcceptedAnswer
+		});
 	}
 </script>
 
 <W.Muted class="text-center">
 	You read this in lesson {daysAgo}. Say it in {lesson.language === 'ta' ? 'Tamil' : 'French'}.
 </W.Muted>
+
+{#if recallPrompt}
+	<W.SketchCard tone="parchment">
+		<div class="text-[13.5px]">{recallPrompt.prompt}</div>
+	</W.SketchCard>
+{/if}
 
 <Spread {lesson} state="active-retrieval" bind:index settings={profile.settings} />
 
@@ -75,7 +118,9 @@
 			Hint used — this line won't count as recalled.
 		</W.Muted>
 		<W.Fr class="text-[13.5px]">
-			{revealed ? line.targetScript : `${line.targetScript.split(' ')[0]}…`}
+			{revealed
+				? (recallPrompt?.canonicalAnswer ?? line.targetScript)
+				: (recallPrompt?.hints[0] ?? `${line.targetScript.split(' ')[0]}…`)}
 		</W.Fr>
 	</W.SketchCard>
 {/if}
