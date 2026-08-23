@@ -14,6 +14,7 @@ import {
 } from '$lib/schemas/content.js';
 import { FR_LESSONS, FR_PROFILE } from './fr.js';
 import { TA_LESSONS, TA_PROFILE } from './ta.js';
+import { validateReviewGate } from './review-gate.js';
 
 /** Bumped whenever content changes, so evidence can cite what it was recorded against. */
 export const CONTENT_VERSION = '2026.08.23-poc.2';
@@ -154,6 +155,15 @@ export const COURSES: Record<LanguageCode, Course> = {
 	fr: buildCourse('fr', FR_LESSONS),
 	ta: buildCourse('ta', TA_LESSONS)
 };
+
+/**
+ * The native-review promotion gate runs here, at module init, so a
+ * `reviewStatus` claim without hash-matched approved records fails at app
+ * import time exactly like a dangling construction reference — not only in
+ * tests. `review-gate.ts` is pure (it does not import this module), which is
+ * what makes this call cycle-free. See docs/NATIVE-REVIEW.md.
+ */
+validateReviewGate(COURSES);
 
 export const LANGUAGE_PROFILES = { fr: FR_PROFILE, ta: TA_PROFILE };
 
