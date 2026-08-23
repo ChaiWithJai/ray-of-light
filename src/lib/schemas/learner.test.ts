@@ -6,6 +6,7 @@ import {
 	EvidenceEvent,
 	LearnerProfile,
 	migrateLegacyTransferEvidence,
+	placeEntryLesson,
 	type EvidenceEvent as EvidenceEventType
 } from './learner.js';
 
@@ -238,5 +239,25 @@ describe('LearnerProfile', () => {
 			evidence: [{ ...ev({ kind: 'parallel-read' }), day: '01-01-2026' }]
 		});
 		expect(result.success).toBe(false);
+	});
+});
+
+describe('placeEntryLesson', () => {
+	it('places a learner who heard and spoke past the opening lessons', () => {
+		expect(placeEntryLesson({ heardCorrectly: true, spokeBack: true }, 14)).toBe(3);
+	});
+
+	it('places a learner who only recognized the meaning one lesson in', () => {
+		expect(placeEntryLesson({ heardCorrectly: true, spokeBack: false }, 14)).toBe(2);
+	});
+
+	it('starts at lesson 1 when nothing was recognized', () => {
+		expect(placeEntryLesson({ heardCorrectly: false, spokeBack: false }, 14)).toBe(1);
+		expect(placeEntryLesson({ heardCorrectly: false, spokeBack: true }, 14)).toBe(1);
+	});
+
+	it('never places past the end of the course', () => {
+		expect(placeEntryLesson({ heardCorrectly: true, spokeBack: true }, 2)).toBe(2);
+		expect(placeEntryLesson({ heardCorrectly: true, spokeBack: true }, 0)).toBe(1);
 	});
 });

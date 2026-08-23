@@ -20,6 +20,7 @@
  */
 import { z } from 'zod';
 import { LanguageCode } from './content.js';
+import type { EvidenceEvent } from './learner.js';
 
 export const WaveConfig = z.object({
 	/** Lesson index at which the active wave begins. */
@@ -107,6 +108,12 @@ export type TodayInput = {
 	lessonCount: number;
 	/** How many lessons have been fully worked through, in order. */
 	completedCount: number;
+	/**
+	 * Placement from the entry assessment (1a). Lessons before it count as met
+	 * for scheduling only — placement is a starting point, not learner evidence,
+	 * so those lessons never enter the recall wave or grant construction state.
+	 */
+	entryLessonIndex?: number;
 	config?: WaveConfig;
 };
 
@@ -116,20 +123,27 @@ export function planToday({
 	today,
 	lessonCount,
 	completedCount,
+	entryLessonIndex = 1,
 	config = POC_WAVE_CONFIG
 }: TodayInput): TodayPlan {
 	const dayNumber = Math.max(1, daysBetween(startedOn, today) + 1);
 
 	// The passive wave is driven by lessons completed, not by days elapsed —
 	// missing a day must not skip content (D10: no punishment for missed days).
-	const nextIndex = completedCount + 1;
-	const courseComplete = completedCount >= lessonCount;
+	// Placement shifts where the wave starts; it does not mark anything done.
+	const entryOffset = Math.min(Math.max(0, entryLessonIndex - 1), lessonCount);
+	const nextIndex = entryOffset + completedCount + 1;
+	const courseComplete = entryOffset + completedCount >= lessonCount;
 	const newLessonIndex = courseComplete ? null : nextIndex;
 
-	// The active wave trails the passive wave by a fixed number of lessons.
+	// The active wave trails the passive wave by a fixed number of lessons. It
+	// can only recall lessons the learner actually worked, so it never reaches
+	// back past the placement point — placement met them for scheduling, but the
+	// learner has no evidence to retrieve.
 	const recallCandidate = nextIndex - config.activeWaveLagLessons;
 	const activeWaveOpen = nextIndex >= config.activeWaveStartsAtLesson;
-	const recallLessonIndex = activeWaveOpen && recallCandidate >= 1 ? recallCandidate : null;
+	const recallLessonIndex =
+		activeWaveOpen && recallCandidate >= entryOffset + 1 ? recallCandidate : null;
 
 	return {
 		language,
@@ -170,11 +184,77 @@ export function scheduleResurface(
 	return { ...entry, step, dueOn: toDayKey(due) };
 }
 
-export function dueResurfaces(
-	entries: readonly ResurfaceEntry[],
+export function dueResurfaces<T extends { dueOn: string }>(
+	entries: readonly T[],
 	today: string
-): ResurfaceEntry[] {
+): T[] {
 	return entries.filter((e) => daysBetween(e.dueOn, today) >= 0);
+}
+
+/**
+ * A construction the learner missed, derived entirely from the append-only
+ * evidence log — there is no persisted queue to drift out of sync. A miss is a
+ * wrong attempt or a hinted one; each later unhinted `recall-correct` climbs
+ * the ladder, and climbing past its top clears the item.
+ */
+export type ResurfaceQueueItem = {
+	constructionId: string;
+	language: LanguageCode;
+	/** The lesson the miss happened in — where the retrieval links back to. */
+	lessonId: string;
+	/** Ladder step the next retrieval sits on. */
+	step: number;
+	/** YYYY-MM-DD the retrieval is next due. */
+	dueOn: string;
+};
+
+function isMiss(event: EvidenceEvent): boolean {
+	return event.kind === 'attempt-incorrect' || event.hinted;
+}
+
+export function deriveResurfaceQueue(
+	events: readonly EvidenceEvent[],
+	config: WaveConfig = POC_WAVE_CONFIG
+): ResurfaceQueueItem[] {
+	const byConstruction = new Map<string, EvidenceEvent[]>();
+	for (const event of events) {
+		const key = `${event.language}:${event.constructionId}`;
+		const bucket = byConstruction.get(key);
+		if (bucket) bucket.push(event);
+		else byConstruction.set(key, [event]);
+	}
+
+	const ladder = config.resurfaceLadderDays;
+	const queue: ResurfaceQueueItem[] = [];
+	for (const group of byConstruction.values()) {
+		const misses = group.filter(isMiss);
+		if (misses.length === 0) continue;
+		const lastMiss = misses.reduce((a, b) => (b.at >= a.at ? b : a));
+
+		// Distinct-day retrievals after the last miss climb the ladder, mirroring
+		// how `stabilized` counts days rather than raw attempts.
+		const retrievals = group.filter(
+			(event) => !event.hinted && event.kind === 'recall-correct' && event.at > lastMiss.at
+		);
+		const retrievalDays = new Set(retrievals.map((event) => event.day));
+		if (retrievalDays.size >= ladder.length) continue;
+
+		const anchor = retrievals.reduce((a, b) => (b.at >= a.at ? b : a), lastMiss);
+		const step = retrievalDays.size;
+		const due = parseDayKey(anchor.day);
+		due.setDate(due.getDate() + ladder[step]);
+		queue.push({
+			constructionId: lastMiss.constructionId,
+			language: lastMiss.language,
+			lessonId: lastMiss.lessonId,
+			step,
+			dueOn: toDayKey(due)
+		});
+	}
+
+	return queue.sort(
+		(a, b) => a.dueOn.localeCompare(b.dueOn) || a.constructionId.localeCompare(b.constructionId)
+	);
 }
 
 /**

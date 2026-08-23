@@ -216,6 +216,24 @@ export const LearningPlan = z.object({
 });
 export type LearningPlan = z.infer<typeof LearningPlan>;
 
+/** What the entry assessment observed. Never shown to the learner as a score. */
+export type EntryAssessmentOutcome = {
+	/** Picked the right meaning for the audio sample. */
+	heardCorrectly: boolean;
+	/** Attempted to say the line back. */
+	spokeBack: boolean;
+};
+
+/**
+ * Place the learner from the entry assessment (1a). Placement only moves where
+ * the passive wave starts; it grants no evidence — lessons it skips stay
+ * unworked and their constructions stay stateless (AC 10).
+ */
+export function placeEntryLesson(outcome: EntryAssessmentOutcome, lessonCount: number): number {
+	const placed = outcome.heardCorrectly ? (outcome.spokeBack ? 3 : 2) : 1;
+	return Math.min(placed, Math.max(1, lessonCount));
+}
+
 /** Self-rating from lesson closure (1q). Tunes when lines resurface. */
 export const ClosureRating = z.object({
 	lessonId: z.string().min(1),
@@ -273,7 +291,7 @@ export const ActiveSession = z.object({
 	completedSteps: z.array(SessionStep).default([]),
 	recallDraft: RecallSessionDraft.optional(),
 	/** Where authorization came from; legacy sessions infer this from assignmentDay. */
-	origin: z.enum(['today', 'book']).optional(),
+	origin: z.enum(['today', 'book', 'resurface']).optional(),
 	/** Local day whose frozen Today assignment this session belongs to. */
 	assignmentDay: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 	startedAt: z.number().int().nonnegative(),

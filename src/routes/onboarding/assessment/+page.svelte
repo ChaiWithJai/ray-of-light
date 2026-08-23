@@ -6,7 +6,8 @@
 	 */
 	import { goto } from '$app/navigation';
 	import * as W from '$lib/components/ui/index.js';
-	import { getLessonByIndex } from '$lib/content/index.js';
+	import { COURSES, getLessonByIndex } from '$lib/content/index.js';
+	import { placeEntryLesson } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	const lesson = $derived(getLessonByIndex(profile.language, 1)!);
@@ -20,6 +21,16 @@
 		'Where is the station, please?',
 		"That's all, thank you."
 	]);
+
+	function continueToPlan() {
+		// Placement, not judgement: the samples set the entry lesson and nothing
+		// else. The plan page persists it into the profile.
+		const entry = placeEntryLesson(
+			{ heardCorrectly: heard === 0, spokeBack: spoke },
+			COURSES[profile.language].lessons.length
+		);
+		goto(`/onboarding/plan?entry=${entry}`);
+	}
 </script>
 
 <svelte:head><title>Entry assessment</title></svelte:head>
@@ -74,7 +85,7 @@
 		<W.Muted class="text-center">{spoke ? 'listening…' : 'hold to speak'}</W.Muted>
 	</W.Card>
 
-	<W.Button tone="primary" onclick={() => goto('/onboarding/plan')}>
+	<W.Button tone="primary" onclick={continueToPlan}>
 		Continue
 	</W.Button>
 	<W.Muted class="text-center text-2xs">
