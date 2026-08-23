@@ -1,0 +1,9 @@
+{
+	"package": "mlx-audio",
+	"packageVersion": "0.5.0",
+	"model": "mlx-community/OmniVoice-bf16",
+	"revision": "8fb0b754cad788aaefec690cd55c207e8a628f85",
+	"modelLicense": "unstated on the checkpoint card as of 2026-08-23; upstream k2-fsa/OmniVoice is Apache-2.0 — verify before any non-personal use",
+	"sttModel": "mlx-community/whisper-large-v3-turbo-asr-fp16",
+	"note": "Resolved from the installed mlx-audio 0.5.0 omnivoice module and pinned by commit; synth.py downloads exactly this revision and runs fully local inference."
+}

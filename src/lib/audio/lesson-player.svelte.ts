@@ -20,7 +20,15 @@ export class LessonPlayer {
 	/** Index into lesson.lines currently sounding, -1 when none. */
 	activeLine = $state(-1);
 	rate = $state(1);
+	/** Transient playback problem — retrying is reasonable. */
 	error = $state<string | null>(null);
+	/**
+	 * The recording itself is missing or unreadable. Audio is generated locally
+	 * and untracked (issue #19), so offsets can exist while the file does not —
+	 * a fresh clone before `npx tsx scripts/generate-audio.mts`. Surfaces the
+	 * honest "no recording on this machine" state instead of a dead play button.
+	 */
+	failed = $state(false);
 
 	#lesson: Lesson;
 	#audio: HTMLAudioElement | null = null;
@@ -31,9 +39,9 @@ export class LessonPlayer {
 		this.#lesson = lesson;
 	}
 
-	/** False while the lesson's recording is still pending (L1). */
+	/** False while the lesson's recording is pending (L1) or failed to load. */
 	get available(): boolean {
-		return !(this.#lesson.lines[0]?.audio.pending ?? true);
+		return !this.failed && !(this.#lesson.lines[0]?.audio.pending ?? true);
 	}
 
 	/**
@@ -69,6 +77,13 @@ export class LessonPlayer {
 	#reportError() {
 		this.playing = false;
 		this.activeLine = -1;
+		// A missing/unreadable source is permanent unavailability (untracked
+		// local audio not generated on this machine); anything else is transient.
+		const code = this.#audio?.error?.code;
+		if (code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED || code === MediaError.MEDIA_ERR_NETWORK) {
+			this.failed = true;
+			return;
+		}
 		this.error = 'Audio could not play. Try the line again.';
 	}
 
