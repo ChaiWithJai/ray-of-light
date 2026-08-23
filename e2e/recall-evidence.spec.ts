@@ -14,7 +14,27 @@ async function startRecall(page: Page, lessonId: string, language: 'fr' | 'ta' =
 			const key = 'ray-of-light.profile.v1';
 			const current = JSON.parse(localStorage.getItem(key)!);
 			const now = Date.now();
+			const lessonIndex = Number(lessonId.slice(-2));
+			const id = (index: number) => `${language}-${String(index).padStart(2, '0')}`;
+			const day = new Date();
+			const dayKey = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;
 			current.activeLanguage = language;
+			current.completedLessons[language] = Array.from(
+				{ length: lessonIndex + 2 },
+				(_, index) => id(index + 1)
+			);
+			current.completedRecallLessons[language] = Array.from(
+				{ length: lessonIndex - 1 },
+				(_, index) => id(index + 1)
+			);
+			current.dailyAssignments[language] = {
+				[dayKey]: {
+					day: dayKey,
+					newLessonId: id(lessonIndex + 3),
+					recallLessonId: lessonId,
+					completedModes: []
+				}
+			};
 			current.activeSession = {
 				id: `test-recall-${lessonId}`,
 				mode: 'recall',
@@ -23,6 +43,8 @@ async function startRecall(page: Page, lessonId: string, language: 'fr' | 'ta' =
 				flow: ['recall', 'compare', 'closure'],
 				currentStep: 'recall',
 				completedSteps: [],
+				origin: 'today',
+				assignmentDay: dayKey,
 				startedAt: now,
 				updatedAt: now
 			};

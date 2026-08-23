@@ -16,6 +16,7 @@ async function onboard(page: Page, language: 'French' | 'Tamil' = 'French') {
 	await expect(page.getByText('How much, daily?')).toBeVisible();
 	await page.getByRole('button', { name: 'Set my plan' }).click();
 	await expect(page).toHaveURL(/\/today/);
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 }
 
 async function authorizeLearnStep(
@@ -29,6 +30,7 @@ async function authorizeLearnStep(
 		({ lessonId, step, completedSteps, language }) => {
 			const key = 'ray-of-light.profile.v1';
 			const stored = JSON.parse(localStorage.getItem(key)!);
+			const assignmentDay = Object.keys(stored.dailyAssignments[language])[0];
 			stored.activeSession = {
 				id: `test-learn-${lessonId}`,
 				mode: 'learn',
@@ -37,6 +39,8 @@ async function authorizeLearnStep(
 				flow: ['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion', 'transfer', 'closure'],
 				currentStep: step,
 				completedSteps,
+				origin: 'today',
+				assignmentDay,
 				startedAt: Date.now(),
 				updatedAt: Date.now()
 			};

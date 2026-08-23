@@ -180,6 +180,7 @@ test('valid closure clears the session and records completion atomically', async
 	await page.evaluate((key) => {
 		const stored = JSON.parse(localStorage.getItem(key)!);
 		const now = Date.now();
+		const day = Object.keys(stored.dailyAssignments.fr)[0];
 		stored.activeSession = {
 			id: 'valid-completion',
 			mode: 'learn',
@@ -188,6 +189,8 @@ test('valid closure clears the session and records completion atomically', async
 			flow: ['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion', 'transfer', 'closure'],
 			currentStep: 'closure',
 			completedSteps: ['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion', 'transfer'],
+			origin: 'today',
+			assignmentDay: day,
 			startedAt: now,
 			updatedAt: now
 		};
@@ -593,4 +596,72 @@ test('storage failure warns before navigation state is lost on refresh', async (
 	await page.reload();
 	await expect(page).toHaveURL(/\/today/);
 	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+});
+
+test('stale Book Start at midnight cannot become an off-assignment session', async ({ page }) => {
+	await page.clock.install({ time: new Date('2026-08-23T23:59:50') });
+	await onboard(page);
+	await page.goto('/book');
+	const staleStart = page.getByRole('button', { name: 'Start', exact: true });
+	await expect(staleStart).toBeVisible();
+	await page.clock.setSystemTime(new Date('2026-08-24T00:00:10'));
+	await staleStart.click();
+	await expect(page).toHaveURL(/\/today/);
+	await expect(page.getByText('Day 2', { exact: true })).toBeVisible();
+	const active = await page.evaluate((key) => {
+		const raw = localStorage.getItem(key);
+		return raw ? JSON.parse(raw).activeSession : null;
+	}, STORAGE_KEY);
+	expect(active).toBeNull();
+});
+
+test('forged Book sessions authorize completed learn reviews only', async ({ page }) => {
+	await onboard(page);
+	const forgeries = [
+		{ mode: 'learn', lessonId: 'fr-02', flow: ['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion', 'transfer', 'closure'] },
+		{ mode: 'recall', lessonId: 'fr-01', flow: ['recall', 'compare', 'closure'] }
+	];
+	for (const forgery of forgeries) {
+		await page.evaluate(
+			({ key, forgery }) => {
+				const stored = JSON.parse(localStorage.getItem(key)!);
+				stored.activeSession = {
+					id: `forged-book-${forgery.mode}`, origin: 'book', ...forgery,
+					language: 'fr', currentStep: forgery.flow[0], completedSteps: [],
+					startedAt: 1, updatedAt: 1
+				};
+				localStorage.setItem(key, JSON.stringify(stored));
+			},
+			{ key: STORAGE_KEY, forgery }
+		);
+		await page.reload();
+		await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+		const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+		expect(stored.activeSession).toBeNull();
+	}
+});
+
+test('inactive-language corrupt assignment is recovered before switching', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate((key) => {
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		const today = Object.keys(stored.dailyAssignments.fr)[0];
+		stored.plans.ta = { ...stored.plans.fr };
+		stored.completedLessons.ta = ['ta-01', 'fr-02'];
+		stored.completedRecallLessons.ta = ['ta-02'];
+		stored.dailyAssignments.ta = {
+			[today]: {
+				day: today, newLessonId: 'ta-99', recallLessonId: 'fr-01', completedModes: []
+			}
+		};
+		localStorage.setItem(key, JSON.stringify(stored));
+	}, STORAGE_KEY);
+	await page.reload();
+	await page.goto('/settings');
+	await page.getByRole('button', { name: 'Tamil' }).click();
+	await page.goto('/today');
+	await expect(page.getByText(/Lesson 2 · ஹோட்டலில்/)).toBeVisible();
+	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+	expect(stored.completedLessons.ta).toEqual(['ta-01']);
+	expect(stored.completedRecallLessons.ta).toEqual([]);
 });

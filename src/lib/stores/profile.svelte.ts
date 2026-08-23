@@ -54,7 +54,14 @@ function sessionMatchesCourse(
 		: null;
 	if (!currentSessionMatchesExpected(session, activeLanguage, expectedFlow)) return false;
 	const origin = session.origin ?? (session.assignmentDay ? 'today' : 'book');
-	if (origin === 'book') return !session.assignmentDay;
+	if (origin === 'book') {
+		return Boolean(
+			!session.assignmentDay &&
+				profile &&
+				session.mode === 'learn' &&
+				(profile.completedLessons[activeLanguage] ?? []).includes(session.lessonId)
+		);
+	}
 	if (!session.assignmentDay || !profile) return false;
 	const assignment = profile.dailyAssignments[activeLanguage]?.[session.assignmentDay];
 	const expectedLessonId = session.mode === 'learn' ? assignment?.newLessonId : assignment?.recallLessonId;
@@ -103,8 +110,12 @@ function recoverSequencing(profile: LearnerProfile): LearnerProfile {
 	return changed ? { ...profile, completedLessons, completedRecallLessons } : profile;
 }
 
-function todaysAssignmentIsValid(profile: LearnerProfile, day: string): boolean {
-	const assignment = profile.dailyAssignments[profile.activeLanguage]?.[day];
+function todaysAssignmentIsValid(
+	profile: LearnerProfile,
+	language: LanguageCode,
+	day: string
+): boolean {
+	const assignment = profile.dailyAssignments[language]?.[day];
 	if (!assignment) return true;
 	if (assignment.day !== day || new Set(assignment.completedModes).size !== assignment.completedModes.length) {
 		return false;
@@ -113,14 +124,14 @@ function todaysAssignmentIsValid(profile: LearnerProfile, day: string): boolean 
 	const recallDone = assignment.completedModes.includes('recall');
 	if ((learnDone && !assignment.newLessonId) || (recallDone && !assignment.recallLessonId)) return false;
 
-	const course = COURSES[profile.activeLanguage];
-	const completedLessons = profile.completedLessons[profile.activeLanguage] ?? [];
-	const completedRecall = profile.completedRecallLessons[profile.activeLanguage] ?? [];
+	const course = COURSES[language];
+	const completedLessons = profile.completedLessons[language] ?? [];
+	const completedRecall = profile.completedRecallLessons[language] ?? [];
 	const newLesson = assignment.newLessonId
-		? getLesson(profile.activeLanguage, assignment.newLessonId)
+		? getLesson(language, assignment.newLessonId)
 		: undefined;
 	const recallLesson = assignment.recallLessonId
-		? getLesson(profile.activeLanguage, assignment.recallLessonId)
+		? getLesson(language, assignment.recallLessonId)
 		: undefined;
 	if (assignment.newLessonId && !newLesson) return false;
 	if (
@@ -170,19 +181,19 @@ function load(): LearnerProfile {
 			sequenced.activeSession &&
 				!sessionMatchesCourse(sequenced.activeSession, sequenced.activeLanguage, sequenced)
 		);
-		const invalidToday = !todaysAssignmentIsValid(sequenced, day);
-		if (sequenced !== parsed.data || invalidSession || invalidToday) {
-			const languageAssignments = sequenced.dailyAssignments[sequenced.activeLanguage] ?? {};
-			const { [day]: _invalid, ...validAssignments } = languageAssignments;
+		const invalidAssignmentLanguages = (['fr', 'ta'] as const).filter(
+			(language) => !todaysAssignmentIsValid(sequenced, language, day)
+		);
+		if (sequenced !== parsed.data || invalidSession || invalidAssignmentLanguages.length > 0) {
+			let dailyAssignments = sequenced.dailyAssignments;
+			for (const language of invalidAssignmentLanguages) {
+				const { [day]: _invalid, ...validAssignments } = dailyAssignments[language] ?? {};
+				dailyAssignments = { ...dailyAssignments, [language]: validAssignments };
+			}
 			const recovered = {
 				...sequenced,
 				activeSession: invalidSession ? null : sequenced.activeSession,
-				dailyAssignments: invalidToday
-					? {
-							...sequenced.dailyAssignments,
-							[sequenced.activeLanguage]: validAssignments
-						}
-					: sequenced.dailyAssignments
+				dailyAssignments
 			};
 			try {
 				localStorage.setItem(STORAGE_KEY, JSON.stringify(recovered));
