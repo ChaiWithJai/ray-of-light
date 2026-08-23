@@ -60,7 +60,7 @@ const l1 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I\'d like a coffee"', '"Do you have coffee?"', '"The coffee is good"'], answerIndex: 0, constructions: ['enakku-venum'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I\'d like a coffee."', canonical: 'எனக்கு ஒரு காபி வேணும்.', accepted: ['எனக்கு ஒரு காபி வேணும்.', 'enakku oru kaapi vēṇum'], hints: ['எனக்கு…'], constructions: ['enakku-venum'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: '___ ஒரு காபி வேணும்.', options: ['எனக்கு', 'நான்', 'என்'], answer: 'எனக்கு', rule: 'The wanter takes the dative: எனக்கு, not நான்.', constructions: ['enakku-venum'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍵 A tea stall. You want one tea.', use: 'enakku-venum', exemplar: 'எனக்கு ஒரு டீ வேணும்.', constructions: ['enakku-venum'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍵 A tea stall. You want one tea.', use: 'enakku-venum', exemplar: 'எனக்கு ஒரு டீ வேணும்.', criteria: { constructions: [{ construction: 'enakku-venum', orderedGroups: [['எனக்கு', 'enakku'], ['வேணும்', 'venum']] }], contextGroups: [['டீ', 'tea']] }, constructions: ['enakku-venum'] },
 		{ kind: 'recall', prompt: 'Ask someone politely: "How are you?"', canonical: 'எப்படி இருக்கீங்க?', accepted: ['எப்படி இருக்கீங்க?', 'நீங்க எப்படி இருக்கீங்க?', 'நல்லா இருக்கீங்களா?', 'eppadi irukkīṅga', 'nallā irukkīṅgaḷā'], hints: ['எப்படி = "how".'], constructions: ['eppadi-irukkeenga'] },
 		{ kind: 'recall', prompt: 'Introduce yourself: say "My name is Kavya."', canonical: 'என் பேரு காவ்யா.', accepted: ['என் பேரு காவ்யா.', 'என் பேர் காவ்யா.', 'en pēru Kāvyā', 'en peru Kavya'], hints: ['Start with என் பேரு — "my name".', 'No word for "is" — just add the name.'], constructions: ['en-peru'] }
 	]
@@ -91,7 +91,7 @@ const l2 = d({
 		{ kind: 'comprehension', lineIndex: 0, prompt: 'Line 1 means…', options: ['"Do you have a room?"', '"Where is the room?"', '"The room is nice"'], answerIndex: 0, constructions: ['irukka-q'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Do you have a room?"', canonical: 'ரூம் இருக்கா?', accepted: ['ரூம் இருக்கா?', 'room irukkā'], hints: ['ரூம்…'], constructions: ['irukka-q'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'ரூம் ___?', options: ['இருக்கா', 'இருக்கு', 'இல்ல'], answer: 'இருக்கா', rule: 'The -ஆ ending makes it a question. இருக்கு is the statement.', constructions: ['irukka-q', 'aa-question'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚕 An auto stand. You want to ask whether there is an auto.', use: 'irukka-q', exemplar: 'ஆட்டோ இருக்கா?', constructions: ['irukka-q'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚕 An auto stand. You want to ask whether there is an auto.', use: 'irukka-q', exemplar: 'ஆட்டோ இருக்கா?', criteria: { constructions: [{ construction: 'irukka-q', orderedGroups: [['இருக்கா', 'irukka']] }], contextGroups: [['ஆட்டோ', 'auto']] }, constructions: ['irukka-q'] }
 	]
 });
 
@@ -120,10 +120,10 @@ const l3 = d({
 		{ kind: 'comprehension', lineIndex: 0, prompt: 'Line 1 means…', options: ['"How much are the tomatoes?"', '"Do you have tomatoes?"', '"I want tomatoes"'], answerIndex: 0, constructions: ['evvalavu'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Give me a kilo, please."', canonical: 'ஒரு கிலோ குடுங்க.', accepted: ['ஒரு கிலோ குடுங்க.', 'oru kilō kuḍunga'], hints: ['ஒரு…'], constructions: ['kudunga'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'தக்காளி ___?', options: ['எவ்வளவு', 'எத்தனை', 'எங்க'], answer: 'எவ்வளவு', rule: 'எவ்வளவு asks price or uncountable amount; எத்தனை counts discrete things.', constructions: ['evvalavu'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍌 A fruit cart. You want to ask the price of bananas.', use: 'evvalavu', exemplar: 'வாழைப்பழம் எவ்வளவு?', constructions: ['evvalavu'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍌 A fruit cart. You want to ask the price of bananas.', use: 'evvalavu', exemplar: 'வாழைப்பழம் எவ்வளவு?', criteria: { constructions: [{ construction: 'evvalavu', orderedGroups: [['எவ்வளவு', 'evvalavu']] }], contextGroups: [['வாழைப்பழம்', 'vazhaippazham']] }, constructions: ['evvalavu'] },
 		{ kind: 'recall', prompt: 'Ask the price of the tomatoes.', canonical: 'தக்காளி எவ்வளவு?', accepted: ['தக்காளி எவ்வளவு?', 'தக்காளி எவ்ளோ?', 'thakkāḷi evvaḷavu', 'thakkāḷi evlo'], hints: ['Price questions need no verb: "tomato how-much?"'], lineIndex: 0, constructions: ['evvalavu'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💵 You pay with a hundred-rupee note and want to check the shopkeeper has change (சில்லறை).', use: 'irukka-q', exemplar: 'சில்லறை இருக்கா?', constructions: ['irukka-q'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧅 The seller starts adding extra onions you did not ask for. Politely tell them not to put more.', use: 'aadheenga', exemplar: 'இன்னும் போடாதீங்க.', constructions: ['aadheenga'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💵 You pay with a hundred-rupee note and want to check the shopkeeper has change (சில்லறை).', use: 'irukka-q', exemplar: 'சில்லறை இருக்கா?', criteria: { constructions: [{ construction: 'irukka-q', orderedGroups: [['இருக்கா', 'irukka']] }], contextGroups: [['சில்லறை', 'sillarai']] }, constructions: ['irukka-q'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧅 The seller starts adding extra onions you did not ask for. Politely tell them not to put more.', use: 'aadheenga', exemplar: 'இன்னும் போடாதீங்க.', criteria: { constructions: [{ construction: 'aadheenga', orderedGroups: [['போடாதீங்க', 'podadheenga']] }], contextGroups: [['இன்னும்', 'innum']] }, constructions: ['aadheenga'] }
 	]
 });
 
@@ -154,9 +154,10 @@ const l4 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"Is it far?"', '"Where is it?"', '"Is it open?"'], answerIndex: 0, constructions: ['dooram'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Where is the bus stand?"', canonical: 'பஸ் ஸ்டாண்ட் எங்க இருக்கு?', accepted: ['பஸ் ஸ்டாண்ட் எங்க இருக்கு?', 'bus stand eṅga irukku'], hints: ['… எங்க…'], constructions: ['enge-irukku'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'பஸ் ஸ்டாண்ட் ___ இருக்கு?', options: ['எங்க', 'எப்போ', 'எவ்வளவு'], answer: 'எங்க', rule: 'எங்க asks where, எப்போ asks when, எவ்வளவு asks how much.', constructions: ['enge-irukku'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏧 You need an ATM and stop a passer-by. Ask where it is, then confirm your guess that it is next to the bank.', use: 'enge-irukku', exemplar: 'ஏடிஎம் எங்க இருக்கு? பேங்க் பக்கத்துல இருக்கா?', constructions: ['enge-irukku', 'pakkathula'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏥 You need the hospital and stop someone on the street.', use: 'enge-irukku', exemplar: 'ஹாஸ்பிடல் எங்க இருக்கு?', criteria: { constructions: [{ construction: 'enge-irukku', orderedGroups: [['எங்க இருக்கு', 'enga irukku']] }], contextGroups: [['ஹாஸ்பிடல்', 'hospital']] }, constructions: ['enge-irukku'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏧 You need an ATM and stop a passer-by. Ask where it is, then confirm your guess that it is next to the bank.', use: 'enge-irukku', exemplar: 'ஏடிஎம் எங்க இருக்கு? பேங்க் பக்கத்துல இருக்கா?', criteria: { constructions: [{ construction: 'enge-irukku', orderedGroups: [['எங்க இருக்கு', 'enga irukku']] }, { construction: 'pakkathula', orderedGroups: [['பக்கத்துல', 'pakkathula']] }], contextGroups: [['ஏடிஎம்', 'atm'], ['பேங்க்', 'bank']] }, constructions: ['enge-irukku', 'pakkathula'] },
 		{ kind: 'recall', prompt: 'Stop a stranger and ask: "Could you help me a little?"', canonical: 'கொஞ்சம் ஹெல்ப் பண்ண முடியுமா?', accepted: ['கொஞ்சம் ஹெல்ப் பண்ண முடியுமா?', 'கொஞ்சம் உதவி பண்ண முடியுமா?', 'konjam help paṇṇa muḍiyumā', 'konjam udhavi paṇṇa muḍiyumā'], hints: ['End with the infinitive + முடியுமா? — "is it possible to…?"'], constructions: ['mudiyumaa'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 T. Nagar turns out to be too far to walk. Suggest going by bus.', use: 'busla', exemplar: 'பஸ்ல போகலாம்.', constructions: ['busla'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 T. Nagar turns out to be too far to walk. Suggest going by bus.', use: 'busla', exemplar: 'பஸ்ல போகலாம்.', criteria: { constructions: [{ construction: 'busla', orderedGroups: [['பஸ்ல', 'busla', 'bus-la']] }], contextGroups: [['போகலாம்', 'pogalam']] }, constructions: ['busla'] }
 	]
 });
 
@@ -185,7 +186,7 @@ const l5 = d({
 		{ kind: 'comprehension', lineIndex: 1, prompt: 'Line 2 means…', options: ['"What time is the next train?"', '"Which platform is the train?"', '"Is the train late?"'], answerIndex: 0, constructions: ['enna-neram'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "One ticket to Madurai, please."', canonical: 'மதுரைக்கு ஒரு டிக்கெட் வேணும்.', accepted: ['மதுரைக்கு ஒரு டிக்கெட் வேணும்.', 'madhuraikku oru ticket vēṇum'], hints: ['மதுரைக்கு…'], constructions: ['ticket-kku'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'மதுரை___ ஒரு டிக்கெட் வேணும்.', options: ['க்கு', 'ல', 'ய'], answer: 'க்கு', rule: 'Destination takes dative -க்கு; -ல is "at/in"; -ய marks an object.', constructions: ['ticket-kku'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 A bus counter. You want a ticket to Coimbatore.', use: 'ticket-kku', exemplar: 'கோயம்புத்தூருக்கு ஒரு டிக்கெட் வேணும்.', constructions: ['ticket-kku'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚌 A bus counter. You want a ticket to Coimbatore.', use: 'ticket-kku', exemplar: 'கோயம்புத்தூருக்கு ஒரு டிக்கெட் வேணும்.', criteria: { constructions: [{ construction: 'ticket-kku', orderedGroups: [['கோயம்புத்தூருக்கு', 'coimbatore-kku'], ['ஒரு டிக்கெட்', 'oru ticket']] }], contextGroups: [['வேணும்', 'venum']] }, constructions: ['ticket-kku'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'அடுத்த ரயில் ___ மணிக்கு?', options: ['எத்தனை', 'என்ன', 'எவ்வளவு'], answer: 'எத்தனை', rule: 'Before மணிக்கு use the counting word எத்தனை — "at how-many o\'clock?". என்ன நேரம் asks the time itself; எவ்வளவு asks amounts.', constructions: ['enna-neram', 'manikku'] }
 	]
 });
@@ -216,10 +217,10 @@ const l6 = d({
 		{ kind: 'comprehension', lineIndex: 0, prompt: 'Line 1 means…', options: ['"What is there to eat?"', '"Where do I eat?"', '"Is the food good?"'], answerIndex: 0, constructions: ['enna-irukku'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "The bill, please."', canonical: 'பில் குடுங்க.', accepted: ['பில் குடுங்க.', 'bill kuḍunga'], hints: ['பில்…'], constructions: ['bill-kudunga'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'சாப்பிட ___ இருக்கு?', options: ['என்ன', 'எங்க', 'யாரு'], answer: 'என்ன', rule: 'என்ன = what, எங்க = where, யாரு = who.', constructions: ['enna-irukku'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧃 A juice shop. You want to ask what juices they have.', use: 'enna-irukku', exemplar: 'ஜூஸ் என்ன இருக்கு?', constructions: ['enna-irukku'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧃 A juice shop. You want to ask what juices they have.', use: 'enna-irukku', exemplar: 'ஜூஸ் என்ன இருக்கு?', criteria: { constructions: [{ construction: 'enna-irukku', orderedGroups: [['என்ன இருக்கு', 'enna irukku']] }], contextGroups: [['ஜூஸ்', 'juice']] }, constructions: ['enna-irukku'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I really like dosai."', canonical: 'எனக்கு தோசை ரொம்ப பிடிக்கும்.', accepted: ['எனக்கு தோசை ரொம்ப பிடிக்கும்.', 'எனக்கு ரொம்ப தோசை பிடிக்கும்.', 'enakku dhōsai romba piḍikkum', 'enakku thōsai romba piḍikkum', 'எனக்கு தோசை ரொம்ப புடிக்கும்.'], hints: ['The liker takes the dative: எனக்கு.'], constructions: ['pidikkum'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'எனக்கு இட்லி ___, ஆனா பொங்கல் பிடிக்காது.', options: ['பிடிக்கும்', 'வேணும்', 'இருக்கு'], answer: 'பிடிக்கும்', rule: 'பிடிக்கும் is a standing taste; வேணும் wants one now; இருக்கு only says it exists. The contrast clause already carries the negative பிடிக்காது.', constructions: ['pidikkum'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ A friend asks: coffee or tea? Say you like coffee more than tea.', use: 'vida', exemplar: 'டீயை விட காபி தான் எனக்கு பிடிக்கும்.', constructions: ['vida', 'pidikkum'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ A friend asks: coffee or tea? Say you like coffee more than tea.', use: 'vida', exemplar: 'டீயை விட காபி தான் எனக்கு பிடிக்கும்.', criteria: { constructions: [{ construction: 'vida', orderedGroups: [['டீயை விட', 'teeyai vida']] }, { construction: 'pidikkum', orderedGroups: [['எனக்கு', 'enakku'], ['பிடிக்கும்', 'pidikkum']] }], contextGroups: [['காபி', 'coffee']] }, constructions: ['vida', 'pidikkum'] }
 	]
 });
 
@@ -240,8 +241,8 @@ const l7 = {
 			{ target: 'இருபது ரூபாய். ரொம்ப நல்லா இருக்கு.', translit: 'irubadhu rūbāy. romba nallā irukku.', literal: 'Twenty rupees. Very well it-is.', english: "Twenty rupees. It's very good.", speaker: 'கடைக்காரர்' }
 		],
 		exercises: [
-			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🚉 The same station, but you are going to Trichy and you want tea.', use: 'ticket-kku', exemplar: 'திருச்சிக்கு ஒரு டிக்கெட் வேணும். எனக்கு ஒரு டீ வேணும்.', constructions: [] },
-			{ kind: 'transfer', prompt: 'Still at the station from the dialogue — ask your way around it:', situation: '🎫 It is your first time here and you need to find the ticket counter.', use: 'enge-irukku', exemplar: 'டிக்கெட் கவுண்ட்டர் எங்க இருக்கு?', constructions: [] }
+			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🚉 The same station, but you are going to Trichy and you want tea.', use: 'ticket-kku', exemplar: 'திருச்சிக்கு ஒரு டிக்கெட் வேணும். எனக்கு ஒரு டீ வேணும்.', criteria: { constructions: [{ construction: 'ticket-kku', orderedGroups: [['திருச்சிக்கு', 'trichy-kku'], ['ஒரு டிக்கெட்', 'oru ticket']] }, { construction: 'enakku-venum', orderedGroups: [['எனக்கு', 'enakku'], ['வேணும்', 'venum']] }], contextGroups: [['டீ', 'tea']] }, constructions: ['enakku-venum'] },
+			{ kind: 'transfer', prompt: 'Still at the station from the dialogue — ask your way around it:', situation: '🎫 It is your first time here and you need to find the ticket counter.', use: 'enge-irukku', exemplar: 'டிக்கெட் கவுண்ட்டர் எங்க இருக்கு?', criteria: { constructions: [{ construction: 'enge-irukku', orderedGroups: [['எங்க இருக்கு', 'enga irukku']] }], contextGroups: [['டிக்கெட் கவுண்ட்டர்', 'ticket counter']] }, constructions: [] }
 		]
 	}),
 	constructions: carryConstructions(
@@ -275,7 +276,7 @@ const l8 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I have a headache"', '"I have a stomach ache"', '"My head is fine"'], answerIndex: 0, constructions: ['vali'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I have a headache, for three days."', canonical: 'எனக்கு தலைவலி, மூணு நாள் இருந்து.', accepted: ['எனக்கு தலைவலி, மூணு நாள் இருந்து.', 'எனக்கு தலைவலி.', 'தலை வலிக்குது.'], hints: ['எனக்கு…'], constructions: ['vali', 'irundhu'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'மூணு நாள் ___.', options: ['இருந்து', 'இருக்கு', 'இல்ல'], answer: 'இருந்து', rule: 'இருந்து marks the starting point of a duration.', constructions: ['irundhu'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🦷 A dentist. Your tooth has hurt since yesterday.', use: 'vali', exemplar: 'எனக்கு பல் வலி, நேத்திக்கு இருந்து.', constructions: ['vali', 'irundhu'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🦷 A dentist. Your tooth has hurt since yesterday.', use: 'vali', exemplar: 'எனக்கு பல் வலி, நேத்திக்கு இருந்து.', criteria: { constructions: [{ construction: 'vali', orderedGroups: [['எனக்கு', 'enakku'], ['வலி', 'vali']] }, { construction: 'irundhu', orderedGroups: [['இருந்து', 'irundhu']] }], contextGroups: [['பல்', 'pal'], ['நேத்திக்கு', 'nethikku']] }, constructions: ['vali', 'irundhu'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I feel really tired."', canonical: 'ரொம்ப சோர்வா இருக்கு.', accepted: ['ரொம்ப சோர்வா இருக்கு.', 'romba sōrvā irukku', 'உடம்பு ரொம்ப சோர்வா இருக்கு.'], hints: ['State + -ஆ + இருக்கு.'], constructions: ['aa-irukku'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'உடம்பு ரொம்ப ___ இருக்கு.', options: ['சோர்வா', 'சோர்வு', 'சோர்வான'], answer: 'சோர்வா', rule: 'Before இருக்கு the state takes the adverbial -ஆ: சோர்வு "tiredness" → சோர்வா "tiredly". The bare noun cannot sit in this slot.', constructions: ['aa-irukku'] }
 	]
@@ -305,8 +306,8 @@ const l9 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"Hold on a moment"', '"Please call back"', '"He has left"'], answerIndex: 0, constructions: ['konjam-iru'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "May I speak to Raja?"', canonical: 'ராஜா கிட்ட பேசலாமா?', accepted: ['ராஜா கிட்ட பேசலாமா?', 'rājā kiṭṭa pēsalāmā'], hints: ['ராஜா…'], constructions: ['pesalama'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'ராஜா ___ பேசலாமா?', options: ['கிட்ட', 'க்கு', 'ல'], answer: 'கிட்ட', rule: 'கிட்ட marks the person addressed; -க்கு is a destination; -ல is a location.', constructions: ['pesalama'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏢 An office. You want to ask to speak to the manager.', use: 'pesalama', exemplar: 'மேனேஜர் கிட்ட பேசலாமா?', constructions: ['pesalama'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 A friend suggests the night show. Agree, and suggest eating afterwards.', use: 'appuram', exemplar: 'சரி. அப்புறம் சாப்பிடலாம்.', constructions: ['appuram'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏢 An office. You want to ask to speak to the manager.', use: 'pesalama', exemplar: 'மேனேஜர் கிட்ட பேசலாமா?', criteria: { constructions: [{ construction: 'pesalama', orderedGroups: [['கிட்ட', 'kitta'], ['பேசலாமா', 'pesalama']] }], contextGroups: [['மேனேஜர்', 'manager']] }, constructions: ['pesalama'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 A friend suggests the night show. Agree, and suggest eating afterwards.', use: 'appuram', exemplar: 'சரி. அப்புறம் சாப்பிடலாம்.', criteria: { constructions: [{ construction: 'appuram', orderedGroups: [['அப்புறம்', 'appuram']] }], contextGroups: [['சாப்பிடலாம்', 'saappidalam']] }, constructions: ['appuram'] }
 	]
 });
 
@@ -335,7 +336,7 @@ const l10 = d({
 		{ kind: 'comprehension', lineIndex: 1, prompt: 'Line 2 means…', options: ['"There is no milk"', '"There is milk"', '"I do not like milk"'], answerIndex: 0, constructions: ['illa-neg'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "There is no milk."', canonical: 'பால் இல்ல.', accepted: ['பால் இல்ல.', 'pāl illa'], hints: ['பால்…'], constructions: ['illa-neg'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'பால் ___.', options: ['இல்ல', 'இருக்கு', 'இருக்கா'], answer: 'இல்ல', rule: 'இல்ல negates existence; இருக்கு asserts it; இருக்கா asks.', constructions: ['illa-neg'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 You notice there is no salt in the kitchen.', use: 'illa-neg', exemplar: 'உப்பு இல்ல.', constructions: ['illa-neg'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 You notice there is no salt in the kitchen.', use: 'illa-neg', exemplar: 'உப்பு இல்ல.', criteria: { constructions: [{ construction: 'illa-neg', orderedGroups: [['இல்ல', 'illa']] }], contextGroups: [['உப்பு', 'uppu']] }, constructions: ['illa-neg'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'காபி ___ போகலாம்.', options: ['குடிச்சிட்டு', 'குடிக்க', 'குடிச்சேன்'], answer: 'குடிச்சிட்டு', rule: 'The chained verb takes -ச்சிட்டு "having drunk"; குடிச்சேன் is a finished past and குடிக்க is a bare "to drink" — neither chains into போகலாம்.', constructions: ['chittu-sequence'] }
 	]
 });
@@ -365,7 +366,7 @@ const l11 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I have work on Saturday"', '"I worked on Saturday"', '"Saturday is a holiday"'], answerIndex: 0, constructions: ['vēlai'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Shall we go to the museum?"', canonical: 'மியூசியம் போகலாமா?', accepted: ['மியூசியம் போகலாமா?', 'மியூசியம் போலாமா?', 'museum pōgalāmā', 'museum pōlāmā'], hints: ['மியூசியம்…'], constructions: ['pona'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'மியூசியம் போக___?', options: ['லாமா', 'றேன்', 'ல'], answer: 'லாமா', rule: '-லாம் proposes ("let’s"); adding -ஆ turns it into a question.', constructions: ['pona'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 A friend asks about tonight. Suggest going to a film.', use: 'pona', exemplar: 'சினிமா போகலாமா?', constructions: ['pona'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🎬 A friend asks about tonight. Suggest going to a film.', use: 'pona', exemplar: 'சினிமா போகலாமா?', criteria: { constructions: [{ construction: 'pona', orderedGroups: [['போகலாமா', 'pogalama']] }], contextGroups: [['சினிமா', 'cinema']] }, constructions: ['pona'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I\'ll book the tickets."', canonical: 'டிக்கெட் நான் புக் பண்றேன்.', accepted: ['டிக்கெட் நான் புக் பண்றேன்.', 'நான் டிக்கெட் புக் பண்றேன்.', 'ticket nān book paṇṛēn', 'nān ticket book paṇṛēn'], hints: ['பண்ணு turns the loan "book" into a verb.'], constructions: ['enna-pannalam'] },
 		{ kind: 'comprehension', lineIndex: 7, prompt: 'Line 8 means…', options: ['"If it doesn\'t rain!"', '"It is raining!"', '"I hope it rains!"'], answerIndex: 0, constructions: ['naa-conditional'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'லேட்டா ___, பிரச்சனை.', options: ['போனா', 'போறேன்', 'போலாம்'], answer: 'போனா', rule: '"If (you) go" needs the spoken conditional: past stem போன- + -ஆ → போனா. போறேன் is "I go" and போலாம் is "let\'s go" — neither means "if".', constructions: ['naa-conditional'] }
@@ -396,8 +397,8 @@ const l12 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"How much will airmail cost?"', '"How long does airmail take?"', '"Is airmail available?"'], answerIndex: 0, constructions: ['evvalavu-aagum'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I need to send this parcel to Canada."', canonical: 'இந்த பார்சல் கனடாக்கு அனுப்பணும்.', accepted: ['இந்த பார்சல் கனடாக்கு அனுப்பணும்.'], hints: ['இந்த பார்சல்…'], constructions: ['anuppanum'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'இந்த பார்சல் கனடா___ அனுப்பணும்.', options: ['க்கு', 'ல', 'கிட்ட'], answer: 'க்கு', rule: 'Destination takes -க்கு, the same ending as மதுரைக்கு.', constructions: ['anuppanum'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💌 You want to send a letter to Delhi.', use: 'anuppanum', exemplar: 'இந்த கடிதம் டெல்லிக்கு அனுப்பணும்.', constructions: ['anuppanum'] },
-		{ kind: 'transfer', prompt: 'Stretch the -ணும் ending to a new verb:', situation: '📞 Late-night phone call. Say you must get up at five tomorrow.', use: 'anuppanum', exemplar: 'நாளைக்கு அஞ்சு மணிக்கு எழுந்திருக்கணும்.', constructions: ['anuppanum', 'manikku'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💌 You want to send a letter to Delhi.', use: 'anuppanum', exemplar: 'இந்த கடிதம் டெல்லிக்கு அனுப்பணும்.', criteria: { constructions: [{ construction: 'anuppanum', orderedGroups: [['அனுப்பணும்', 'anuppanum']] }], contextGroups: [['கடிதம்', 'letter'], ['டெல்லிக்கு', 'delhi-kku']] }, constructions: ['anuppanum'] },
+		{ kind: 'transfer', prompt: 'Stretch the -ணும் ending to a new verb:', situation: '📞 Late-night phone call. Say you must get up at five tomorrow.', use: 'anuppanum', exemplar: 'நாளைக்கு அஞ்சு மணிக்கு எழுந்திருக்கணும்.', criteria: { constructions: [{ construction: 'anuppanum', orderedGroups: [['எழுந்திருக்கணும்', 'ezhundhirukkanum']] }, { construction: 'manikku', orderedGroups: [['மணிக்கு', 'manikku']] }], contextGroups: [['நாளைக்கு', 'nalaikku'], ['அஞ்சு', 'anju']] }, constructions: ['anuppanum', 'manikku'] }
 	]
 });
 
@@ -426,8 +427,8 @@ const l13 = d({
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"What should I bring?"', '"What time should I come?"', '"Can I bring a friend?"'], answerIndex: 0, constructions: ['kondu-vara'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Will you come for dinner on Saturday?"', canonical: 'சனிக்கிழமை சாப்பிட வரீங்களா?', accepted: ['சனிக்கிழமை சாப்பிட வரீங்களா?'], hints: ['சனிக்கிழமை…'], constructions: ['varingala'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'சனிக்கிழமை சாப்பிட வர___?', options: ['ீங்களா', 'ேன்', 'லாம்'], answer: 'ீங்களா', rule: '-றீங்களா addresses "you" politely and asks a question.', constructions: ['varingala'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ You want to invite a colleague for coffee tomorrow.', use: 'varingala', exemplar: 'நாளைக்கு காபி குடிக்க வரீங்களா?', constructions: ['varingala'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🥜 A street vendor offers you sundal, but you have just eaten. Turn it down politely.', use: 'venaam', exemplar: 'சுண்டல் வேணாம், நன்றி.', constructions: ['venaam'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ You want to invite a colleague for coffee tomorrow.', use: 'varingala', exemplar: 'நாளைக்கு காபி குடிக்க வரீங்களா?', criteria: { constructions: [{ construction: 'varingala', orderedGroups: [['வரீங்களா', 'varingala']] }], contextGroups: [['நாளைக்கு', 'nalaikku'], ['காபி', 'coffee']] }, constructions: ['varingala'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🥜 A street vendor offers you sundal, but you have just eaten. Turn it down politely.', use: 'venaam', exemplar: 'சுண்டல் வேணாம், நன்றி.', criteria: { constructions: [{ construction: 'venaam', orderedGroups: [['வேணாம்', 'venaam']] }], contextGroups: [['சுண்டல்', 'sundal']] }, constructions: ['venaam'] }
 	]
 });
 
@@ -449,8 +450,8 @@ const l14 = {
 			{ target: 'சரி: காபி, அப்புறம் மியூசியம். கண்டிப்பா!', translit: 'sari: kaapi, appuṛam museum. kaṇḍippā!', literal: 'Fine: coffee, then museum. Certainly!', english: 'Right: coffee, then museum. Definitely!', speaker: 'ராஜா' }
 		],
 		exercises: [
-			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🌧️ Same Sunday, but it is raining and your stomach hurts.', use: 'vali', exemplar: 'எனக்கு வயிறு வலி, நேத்திக்கு இருந்து. வீட்லயே இருக்கலாம்.', constructions: [] },
-			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🏖️ Later, at the beach: a friend hands you sundal and asks how you feel. Say you love sundal and you are feeling very happy.', use: 'pidikkum', exemplar: 'எனக்கு சுண்டல் ரொம்ப பிடிக்கும். ரொம்ப சந்தோஷமா இருக்கு.', constructions: [] }
+			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🌧️ Same Sunday, but it is raining and your stomach hurts.', use: 'vali', exemplar: 'எனக்கு வயிறு வலி, நேத்திக்கு இருந்து. வீட்லயே இருக்கலாம்.', criteria: { constructions: [{ construction: 'vali', orderedGroups: [['எனக்கு', 'enakku'], ['வலி', 'vali']] }, { construction: 'irundhu', orderedGroups: [['இருந்து', 'irundhu']] }], contextGroups: [['வயிறு', 'vayiru'], ['வீட்லயே', 'veetlaye']] }, constructions: ['irundhu'] },
+			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🏖️ Later, at the beach: a friend hands you sundal and asks how you feel. Say you love sundal and you are feeling very happy.', use: 'pidikkum', exemplar: 'எனக்கு சுண்டல் ரொம்ப பிடிக்கும். ரொம்ப சந்தோஷமா இருக்கு.', criteria: { constructions: [{ construction: 'pidikkum', orderedGroups: [['எனக்கு', 'enakku'], ['பிடிக்கும்', 'pidikkum']] }], contextGroups: [['சுண்டல்', 'sundal'], ['சந்தோஷமா', 'sandhoshama']] }, constructions: [] }
 		]
 	}),
 	constructions: carryConstructions(

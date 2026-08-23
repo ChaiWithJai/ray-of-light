@@ -1,0 +1,10 @@
+[project]
+name = "ray-of-light-audio"
+version = "0.1.0"
+description = "Local-only personal-voice lesson audio (issue #19). Never uploads, never commits."
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    # Pinned exactly (issue #19 occurrence C: reproducibility is a locked
+    # package version + checkpoint revision, not "use MLX").
+    "mlx-audio==0.5.0",
+]
