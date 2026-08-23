@@ -9,6 +9,7 @@
  * Nothing here relaxes validation — everything it produces still goes through
  * `Lesson.parse` in `content/index.ts`.
  */
+import audioOffsets from './audio-offsets.json';
 import type {
 	CefrLevel,
 	Construction,
@@ -116,8 +117,13 @@ function buildLine(
 	i: number
 ): LessonLine {
 	const id = `${lessonId(profile, lesson.index)}-l${i + 1}`;
-	const startMs = i * APPROX_LINE_MS;
-	const endMs = startMs + APPROX_LINE_MS;
+	// Real offsets when a recording exists for this lesson (draft TTS today —
+	// see docs/ISSUE-1-LIMITATIONS.md L1); the 4s grid otherwise.
+	const measured = (audioOffsets as Record<string, { startMs: number; endMs: number }[]>)[
+		lessonId(profile, lesson.index)
+	]?.[i];
+	const startMs = measured?.startMs ?? i * APPROX_LINE_MS;
+	const endMs = measured?.endMs ?? startMs + APPROX_LINE_MS;
 
 	return {
 		id,
@@ -137,13 +143,18 @@ function buildLine(
 			speakerId: profile.speakerId,
 			startMs,
 			endMs,
-			pending: true
+			// A measured offset means a real (draft TTS) recording exists on disk.
+			pending: measured === undefined
 		},
-		chunks: (line.chunks ?? []).map((label, c) => ({
-			label,
-			startMs: startMs + c * 900,
-			endMs: startMs + (c + 1) * 900
-		})),
+		chunks: (line.chunks ?? []).map((label, c, all) => {
+			// Split the line's actual duration evenly across its chunks.
+			const span = (endMs - startMs) / all.length;
+			return {
+				label,
+				startMs: Math.round(startMs + c * span),
+				endMs: Math.round(startMs + (c + 1) * span)
+			};
+		}),
 		constructions: (line.constructions ?? []).map((c) => constructionId(profile, c)),
 		notes: line.notes ?? [],
 		source: profile.provenance.source,
