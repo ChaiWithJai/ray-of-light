@@ -1,11 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * Chromium is preinstalled in this environment (build 1194) but @playwright/test
- * pins a newer build, so point it at the binary that exists rather than
- * downloading another one.
+ * Let Playwright resolve its managed Chromium by default. Constrained runners
+ * may opt into a system-provided browser without baking a platform-specific
+ * path into the repository.
  */
-const CHROMIUM = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?.trim();
 
 export default defineConfig({
 	testDir: 'e2e',
@@ -20,7 +20,9 @@ export default defineConfig({
 			name: 'chromium',
 			use: {
 				...devices['Desktop Chrome'],
-				launchOptions: { executablePath: CHROMIUM }
+				launchOptions: chromiumExecutablePath
+					? { executablePath: chromiumExecutablePath }
+					: undefined
 			}
 		}
 	],

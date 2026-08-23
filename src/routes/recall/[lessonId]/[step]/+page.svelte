@@ -11,6 +11,7 @@
 	import Compare from '$lib/components/steps/compare.svelte';
 	import Closure from '$lib/components/steps/closure.svelte';
 	import { getLesson } from '$lib/content/index.js';
+	import type { RecallAttempt } from '$lib/answers.js';
 	import { afterStep, isStepId, RECALL_FLOW, stepDef, stepProgress } from '$lib/flow.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -22,7 +23,7 @@
 	);
 	const progress = $derived(step ? stepProgress(RECALL_FLOW, step) : null);
 
-	let attempt = $state<{ lineId: string; text: string } | null>(null);
+	let attempt = $state<RecallAttempt | null>(null);
 
 	const advance = () => {
 		if (lesson && step) goto(afterStep('recall', lesson.id, RECALL_FLOW, step));

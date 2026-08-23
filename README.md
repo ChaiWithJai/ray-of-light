@@ -18,6 +18,24 @@ npm test             # unit + content conformance (70 tests)
 npm run test:e2e     # acceptance criteria through a real browser (9 tests)
 ```
 
+The end-to-end suite uses Playwright's managed Chromium by default. Install it
+once after installing dependencies (CI may add `--with-deps`):
+
+```sh
+npx playwright install chromium
+# Linux CI: npx playwright install --with-deps chromium
+```
+
+On a constrained runner that supplies its own Chromium-compatible executable,
+set an explicit override instead of changing the checked-in configuration:
+
+```sh
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/absolute/path/to/chrome npm run test:e2e
+```
+
+Leave the variable unset on normal macOS, Linux and CI installations so
+Playwright can select the browser version matching `@playwright/test`.
+
 ## The route through the product
 
 ```
