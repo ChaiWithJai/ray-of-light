@@ -14,6 +14,9 @@
 	import { coveredLabel, spreadSupport, type SpreadState } from '$lib/spread.js';
 	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
 	import type { LearnerSettings } from '$lib/schemas/learner.js';
+	import { SvelteMap } from 'svelte/reactivity';
+
+	type PointerTrack = { startIndex: number; index: number; moved: boolean; inside: boolean };
 
 	let {
 		lesson,
@@ -35,14 +38,130 @@
 	const lines = $derived(lesson.lines);
 	const isTamil = $derived(lesson.language === 'ta');
 	const showTranslit = $derived(isTamil && settings.transliteration);
+	const activePointers = new SvelteMap<number, PointerTrack>();
+	let previewIndex = $state<number | null>(null);
+	let pendingCommitIndex: number | null = null;
+	let gestureCancelled = false;
+	let ignoreClicksUntil = 0;
+	const displayIndex = $derived(previewIndex ?? index);
 
 	function move(delta: number) {
-		index = Math.min(lines.length - 1, Math.max(0, index + delta));
+		activate(Math.min(lines.length - 1, Math.max(0, index + delta)));
 	}
 
 	function activate(i: number) {
+		previewIndex = null;
 		index = i;
 		onlineactivate?.(lines[i]);
+	}
+
+	function accessibleLabel(line: LessonLine, i: number): string {
+		const target = support.targetVisible
+			? `${line.targetScript}${showTranslit && line.transliteration ? ` (${line.transliteration})` : ''}`
+			: 'target language covered';
+		const source = support.sourceVisible ? line.naturalEnglish : 'English covered';
+		return `Line ${i + 1}: ${target} — ${source}`;
+	}
+
+	function lineIndexAt(event: PointerEvent): number | null {
+		const target = document
+			.elementFromPoint(event.clientX, event.clientY)
+			?.closest<HTMLElement>('[data-line-index]');
+		const root = event.currentTarget as HTMLElement;
+		if (!target || !root.contains(target)) return null;
+		const next = Number(target.dataset.lineIndex);
+		return Number.isInteger(next) && next >= 0 && next < lines.length ? next : null;
+	}
+
+	function onpointerdown(event: PointerEvent) {
+		if (event.pointerType === 'mouse' && event.button !== 0) return;
+		if (
+			settings.trackingMode === 'two-finger' &&
+			event.pointerType === 'touch' &&
+			!(event.target as Element).closest('[data-tracking-handle]')
+		) return;
+		const next = lineIndexAt(event);
+		if (next === null) return;
+		if (activePointers.size === 0) {
+			pendingCommitIndex = null;
+			gestureCancelled = false;
+		}
+		activePointers.set(event.pointerId, {
+			startIndex: next,
+			index: next,
+			moved: false,
+			inside: true
+		});
+		(event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId);
+		previewIndex = next;
+	}
+
+	function onpointermove(event: PointerEvent) {
+		const track = activePointers.get(event.pointerId);
+		if (!track) return;
+		if (event.pointerType === 'mouse' && event.buttons === 0) {
+			activePointers.delete(event.pointerId);
+			previewIndex = null;
+			return;
+		}
+		const next = lineIndexAt(event);
+		if (next === null) {
+			activePointers.set(event.pointerId, { ...track, inside: false });
+			if (activePointers.size === 1) previewIndex = null;
+			return;
+		}
+		activePointers.set(event.pointerId, {
+			...track,
+			index: next,
+			moved: track.moved || next !== track.startIndex,
+			inside: true
+		});
+		previewIndex = next;
+	}
+
+	function finishPointer(event: PointerEvent, cancelled: boolean) {
+		const track = activePointers.get(event.pointerId);
+		if (!track) return;
+		const root = event.currentTarget as HTMLElement;
+		if (root.hasPointerCapture?.(event.pointerId)) root.releasePointerCapture(event.pointerId);
+		const aborted = cancelled || !track.inside;
+		if (aborted) gestureCancelled = true;
+		else pendingCommitIndex = previewIndex ?? track.index;
+		activePointers.delete(event.pointerId);
+		if (activePointers.size > 0) return;
+
+		if (!gestureCancelled && pendingCommitIndex !== null) {
+			ignoreClicksUntil = performance.now() + 500;
+			activate(pendingCommitIndex);
+		} else {
+			previewIndex = null;
+		}
+		pendingCommitIndex = null;
+		gestureCancelled = false;
+	}
+
+	function onpointerup(event: PointerEvent) {
+		const track = activePointers.get(event.pointerId);
+		const next = lineIndexAt(event);
+		if (track && next !== null) {
+			activePointers.set(event.pointerId, {
+				...track,
+				index: next,
+				moved: track.moved || next !== track.startIndex,
+				inside: true
+			});
+		} else if (track) {
+			activePointers.set(event.pointerId, { ...track, inside: false });
+		}
+		finishPointer(event, false);
+	}
+
+	function onpointercancel(event: PointerEvent) {
+		finishPointer(event, true);
+	}
+
+	function onmouseleave() {
+		if (activePointers.size === 0) previewIndex = null;
 	}
 
 	function onkeydown(event: KeyboardEvent) {
@@ -63,27 +182,41 @@
 	role="listbox"
 	tabindex="0"
 	aria-label="Parallel bilingual spread. Use up and down arrows to move between line pairs."
-	aria-activedescendant="pair-{index}"
+	aria-activedescendant="pair-{displayIndex}"
 	class="flex flex-col gap-[2px] rounded-[6px] outline-none focus-visible:ring-2 focus-visible:ring-accent-blue"
+	class:touch-pan-y={true}
 	{onkeydown}
+	{onpointerdown}
+	{onpointermove}
+	{onpointerup}
+	{onpointercancel}
+	{onmouseleave}
 >
 	<div class="flex items-center justify-between text-[12px] text-ink-soft">
 		<span>{isTamil ? 'தமிழ்' : 'FRANÇAIS'}</span><span>ENGLISH</span>
 	</div>
 
 	{#each lines as line, i (line.id)}
-		{@const current = i === index}
+		{@const current = i === displayIndex}
 		<div
 			id="pair-{i}"
+			data-line-index={i}
 			role="option"
 			aria-selected={current}
+			aria-label={accessibleLabel(line, i)}
 			tabindex="-1"
 			class="cursor-pointer"
-			onclick={() => activate(i)}
-			onmouseenter={() => (index = i)}
-			onkeydown={() => {}}
+			onclick={(event) => {
+				if (performance.now() >= ignoreClicksUntil) activate(i);
+			}}
+			onkeydown={(event) => {
+				if (event.key === 'Enter' || event.key === ' ') activate(i);
+			}}
+			onmouseenter={() => {
+				if (activePointers.size === 0) previewIndex = i;
+			}}
 		>
-			<W.PairRow highlight={current} class={current ? '' : 'opacity-90'}>
+			<W.PairRow highlight={current} class="relative {current ? '' : 'opacity-90'}">
 				<!-- Target column -->
 				<W.Cover
 					covered={!support.targetVisible}
@@ -92,7 +225,9 @@
 				>
 					<W.Fr n={i + 1} class={current ? 'font-semibold' : ''}>
 						{line.targetScript}
-						{#if current && !line.audio.pending}<span class="text-[11px]">▶</span>{/if}
+						{#if current && !line.audio.pending}
+							<span class="text-[11px]" aria-hidden="true">▶</span>
+						{/if}
 					</W.Fr>
 					{#if showTranslit && line.transliteration}
 						<div class="pl-[16px] text-[11.5px] text-ink-faint italic">
@@ -113,6 +248,21 @@
 						</div>
 					{/if}
 				</W.Cover>
+
+				{#if settings.trackingMode === 'two-finger'}
+					<span
+						data-tracking-handle
+						data-side="target"
+						aria-hidden="true"
+						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-accent-blue bg-paper text-accent-blue"
+					>↕</span>
+					<span
+						data-tracking-handle
+						data-side="source"
+						aria-hidden="true"
+						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-accent-blue bg-paper text-accent-blue"
+					>↕</span>
+				{/if}
 			</W.PairRow>
 		</div>
 	{/each}
