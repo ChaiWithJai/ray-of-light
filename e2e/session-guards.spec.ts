@@ -554,12 +554,12 @@ test('corrupt sequencing cursors recover to ordered course prefixes', async ({ p
 		localStorage.setItem(key, JSON.stringify(stored));
 	}, STORAGE_KEY);
 	await page.reload();
+	await expect(page.getByText(/Lesson 2 ·/)).toBeVisible();
 	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
 	expect(stored.completedLessons).toEqual({ fr: ['fr-01'], ta: ['ta-01'] });
 	expect(stored.completedRecallLessons).toEqual({ fr: [], ta: [] });
 	expect(stored.evidence.map((event: { id: string }) => event.id)).toEqual(['keep-cursor-recovery']);
 	expect(stored.settings.textScale).toBe(73);
-	await expect(page.getByText(/Lesson 2 ·/)).toBeVisible();
 });
 
 test('assignment-origin session must match its persisted assignment authorization', async ({ page }) => {
