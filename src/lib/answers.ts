@@ -2,9 +2,10 @@
  * Answer comparison.
  *
  * Deliberately conservative: this decides whether an *attempt* matched, and it
- * only ever compares against human-reviewed accepted answers. It is not a grader,
+ * only ever compares against authored accepted answers. It is not a grader,
  * and it never scores pronunciation — see docs/ISSUE-1-LIMITATIONS.md.
  */
+import type { LessonLine, RecallPrompt } from '$lib/schemas/content.js';
 
 /**
  * Fold away the differences that are not the learner's mistake: case, accents,
@@ -26,10 +27,61 @@ export function normalise(value: string): string {
 		.trim();
 }
 
-/** True when the attempt matches any reviewed accepted answer. */
+/** True when the attempt matches any authored accepted answer. */
 export function matchesAccepted(attempt: string, accepted: readonly string[]): boolean {
 	const a = normalise(attempt);
 	return accepted.some((candidate) => normalise(candidate) === a);
+}
+
+export type RecallEvidenceKind = 'recall-correct' | 'attempt-incorrect';
+
+export type RecallAttempt = {
+	lineId: string;
+	text: string;
+	canonicalAnswer: string;
+	matchedAcceptedAnswer?: string;
+};
+
+export type RecallEvaluation = {
+	kind: RecallEvidenceKind;
+	canonicalAnswer: string;
+	constructionIds: string[];
+	matchedAcceptedAnswer?: string;
+};
+
+/**
+ * Classify a recall attempt before it is appended to the evidence log.
+ * Keeping this decision pure makes it impossible for the UI to grant recall
+ * merely because the learner typed something and moved to comparison.
+ */
+export function recallEvidenceKind(
+	attempt: string,
+	acceptedAnswers: readonly string[]
+): RecallEvidenceKind {
+	return matchesAccepted(attempt, acceptedAnswers) ? 'recall-correct' : 'attempt-incorrect';
+}
+
+/**
+ * Evaluate against the authored recall exercise whenever it exists. The spread
+ * line is contextual support; it is not allowed to replace the exercise's
+ * accepted answers, canonical response, or construction attribution.
+ */
+export function evaluateRecallAttempt(
+	attempt: string,
+	prompt: RecallPrompt | undefined,
+	contextLine: LessonLine
+): RecallEvaluation {
+	const acceptedAnswers = prompt?.acceptedAnswers ?? [contextLine.targetScript];
+	const normalisedAttempt = normalise(attempt);
+	const matchedAcceptedAnswer = acceptedAnswers.find(
+		(candidate) => normalise(candidate) === normalisedAttempt
+	);
+	return {
+		kind: matchedAcceptedAnswer ? 'recall-correct' : 'attempt-incorrect',
+		canonicalAnswer: prompt?.canonicalAnswer ?? contextLine.targetScript,
+		constructionIds: [...(prompt?.constructions ?? contextLine.constructions)],
+		matchedAcceptedAnswer
+	};
 }
 
 export type DiffWord = { text: string; same: boolean };
