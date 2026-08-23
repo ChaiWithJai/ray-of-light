@@ -42,23 +42,27 @@ const l1 = d({
 	constructions: [
 		['vanakkam', 'வணக்கம் — vaṇakkam', 'the all-purpose greeting'],
 		['enakku-venum', 'எனக்கு + noun + வேணும்', 'wanting something: "to me X is wanted"'],
-		['romba-nalla', 'ரொம்ப + adjective', 'intensifier — "very …"']
+		['romba-nalla', 'ரொம்ப + adjective', 'intensifier — "very …"'],
+		['eppadi-irukkeenga', 'நல்லா இருக்கீங்களா? / எப்படி இருக்கீங்க?', 'the how-are-you exchange — நல்லா "well" + a form of இரு with the person in the ending'],
+		['en-peru', 'என் பேரு + name', 'introducing yourself — "my name X", with no word for "is"']
 	],
 	lines: [
-		{ target: 'வணக்கம்!', translit: 'vaṇakkam!', literal: 'Greeting!', english: 'Hello!', speaker: 'வாடிக்கையாளர்', constructions: ['vanakkam'], notes: [{ type: 'culture', text: 'வணக்கம் works at any hour and any formality. Unlike French, there is no separate evening greeting you must switch to.', anchor: 'வணக்கம்' }] },
+		{ target: 'வணக்கம்!', translit: 'vaṇakkam!', literal: 'Greeting!', english: 'Hello!', speaker: 'வாடிக்கையாளர்', constructions: ['vanakkam'], notes: [{ type: 'culture', text: 'வணக்கம் works at any hour and any formality. Unlike French, there is no separate evening greeting you must switch to.', anchor: 'வணக்கம்' }, { type: 'grammar', text: 'After வணக்கம், the natural next move is நல்லா இருக்கீங்களா? — "are you doing well?". Answer நல்லா இருக்கேன் "I\'m well", then return it: நீங்க எப்படி இருக்கீங்க? "how are you?"', anchor: 'வணக்கம்' }, { type: 'morphology', text: 'The person lives in the verb ending: இருக்கேன் = இருக்க- "be" + -ஏன் "I"; இருக்கீங்க = இருக்க- + -ஈங்க "you (polite)". Because the ending already says who, நான்/நீங்க can be dropped.', anchor: 'வணக்கம்' }, { type: 'grammar', text: 'To introduce yourself, put என் பேரு "my name" next to the name — என் பேரு பிரியா. No word for "is": spoken Tamil sets the two side by side.', anchor: 'வணக்கம்' }] },
 		{ target: 'வணக்கம், என்ன வேணும்?', translit: 'vaṇakkam, enna vēṇum?', literal: 'Greeting, what is-wanted?', english: 'Hello, what would you like?', speaker: 'கடைக்காரர்' },
-		{ target: 'எனக்கு ஒரு காபி வேணும்.', translit: 'enakku oru kaapi vēṇum.', literal: 'To-me one coffee is-wanted.', english: "I'd like a coffee.", speaker: 'வாடிக்கையாளர்', constructions: ['enakku-venum'], chunks: ['enakku', 'oru kaapi', 'vēṇum'], notes: [{ type: 'grammar', text: 'Tamil has no verb "to want" taking a subject. The wanter goes in the dative (எனக்கு "to me") and the thing wanted is the subject. This pattern will carry you a long way.', anchor: 'எனக்கு' }, { type: 'morphology', text: 'எனக்கு = நான் (I) + dative -க்கு.', anchor: 'எனக்கு' }] },
+		{ target: 'எனக்கு ஒரு காபி வேணும்.', translit: 'enakku oru kaapi vēṇum.', literal: 'To-me one coffee is-wanted.', english: "I'd like a coffee.", speaker: 'வாடிக்கையாளர்', constructions: ['enakku-venum'], chunks: ['enakku', 'oru kaapi', 'vēṇum'], notes: [{ type: 'grammar', text: 'Tamil has no verb "to want" taking a subject. The wanter goes in the dative (எனக்கு "to me") and the thing wanted is the subject. This pattern will carry you a long way.', anchor: 'எனக்கு' }, { type: 'morphology', text: 'எனக்கு = நான் (I) + dative -க்கு.', anchor: 'எனக்கு' }, { type: 'culture', text: 'அண்ணா "elder brother" (or அக்கா "elder sister") is the standard friendly way to address a shopkeeper or tea-shop man — polite, not familial. No word for "please" is needed; the -ங்க ending on the verb does that work.', anchor: 'காபி' }] },
 		{ target: 'சர்க்கரை வேணுமா?', translit: 'sarkkarai vēṇumā?', literal: 'Sugar is-wanted-Q?', english: 'Do you want sugar?', speaker: 'கடைக்காரர்', notes: [{ type: 'grammar', text: 'Adding -ஆ to the end turns a statement into a yes/no question. No word order changes.', anchor: 'வேணுமா' }] },
-		{ target: 'கொஞ்சம் வேணும்.', translit: 'konjam vēṇum.', literal: 'A-little is-wanted.', english: 'A little, please.', speaker: 'வாடிக்கையாளர்', constructions: ['enakku-venum'] },
+		{ target: 'கொஞ்சம் வேணும்.', translit: 'konjam vēṇum.', literal: 'A-little is-wanted.', english: 'A little, please.', speaker: 'வாடிக்கையாளர்', constructions: ['enakku-venum'], notes: [{ type: 'grammar', text: 'To customise instead of just accepting: சர்க்கரை கம்மியா போடுங்க — "put the sugar less-ly", i.e. go easy on the sugar. போடுங்க "put" carries the same polite -ங்க as குடுங்க.', anchor: 'கொஞ்சம்' }] },
 		{ target: 'இதோ உங்க காபி.', translit: 'idhō unga kaapi.', literal: 'Here your coffee.', english: 'Here is your coffee.', speaker: 'கடைக்காரர்' },
-		{ target: 'ரொம்ப நல்லா இருக்கு.', translit: 'romba nallā irukku.', literal: 'Very well it-is.', english: "It's very good.", speaker: 'வாடிக்கையாளர்', constructions: ['romba-nalla'] },
+		{ target: 'ரொம்ப நல்லா இருக்கு.', translit: 'romba nallā irukku.', literal: 'Very well it-is.', english: "It's very good.", speaker: 'வாடிக்கையாளர்', constructions: ['romba-nalla'], notes: [{ type: 'culture', text: 'Current Chennai slang for the same sentiment: செம்மையா இருக்கு (often clipped to "semma") — "it\'s excellent". You will hear it constantly; recognise it, but ரொம்ப நல்லா இருக்கு is the safe thing to say.', anchor: 'நல்லா இருக்கு' }] },
 		{ target: 'நன்றி!', translit: 'naṇḍri!', literal: 'Thanks!', english: 'Thank you!', speaker: 'வாடிக்கையாளர்' }
 	],
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"I\'d like a coffee"', '"Do you have coffee?"', '"The coffee is good"'], answerIndex: 0, constructions: ['enakku-venum'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "I\'d like a coffee."', canonical: 'எனக்கு ஒரு காபி வேணும்.', accepted: ['எனக்கு ஒரு காபி வேணும்.', 'enakku oru kaapi vēṇum'], hints: ['எனக்கு…'], constructions: ['enakku-venum'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: '___ ஒரு காபி வேணும்.', options: ['எனக்கு', 'நான்', 'என்'], answer: 'எனக்கு', rule: 'The wanter takes the dative: எனக்கு, not நான்.', constructions: ['enakku-venum'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍵 A tea stall. You want one tea.', use: 'enakku-venum', exemplar: 'எனக்கு ஒரு டீ வேணும்.', constructions: ['enakku-venum'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍵 A tea stall. You want one tea.', use: 'enakku-venum', exemplar: 'எனக்கு ஒரு டீ வேணும்.', constructions: ['enakku-venum'] },
+		{ kind: 'recall', prompt: 'Ask someone politely: "How are you?"', canonical: 'எப்படி இருக்கீங்க?', accepted: ['எப்படி இருக்கீங்க?', 'நீங்க எப்படி இருக்கீங்க?', 'நல்லா இருக்கீங்களா?', 'eppadi irukkīṅga', 'nallā irukkīṅgaḷā'], hints: ['எப்படி = "how".'], constructions: ['eppadi-irukkeenga'] },
+		{ kind: 'recall', prompt: 'Introduce yourself: say "My name is Kavya."', canonical: 'என் பேரு காவ்யா.', accepted: ['என் பேரு காவ்யா.', 'என் பேர் காவ்யா.', 'en pēru Kāvyā', 'en peru Kavya'], hints: ['Start with என் பேரு — "my name".', 'No word for "is" — just add the name.'], constructions: ['en-peru'] }
 	]
 });
 
@@ -70,11 +74,12 @@ const l2 = d({
 	constructions: [
 		['irukka-q', 'noun + இருக்கா?', 'asking whether something is available'],
 		['ettana-naal', 'எத்தனை + counter', 'asking how many'],
-		['kku-for', 'number + நாள்/பேர்', 'counting nights and people']
+		['kku-for', 'number + நாள்/பேர்', 'counting nights and people'],
+		['aa-question', 'statement + -ஆ', 'yes/no question — add -ஆ to the last word, no word-order change']
 	],
 	lines: [
-		{ target: 'வணக்கம். ரூம் இருக்கா?', translit: 'vaṇakkam. room irukkā?', literal: 'Greeting. Room is-there-Q?', english: 'Hello. Do you have a room?', speaker: 'பயணி', constructions: ['vanakkam', 'irukka-q'], chunks: ['vaṇakkam', 'room', 'irukkā'] },
-		{ target: 'இருக்கு. எத்தனை நாள்?', translit: 'irukku. ettanai nāḷ?', literal: 'It-is. How-many day?', english: 'Yes. How many nights?', speaker: 'ரிசப்ஷன்', constructions: ['ettana-naal'] },
+		{ target: 'வணக்கம். ரூம் இருக்கா?', translit: 'vaṇakkam. room irukkā?', literal: 'Greeting. Room is-there-Q?', english: 'Hello. Do you have a room?', speaker: 'பயணி', constructions: ['vanakkam', 'irukka-q', 'aa-question'], chunks: ['vaṇakkam', 'room', 'irukkā'], notes: [{ type: 'grammar', text: 'Tamil has no word for "or": an either/or question is just two -ஆ questions side by side — ஸ்ட்ராங்கா வேணுமா, லைட்டா வேணுமா? "(do you want it) strong, or light?" — and the listener picks one.', anchor: 'இருக்கா' }] },
+		{ target: 'இருக்கு. எத்தனை நாள்?', translit: 'irukku. ettanai nāḷ?', literal: 'It-is. How-many day?', english: 'Yes. How many nights?', speaker: 'ரிசப்ஷன்', constructions: ['ettana-naal'], notes: [{ type: 'grammar', text: 'Spoken vs written: இருக்கு is what literary Tamil writes as இருக்கிறது, and வேணும் is வேண்டும். You will meet the long forms in print and announcements; on the street, say the short ones.', anchor: 'இருக்கு' }] },
 		{ target: 'ரெண்டு நாள்.', translit: 'reṇḍu nāḷ.', literal: 'Two day.', english: 'Two nights.', speaker: 'பயணி', constructions: ['kku-for'], notes: [{ type: 'grammar', text: 'After a number, the counted noun stays singular: ரெண்டு நாள், not நாள்கள்.', anchor: 'ரெண்டு நாள்' }] },
 		{ target: 'எத்தனை பேர்?', translit: 'ettanai pēr?', literal: 'How-many persons?', english: 'How many people?', speaker: 'ரிசப்ஷன்', constructions: ['ettana-naal'] },
 		{ target: 'ரெண்டு பேர்.', translit: 'reṇḍu pēr.', literal: 'Two persons.', english: 'Two people.', speaker: 'பயணி', constructions: ['kku-for'] },
@@ -85,7 +90,7 @@ const l2 = d({
 	exercises: [
 		{ kind: 'comprehension', lineIndex: 0, prompt: 'Line 1 means…', options: ['"Do you have a room?"', '"Where is the room?"', '"The room is nice"'], answerIndex: 0, constructions: ['irukka-q'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Do you have a room?"', canonical: 'ரூம் இருக்கா?', accepted: ['ரூம் இருக்கா?', 'room irukkā'], hints: ['ரூம்…'], constructions: ['irukka-q'] },
-		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'ரூம் ___?', options: ['இருக்கா', 'இருக்கு', 'இல்ல'], answer: 'இருக்கா', rule: 'The -ஆ ending makes it a question. இருக்கு is the statement.', constructions: ['irukka-q'] },
+		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'ரூம் ___?', options: ['இருக்கா', 'இருக்கு', 'இல்ல'], answer: 'இருக்கா', rule: 'The -ஆ ending makes it a question. இருக்கு is the statement.', constructions: ['irukka-q', 'aa-question'] },
 		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🚕 An auto stand. You want to ask whether there is an auto.', use: 'irukka-q', exemplar: 'ஆட்டோ இருக்கா?', constructions: ['irukka-q'] }
 	]
 });
@@ -101,12 +106,12 @@ const l3 = d({
 		['kudunga', 'noun + குடுங்க', 'polite imperative — "please give"']
 	],
 	lines: [
-		{ target: 'வணக்கம். தக்காளி எவ்வளவு?', translit: 'vaṇakkam. thakkāḷi evvaḷavu?', literal: 'Greeting. Tomato how-much?', english: 'Hello. How much are the tomatoes?', speaker: 'வாடிக்கையாளர்', constructions: ['evvalavu'] },
-		{ target: 'கிலோ நாற்பது ரூபாய்.', translit: 'kilō nāṛpadhu rūbāy.', literal: 'Kilo forty rupees.', english: 'Forty rupees a kilo.', speaker: 'கடைக்காரர்' },
+		{ target: 'வணக்கம். தக்காளி எவ்வளவு?', translit: 'vaṇakkam. thakkāḷi evvaḷavu?', literal: 'Greeting. Tomato how-much?', english: 'Hello. How much are the tomatoes?', speaker: 'வாடிக்கையாளர்', constructions: ['evvalavu'], notes: [{ type: 'pronunciation', text: 'On the street எவ்வளவு contracts to எவ்ளோ (evlo). Keep எவ்வளவு as your anchor form; recognise எவ்ளோ everywhere — both are accepted in this course.', anchor: 'எவ்வளவு' }] },
+		{ target: 'கிலோ நாற்பது ரூபாய்.', translit: 'kilō nāṛpadhu rūbāy.', literal: 'Kilo forty rupees.', english: 'Forty rupees a kilo.', speaker: 'கடைக்காரர்', notes: [{ type: 'pronunciation', text: 'Spoken numerals flatten an initial ஐ to அ: ஐந்து → அஞ்சு "five", ஐம்பது → அம்பது "fifty". You have already heard அஞ்சு நிமிஷம் on the street; the count runs ஒண்ணு, ரெண்டு, மூணு, நாலு, அஞ்சு, ஆறு…', anchor: 'நாற்பது' }, { type: 'grammar', text: 'Prices can be per item too, not just per kilo: ஒரு பழம் அஞ்சு ரூபா — "one fruit, five rupees (each)".', anchor: 'கிலோ' }] },
 		{ target: 'ஒரு கிலோ குடுங்க.', translit: 'oru kilō kuḍunga.', literal: 'One kilo give-please.', english: 'Give me a kilo, please.', speaker: 'வாடிக்கையாளர்', constructions: ['oru-kilo', 'kudunga'], chunks: ['oru kilō', 'kuḍunga'], notes: [{ type: 'grammar', text: 'The -ங்க ending is the polite/plural imperative. Dropping it (குடு) is what you say to a child or a close friend.', anchor: 'குடுங்க' }] },
 		{ target: 'வேற ஏதாவது?', translit: 'vēṛa ēdhāvadhu?', literal: 'Other something?', english: 'Anything else?', speaker: 'கடைக்காரர்' },
 		{ target: 'கொஞ்சம் வெங்காயம் வேணும்.', translit: 'konjam veṅgāyam vēṇum.', literal: 'A-little onion is-wanted.', english: 'I need some onions.', speaker: 'வாடிக்கையாளர்', constructions: ['enakku-venum'] },
-		{ target: 'இதோ. மொத்தம் அறுபது ரூபாய்.', translit: 'idhō. mottham aṛubadhu rūbāy.', literal: 'Here. Total sixty rupees.', english: 'Here. Sixty rupees in total.', speaker: 'கடைக்காரர்' },
+		{ target: 'இதோ. மொத்தம் அறுபது ரூபாய்.', translit: 'idhō. mottham aṛubadhu rūbāy.', literal: 'Here. Total sixty rupees.', english: 'Here. Sixty rupees in total.', speaker: 'கடைக்காரர்', notes: [{ type: 'pronunciation', text: 'ரூபாய் usually shortens to ரூபா in speech: அறுபது ரூபா. Both are fine to say; the course writes ரூபாய், and answers with ரூபா are accepted.', anchor: 'ரூபாய்' }] },
 		{ target: 'இந்தாங்க. நன்றி!', translit: 'indhāṅga. naṇḍri!', literal: 'Take-please. Thanks!', english: 'Here you are. Thank you!', speaker: 'வாடிக்கையாளர்' },
 		{ target: 'வாங்க, மறுபடியும் வாங்க.', translit: 'vāṅga, maṛubaḍiyum vāṅga.', literal: 'Come-please, again come-please.', english: 'Do come again.', speaker: 'கடைக்காரர்' }
 	],
@@ -114,7 +119,9 @@ const l3 = d({
 		{ kind: 'comprehension', lineIndex: 0, prompt: 'Line 1 means…', options: ['"How much are the tomatoes?"', '"Do you have tomatoes?"', '"I want tomatoes"'], answerIndex: 0, constructions: ['evvalavu'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Give me a kilo, please."', canonical: 'ஒரு கிலோ குடுங்க.', accepted: ['ஒரு கிலோ குடுங்க.', 'oru kilō kuḍunga'], hints: ['ஒரு…'], constructions: ['kudunga'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'தக்காளி ___?', options: ['எவ்வளவு', 'எத்தனை', 'எங்க'], answer: 'எவ்வளவு', rule: 'எவ்வளவு asks price or uncountable amount; எத்தனை counts discrete things.', constructions: ['evvalavu'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍌 A fruit cart. You want to ask the price of bananas.', use: 'evvalavu', exemplar: 'வாழைப்பழம் எவ்வளவு?', constructions: ['evvalavu'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🍌 A fruit cart. You want to ask the price of bananas.', use: 'evvalavu', exemplar: 'வாழைப்பழம் எவ்வளவு?', constructions: ['evvalavu'] },
+		{ kind: 'recall', prompt: 'Ask the price of the tomatoes.', canonical: 'தக்காளி எவ்வளவு?', accepted: ['தக்காளி எவ்வளவு?', 'தக்காளி எவ்ளோ?', 'thakkāḷi evvaḷavu', 'thakkāḷi evlo'], hints: ['Price questions need no verb: "tomato how-much?"'], lineIndex: 0, constructions: ['evvalavu'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '💵 You pay with a hundred-rupee note and want to check the shopkeeper has change (சில்லறை).', use: 'irukka-q', exemplar: 'சில்லறை இருக்கா?', constructions: ['irukka-q'] }
 	]
 });
 
@@ -126,15 +133,16 @@ const l4 = d({
 	constructions: [
 		['enge-irukku', 'place + எங்க இருக்கு?', 'asking where something is'],
 		['valathu-idathu', 'வலது / இடது / நேரா', 'right / left / straight'],
-		['dooram', 'தூரமா?', 'asking about distance']
+		['dooram', 'தூரமா?', 'asking about distance'],
+		['pakkathula', 'landmark + பக்கத்துல / எதிர்ல', 'next to / opposite — the landmark comes first']
 	],
 	lines: [
-		{ target: 'எக்ஸ்கியூஸ் மி, பஸ் ஸ்டாண்ட் எங்க இருக்கு?', translit: 'excuse me, bus stand eṅga irukku?', literal: 'Excuse me, bus stand where it-is?', english: 'Excuse me, where is the bus stand?', speaker: 'பயணி', constructions: ['enge-irukku'], chunks: ['bus stand', 'eṅga', 'irukku'] },
-		{ target: 'நேரா போங்க, அப்புறம் வலது பக்கம்.', translit: 'nērā pōṅga, appuṛam valadhu pakkam.', literal: 'Straight go-please, then right side.', english: 'Go straight, then turn right.', speaker: 'உள்ளூர்வாசி', constructions: ['valathu-idathu'] },
-		{ target: 'தூரமா?', translit: 'dhūramā?', literal: 'Far-Q?', english: 'Is it far?', speaker: 'பயணி', constructions: ['dooram'] },
+		{ target: 'எக்ஸ்கியூஸ் மி, பஸ் ஸ்டாண்ட் எங்க இருக்கு?', translit: 'excuse me, bus stand eṅga irukku?', literal: 'Excuse me, bus stand where it-is?', english: 'Excuse me, where is the bus stand?', speaker: 'பயணி', constructions: ['enge-irukku'], chunks: ['bus stand', 'eṅga', 'irukku'], notes: [{ type: 'culture', text: 'A pharmacy is universally a மெடிக்கல் ஷாப் — asking for a "pharmacy" may get blank looks; English loans like this are normal spoken Tamil. Directions come by landmark, and சிக்னல் (a traffic light) is a standard Chennai one.', anchor: 'பஸ் ஸ்டாண்ட்' }, { type: 'morphology', text: '-ல is the spoken "in/at/on" and glues onto the end of the noun: ரோட்ல "on the road", வீட்ல "at home", மீட்டிங்ல "in the meeting". Written Tamil uses -இல் (சென்னையில்); speech says -ல (சென்னைல).', anchor: 'எங்க இருக்கு' }] },
+		{ target: 'நேரா போங்க, அப்புறம் வலது பக்கம்.', translit: 'nērā pōṅga, appuṛam valadhu pakkam.', literal: 'Straight go-please, then right side.', english: 'Go straight, then turn right.', speaker: 'உள்ளூர்வாசி', constructions: ['valathu-idathu'], notes: [{ type: 'morphology', text: 'To place things by a landmark, the landmark comes first and the position word follows: கோவில் பக்கத்துல "next to the temple", கோவில் எதிர்ல "opposite the temple" — both built on the same -ல.', anchor: 'வலது பக்கம்' }] },
+		{ target: 'தூரமா?', translit: 'dhūramā?', literal: 'Far-Q?', english: 'Is it far?', speaker: 'பயணி', constructions: ['dooram'], notes: [{ type: 'grammar', text: 'You can spell out the starting point: இங்க இருந்து தூரமா? — "far from here?". இருந்து "from" returns in lesson 8 (மூணு நாள் இருந்து).', anchor: 'தூரமா' }] },
 		{ target: 'இல்ல, அஞ்சு நிமிஷம்.', translit: 'illa, anju nimisham.', literal: 'No, five minute.', english: "No, five minutes.", speaker: 'உள்ளூர்வாசி' },
 		{ target: 'நடந்து போகலாமா?', translit: 'naḍandhu pōgalāmā?', literal: 'Walking may-go-Q?', english: 'Can I walk there?', speaker: 'பயணி' },
-		{ target: 'ஆமா, ரொம்ப கிட்ட.', translit: 'āmā, romba kiṭṭa.', literal: 'Yes, very near.', english: "Yes, it's very close.", speaker: 'உள்ளூர்வாசி', constructions: ['romba-nalla'] },
+		{ target: 'ஆமா, ரொம்ப கிட்ட.', translit: 'āmā, romba kiṭṭa.', literal: 'Yes, very near.', english: "Yes, it's very close.", speaker: 'உள்ளூர்வாசி', constructions: ['romba-nalla'], notes: [{ type: 'grammar', text: 'Two tiny add-ons do heavy lifting in answers like பஸ் ஸ்டாப்பும் அங்க தான் "the bus stop is also right there": -உம் "also" and தான் "exactly/only" for emphasis — each follows the word it modifies.', anchor: 'ஆமா' }] },
 		{ target: 'ரொம்ப நன்றி!', translit: 'romba naṇḍri!', literal: 'Very thanks!', english: 'Thank you so much!', speaker: 'பயணி' },
 		{ target: 'பரவால்ல.', translit: 'paravālla.', literal: 'It-does-not-matter.', english: "You're welcome.", speaker: 'உள்ளூர்வாசி', notes: [{ type: 'culture', text: 'பரவால்ல literally shrugs off the thanks. It is the everyday equivalent of "no problem".', anchor: 'பரவால்ல' }] }
 	],
@@ -142,7 +150,7 @@ const l4 = d({
 		{ kind: 'comprehension', lineIndex: 2, prompt: 'Line 3 means…', options: ['"Is it far?"', '"Where is it?"', '"Is it open?"'], answerIndex: 0, constructions: ['dooram'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Where is the bus stand?"', canonical: 'பஸ் ஸ்டாண்ட் எங்க இருக்கு?', accepted: ['பஸ் ஸ்டாண்ட் எங்க இருக்கு?', 'bus stand eṅga irukku'], hints: ['… எங்க…'], constructions: ['enge-irukku'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'பஸ் ஸ்டாண்ட் ___ இருக்கு?', options: ['எங்க', 'எப்போ', 'எவ்வளவு'], answer: 'எங்க', rule: 'எங்க asks where, எப்போ asks when, எவ்வளவு asks how much.', constructions: ['enge-irukku'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏥 You need the hospital and stop someone on the street.', use: 'enge-irukku', exemplar: 'ஹாஸ்பிடல் எங்க இருக்கு?', constructions: ['enge-irukku'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🏧 You need an ATM and stop a passer-by. Ask where it is, then confirm your guess that it is next to the bank.', use: 'enge-irukku', exemplar: 'ஏடிஎம் எங்க இருக்கு? பேங்க் பக்கத்துல இருக்கா?', constructions: ['enge-irukku', 'pakkathula'] }
 	]
 });
 
@@ -154,16 +162,17 @@ const l5 = d({
 	constructions: [
 		['ticket-kku', 'place + க்கு ஒரு டிக்கெட்', 'a ticket *to* somewhere'],
 		['enna-neram', 'என்ன நேரம்?', 'asking the time'],
-		['adutha', 'அடுத்த + noun', 'the next one']
+		['adutha', 'அடுத்த + noun', 'the next one'],
+		['manikku', 'number + மணிக்கு', 'at X o\'clock — clock time takes the dative -க்கு']
 	],
 	lines: [
-		{ target: 'மதுரைக்கு ஒரு டிக்கெட் வேணும்.', translit: 'madhuraikku oru ticket vēṇum.', literal: 'Madurai-to one ticket is-wanted.', english: 'One ticket to Madurai, please.', speaker: 'பயணி', constructions: ['ticket-kku', 'enakku-venum'], chunks: ['madhuraikku', 'oru ticket', 'vēṇum'], notes: [{ type: 'morphology', text: 'Destination takes the dative -க்கு, the same ending as எனக்கு. மதுரை + க்கு = மதுரைக்கு.', anchor: 'மதுரைக்கு' }] },
-		{ target: 'அடுத்த ரயில் என்ன நேரம்?', translit: 'aḍuttha rayil enna nēram?', literal: 'Next train what time?', english: 'What time is the next train?', speaker: 'பயணி', constructions: ['adutha', 'enna-neram'] },
-		{ target: 'ரெண்டு மணிக்கு.', translit: 'reṇḍu maṇikku.', literal: 'Two o-clock-to.', english: 'At two o’clock.', speaker: 'எழுத்தர்' },
+		{ target: 'மதுரைக்கு ஒரு டிக்கெட் வேணும்.', translit: 'madhuraikku oru ticket vēṇum.', literal: 'Madurai-to one ticket is-wanted.', english: 'One ticket to Madurai, please.', speaker: 'பயணி', constructions: ['ticket-kku', 'enakku-venum'], chunks: ['madhuraikku', 'oru ticket', 'vēṇum'], notes: [{ type: 'morphology', text: 'Destination takes the dative -க்கு, the same ending as எனக்கு. மதுரை + க்கு = மதுரைக்கு.', anchor: 'மதுரைக்கு' }, { type: 'morphology', text: 'The same -க்கு marks the experiencer of age: அவனுக்கு பதினெட்டு வயசு — "to-him eighteen age" = he is eighteen.', anchor: 'மதுரைக்கு' }] },
+		{ target: 'அடுத்த ரயில் என்ன நேரம்?', translit: 'aḍuttha rayil enna nēram?', literal: 'Next train what time?', english: 'What time is the next train?', speaker: 'பயணி', constructions: ['adutha', 'enna-neram'], notes: [{ type: 'grammar', text: 'You can also ask எத்தனை மணிக்கு? — "at what o\'clock (does it leave)?" — with the counting word எத்தனை you know from lesson 2.', anchor: 'என்ன நேரம்' }] },
+		{ target: 'ரெண்டு மணிக்கு.', translit: 'reṇḍu maṇikku.', literal: 'Two o-clock-to.', english: 'At two o’clock.', speaker: 'எழுத்தர்', constructions: ['manikku'], notes: [{ type: 'morphology', text: 'மணி "o\'clock" + dative -க்கு: ரெண்டு மணிக்கு is literally "to two o\'clock". The same ending as எனக்கு and மதுரைக்கு.', anchor: 'மணிக்கு' }] },
 		{ target: 'எந்த பிளாட்பாரம்?', translit: 'endha platform?', literal: 'Which platform?', english: 'Which platform?', speaker: 'பயணி' },
 		{ target: 'மூணாவது பிளாட்பாரம்.', translit: 'mūṇāvadhu platform.', literal: 'Third platform.', english: 'Platform three.', speaker: 'எழுத்தர்' },
 		{ target: 'எவ்வளவு ஆகும்?', translit: 'evvaḷavu āgum?', literal: 'How-much will-become?', english: 'How much will it be?', speaker: 'பயணி', constructions: ['evvalavu'] },
-		{ target: 'நூத்தி ஐம்பது ரூபாய்.', translit: 'nūtthi aimbadhu rūbāy.', literal: 'Hundred fifty rupees.', english: 'A hundred and fifty rupees.', speaker: 'எழுத்தர்' },
+		{ target: 'நூத்தி ஐம்பது ரூபாய்.', translit: 'nūtthi aimbadhu rūbāy.', literal: 'Hundred fifty rupees.', english: 'A hundred and fifty rupees.', speaker: 'எழுத்தர்', notes: [{ type: 'pronunciation', text: 'நூத்தி is the spoken combining form of நூறு "hundred". In everyday speech ஐம்பது also flattens to அம்பது and ரூபாய் shortens to ரூபா — நூத்தி அம்பது ரூபா is what you will usually hear.', anchor: 'நூத்தி ஐம்பது' }] },
 		{ target: 'சரி, நன்றி.', translit: 'sari, naṇḍri.', literal: 'Fine, thanks.', english: 'All right, thank you.', speaker: 'பயணி' }
 	],
 	exercises: [
@@ -219,7 +228,8 @@ const l7 = {
 			{ target: 'இருபது ரூபாய். ரொம்ப நல்லா இருக்கு.', translit: 'irubadhu rūbāy. romba nallā irukku.', literal: 'Twenty rupees. Very well it-is.', english: "Twenty rupees. It's very good.", speaker: 'கடைக்காரர்' }
 		],
 		exercises: [
-			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🚉 The same station, but you are going to Trichy and you want tea.', use: 'ticket-kku', exemplar: 'திருச்சிக்கு ஒரு டிக்கெட் வேணும். எனக்கு ஒரு டீ வேணும்.', constructions: [] }
+			{ kind: 'transfer', prompt: 'Perform the whole dialogue, then adapt it:', situation: '🚉 The same station, but you are going to Trichy and you want tea.', use: 'ticket-kku', exemplar: 'திருச்சிக்கு ஒரு டிக்கெட் வேணும். எனக்கு ஒரு டீ வேணும்.', constructions: [] },
+			{ kind: 'transfer', prompt: 'Still at the station from the dialogue — ask your way around it:', situation: '🎫 It is your first time here and you need to find the ticket counter.', use: 'enge-irukku', exemplar: 'டிக்கெட் கவுண்ட்டர் எங்க இருக்கு?', constructions: [] }
 		]
 	}),
 	constructions: carryConstructions(
@@ -244,7 +254,7 @@ const l8 = d({
 		{ target: 'எனக்கு தலைவலி.', translit: 'enakku thalaivali.', literal: 'To-me head-pain.', english: 'I have a headache.', speaker: 'நோயாளி', constructions: ['vali'], chunks: ['enakku', 'thalaivali'], notes: [{ type: 'morphology', text: 'தலை (head) + வலி (pain) compound directly. Same for வயிறு வலி, பல் வலி.', anchor: 'தலைவலி' }] },
 		{ target: 'எப்போ இருந்து?', translit: 'eppō irundhu?', literal: 'When from?', english: 'Since when?', speaker: 'டாக்டர்', constructions: ['irundhu'] },
 		{ target: 'மூணு நாள் இருந்து.', translit: 'mūṇu nāḷ irundhu.', literal: 'Three day from.', english: 'For three days.', speaker: 'நோயாளி', constructions: ['irundhu'] },
-		{ target: 'நல்லா தூங்கறீங்களா?', translit: 'nallā thūṅgaṛīṅgaḷā?', literal: 'Well you-sleep-Q?', english: 'Are you sleeping well?', speaker: 'டாக்டர்' },
+		{ target: 'நல்லா தூங்கறீங்களா?', translit: 'nallā thūṅgaṛīṅgaḷā?', literal: 'Well you-sleep-Q?', english: 'Are you sleeping well?', speaker: 'டாக்டர்', notes: [{ type: 'morphology', text: 'The -ற்- is the spoken present marker: -றேன் "I…" (வைக்கறேன்), -றீங்க "you…" (தூங்கறீங்க). Literary Tamil writes -கிறேன் / -கிறீர்கள்; speech squeezes them.', anchor: 'தூங்கறீங்களா' }] },
 		{ target: 'இல்ல, நல்லா தூங்கல.', translit: 'illa, nallā thūṅgala.', literal: 'No, well not-slept.', english: "No, I'm not sleeping well.", speaker: 'நோயாளி', constructions: ['nalla-thoongala'] },
 		{ target: 'நிறைய தண்ணி குடிங்க, ரெஸ்ட் எடுங்க.', translit: 'niṛaiya thaṇṇi kuḍiṅga, rest eḍuṅga.', literal: 'Plenty water drink-please, rest take-please.', english: 'Drink plenty of water and rest.', speaker: 'டாக்டர்', constructions: ['kudunga'] }
 	],
@@ -270,9 +280,9 @@ const l9 = d({
 		{ target: 'ஹலோ, வணக்கம்.', translit: 'hello, vaṇakkam.', literal: 'Hello, greeting.', english: 'Hello, good morning.', speaker: 'அழைப்பாளர்', constructions: ['vanakkam'] },
 		{ target: 'ராஜா கிட்ட பேசலாமா?', translit: 'rājā kiṭṭa pēsalāmā?', literal: 'Raja near may-speak-Q?', english: 'May I speak to Raja?', speaker: 'அழைப்பாளர்', constructions: ['pesalama'], chunks: ['rājā kiṭṭa', 'pēsalāmā'], notes: [{ type: 'grammar', text: 'கிட்ட means "near/with" and is how Tamil marks the person you speak *to*.', anchor: 'கிட்ட' }] },
 		{ target: 'கொஞ்சம் இருங்க.', translit: 'konjam iruṅga.', literal: 'A-little be-please.', english: 'Hold on a moment.', speaker: 'பெறுநர்', constructions: ['konjam-iru'] },
-		{ target: 'அவரு மீட்டிங்ல இருக்காரு.', translit: 'avaru meeting-la irukkāru.', literal: 'He meeting-in is.', english: "He's in a meeting.", speaker: 'பெறுநர்' },
+		{ target: 'அவரு மீட்டிங்ல இருக்காரு.', translit: 'avaru meeting-la irukkāru.', literal: 'He meeting-in is.', english: "He's in a meeting.", speaker: 'பெறுநர்', notes: [{ type: 'grammar', text: 'Respect shows in the verb: அவரு … இருக்காரு uses the honorific -ஆரு ending — one respected person, treated grammatically like more than one. The same politeness move as -ங்க on "you" forms.', anchor: 'இருக்காரு' }] },
 		{ target: 'அப்புறம் கூப்பிடலாமா?', translit: 'appuṛam kūppiḍalāmā?', literal: 'Later may-call-Q?', english: 'Can I call later?', speaker: 'அழைப்பாளர்', constructions: ['appuram', 'pesalama'] },
-		{ target: 'ஆமா, மூணு மணிக்கு அப்புறம்.', translit: 'āmā, mūṇu maṇikku appuṛam.', literal: 'Yes, three o-clock-to after.', english: 'Yes, after three.', speaker: 'பெறுநர்', constructions: ['appuram'] },
+		{ target: 'ஆமா, மூணு மணிக்கு அப்புறம்.', translit: 'āmā, mūṇu maṇikku appuṛam.', literal: 'Yes, three o-clock-to after.', english: 'Yes, after three.', speaker: 'பெறுநர்', constructions: ['appuram', 'manikku'] },
 		{ target: 'சரி, ரொம்ப நன்றி.', translit: 'sari, romba naṇḍri.', literal: 'Fine, very thanks.', english: 'All right, thank you very much.', speaker: 'அழைப்பாளர்' },
 		{ target: 'பரவால்ல. வைக்கறேன்.', translit: 'paravālla. vaikkaṛēn.', literal: 'No-matter. I-put-down.', english: "No problem. I'll hang up.", speaker: 'பெறுநர்' }
 	],
@@ -292,7 +302,8 @@ const l10 = d({
 	constructions: [
 		['illa-neg', 'noun + இல்ல', 'there is no …'],
 		['pothum', 'போதும் / பத்தாது', 'enough / not enough'],
-		['pogalam', 'போகலாம்', "let's go"]
+		['pogalam', 'போகலாம்', "let's go"],
+		['chittu-sequence', 'verb + -ட்டு / -ச்சிட்டு', 'having done X — chains actions; only the last verb carries tense']
 	],
 	lines: [
 		{ target: 'வீட்ல பால் இருக்கா?', translit: 'vīṭla pāl irukkā?', literal: 'House-in milk is-there-Q?', english: 'Is there milk at home?', speaker: 'ராஜா', constructions: ['irukka-q'] },
@@ -300,7 +311,7 @@ const l10 = d({
 		{ target: 'அரிசி இருக்கா?', translit: 'arisi irukkā?', literal: 'Rice is-there-Q?', english: 'Is there rice?', speaker: 'ராஜா', constructions: ['irukka-q'] },
 		{ target: 'இருக்கு, ஆனா பத்தாது.', translit: 'irukku, ānā patthādhu.', literal: 'It-is, but not-enough.', english: "There is, but not enough.", speaker: 'மீனா', constructions: ['pothum'] },
 		{ target: 'கடைக்கு போகலாம்.', translit: 'kaḍaikku pōgalām.', literal: 'Shop-to let-us-go.', english: "Let's go to the shop.", speaker: 'ராஜா', constructions: ['pogalam'] },
-		{ target: 'சரி. காபி குடிச்சிட்டு போகலாம்.', translit: 'sari. kaapi kuḍichchiṭṭu pōgalām.', literal: 'Fine. Coffee having-drunk let-us-go.', english: "All right. Let's have a coffee and go.", speaker: 'மீனா', constructions: ['pogalam'] },
+		{ target: 'சரி. காபி குடிச்சிட்டு போகலாம்.', translit: 'sari. kaapi kuḍichchiṭṭu pōgalām.', literal: 'Fine. Coffee having-drunk let-us-go.', english: "All right. Let's have a coffee and go.", speaker: 'மீனா', constructions: ['pogalam', 'chittu-sequence'], notes: [{ type: 'morphology', text: 'குடிச்சிட்டு = குடி "drink" + -ச்சிட்டு "having done". Tamil chains actions with -ட்டு/-ச்சிட்டு instead of "and then": the first verb takes the suffix, and only the last verb carries the tense.', anchor: 'குடிச்சிட்டு' }] },
 		{ target: 'எப்பவும் காபி!', translit: 'eppavum kaapi!', literal: 'Always coffee!', english: 'Always coffee!', speaker: 'ராஜா' },
 		{ target: 'அது போதும்!', translit: 'adhu pōdhum!', literal: 'That is-enough!', english: "That's enough of that!", speaker: 'மீனா', constructions: ['pothum'] }
 	],
@@ -308,7 +319,8 @@ const l10 = d({
 		{ kind: 'comprehension', lineIndex: 1, prompt: 'Line 2 means…', options: ['"There is no milk"', '"There is milk"', '"I do not like milk"'], answerIndex: 0, constructions: ['illa-neg'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "There is no milk."', canonical: 'பால் இல்ல.', accepted: ['பால் இல்ல.', 'pāl illa'], hints: ['பால்…'], constructions: ['illa-neg'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'பால் ___.', options: ['இல்ல', 'இருக்கு', 'இருக்கா'], answer: 'இல்ல', rule: 'இல்ல negates existence; இருக்கு asserts it; இருக்கா asks.', constructions: ['illa-neg'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 You notice there is no salt in the kitchen.', use: 'illa-neg', exemplar: 'உப்பு இல்ல.', constructions: ['illa-neg'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🧂 You notice there is no salt in the kitchen.', use: 'illa-neg', exemplar: 'உப்பு இல்ல.', constructions: ['illa-neg'] },
+		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'காபி ___ போகலாம்.', options: ['குடிச்சிட்டு', 'குடிக்க', 'குடிச்சேன்'], answer: 'குடிச்சிட்டு', rule: 'The chained verb takes -ச்சிட்டு "having drunk"; குடிச்சேன் is a finished past and குடிக்க is a bare "to drink" — neither chains into போகலாம்.', constructions: ['chittu-sequence'] }
 	]
 });
 
@@ -323,8 +335,8 @@ const l11 = d({
 		['vēlai', 'வேலை இருக்கு', 'having work on']
 	],
 	lines: [
-		{ target: 'வீக்கெண்ட் என்ன பண்ணலாம்?', translit: 'weekend enna paṇṇalām?', literal: 'Weekend what shall-do?', english: 'What shall we do this weekend?', speaker: 'மீனா', constructions: ['enna-pannalam'], chunks: ['weekend', 'enna', 'paṇṇalām'] },
-		{ target: 'மியூசியம் போகலாமா?', translit: 'museum pōgalāmā?', literal: 'Museum shall-go-Q?', english: 'Shall we go to the museum?', speaker: 'ராஜா', constructions: ['pona', 'pogalam'] },
+		{ target: 'வீக்கெண்ட் என்ன பண்ணலாம்?', translit: 'weekend enna paṇṇalām?', literal: 'Weekend what shall-do?', english: 'What shall we do this weekend?', speaker: 'மீனா', constructions: ['enna-pannalam'], chunks: ['weekend', 'enna', 'paṇṇalām'], notes: [{ type: 'grammar', text: 'பண்ணு is the all-purpose spoken "do" (literary செய்). It also asks occupation: என்ன பண்றீங்க? "what do you do?" — வேலை பண்றேன் "I work". Tamil is verb-final: the question word sits before the verb, never after it.', anchor: 'பண்ணலாம்' }] },
+		{ target: 'மியூசியம் போகலாமா?', translit: 'museum pōgalāmā?', literal: 'Museum shall-go-Q?', english: 'Shall we go to the museum?', speaker: 'ராஜா', constructions: ['pona', 'pogalam'], notes: [{ type: 'grammar', text: 'The same -லாம் gives the everyday goodbye: அப்புறம் பார்க்கலாம் — "see you later", literally "later let-us-see" (said pākkalām, the ர் barely audible). Compare சனிக்கிழமை பார்க்கலாம் in lesson 13.', anchor: 'போகலாமா' }] },
 		{ target: 'சனிக்கிழமை வேலை இருக்கு.', translit: 'sanikkizhamai vēlai irukku.', literal: 'Saturday work is-there.', english: 'I have work on Saturday.', speaker: 'மீனா', constructions: ['vēlai'] },
 		{ target: 'அப்போ ஞாயித்துக்கிழமை?', translit: 'appō ñāyitthukkizhamai?', literal: 'Then Sunday?', english: 'Sunday then?', speaker: 'ராஜா' },
 		{ target: 'சரி. என்ன நேரம்?', translit: 'sari. enna nēram?', literal: 'Fine. What time?', english: 'All right. What time?', speaker: 'மீனா', constructions: ['enna-neram'] },
@@ -353,7 +365,7 @@ const l12 = d({
 	lines: [
 		{ target: 'இந்த பார்சல் கனடாக்கு அனுப்பணும்.', translit: 'indha parcel canadākku anuppaṇum.', literal: 'This parcel Canada-to must-send.', english: 'I need to send this parcel to Canada.', speaker: 'வாடிக்கையாளர்', constructions: ['anuppanum', 'ticket-kku'], chunks: ['indha parcel', 'canadākku', 'anuppaṇum'] },
 		{ target: 'ரெண்டு கிலோ இருக்கு. ஏர்மெயிலா?', translit: 'reṇḍu kilō irukku. airmail-ā?', literal: 'Two kilo is. Airmail-Q?', english: "It's two kilos. By air?", speaker: 'எழுத்தர்' },
-		{ target: 'ஏர்மெயில் எவ்வளவு ஆகும்?', translit: 'airmail evvaḷavu āgum?', literal: 'Airmail how-much will-become?', english: 'How much will airmail cost?', speaker: 'வாடிக்கையாளர்', constructions: ['evvalavu-aagum', 'evvalavu'] },
+		{ target: 'ஏர்மெயில் எவ்வளவு ஆகும்?', translit: 'airmail evvaḷavu āgum?', literal: 'Airmail how-much will-become?', english: 'How much will airmail cost?', speaker: 'வாடிக்கையாளர்', constructions: ['evvalavu-aagum', 'evvalavu'], notes: [{ type: 'grammar', text: 'ஆகும் is literally "will become" — Tamil prices "become". Speech also gives you the present ஆகுது (மொத்தம் எவ்ளோ ஆகுது? "what\'s the total coming to?") and the past ஆச்சு when paying afterwards (எவ்ளோ ஆச்சு? "what did it come to?").', anchor: 'ஆகும்' }] },
 		{ target: 'ரெண்டாயிரம் ரூபாய்.', translit: 'reṇḍāyiram rūbāy.', literal: 'Two-thousand rupees.', english: 'Two thousand rupees.', speaker: 'எழுத்தர்' },
 		{ target: 'குறைவான வழி இருக்கா?', translit: 'kuṛaivāna vazhi irukkā?', literal: 'Cheaper way is-there-Q?', english: 'Is there a cheaper way?', speaker: 'வாடிக்கையாளர்', constructions: ['keyamana', 'irukka-q'] },
 		{ target: 'கப்பல்ல எண்ணூறு. ஆனா ஆறு வாரம்.', translit: 'kappalla eṇṇūṛu. ānā āṛu vāram.', literal: 'Ship-by eight-hundred. But six week.', english: 'By sea, eight hundred. But six weeks.', speaker: 'எழுத்தர்' },
@@ -376,14 +388,15 @@ const l13 = d({
 	constructions: [
 		['varingala', 'verb + றீங்களா?', 'inviting — "will you come?"'],
 		['kondu-vara', 'என்ன கொண்டு வரணும்?', 'offering to bring something'],
-		['kandippa', 'கண்டிப்பா', 'certainly / definitely']
+		['kandippa', 'கண்டிப்பா', 'certainly / definitely'],
+		['venaam', 'noun + வேணாம்', 'refusing — "(I) don\'t want …", the fixed negative of வேணும்']
 	],
 	lines: [
 		{ target: 'சனிக்கிழமை சாப்பிட வரீங்களா?', translit: 'sanikkizhamai sāppiḍa varīṅgaḷā?', literal: 'Saturday to-eat you-come-Q?', english: 'Will you come for dinner on Saturday?', speaker: 'மீனா', constructions: ['varingala'], chunks: ['sanikkizhamai', 'sāppiḍa', 'varīṅgaḷā'] },
 		{ target: 'கண்டிப்பா! என்ன நேரம்?', translit: 'kaṇḍippā! enna nēram?', literal: 'Certainly! What time?', english: 'Definitely! What time?', speaker: 'ராஜா', constructions: ['kandippa', 'enna-neram'] },
-		{ target: 'எட்டு மணிக்கு.', translit: 'eṭṭu maṇikku.', literal: 'Eight o-clock-to.', english: 'At eight.', speaker: 'மீனா' },
+		{ target: 'எட்டு மணிக்கு.', translit: 'eṭṭu maṇikku.', literal: 'Eight o-clock-to.', english: 'At eight.', speaker: 'மீனா', constructions: ['manikku'] },
 		{ target: 'நான் என்ன கொண்டு வரணும்?', translit: 'nān enna koṇḍu varaṇum?', literal: 'I what having-taken must-come?', english: 'What should I bring?', speaker: 'ராஜா', constructions: ['kondu-vara'] },
-		{ target: 'ஒண்ணும் வேணாம்!', translit: 'oṇṇum vēṇām!', literal: 'Anything is-not-wanted!', english: 'Nothing at all!', speaker: 'மீனா' },
+		{ target: 'ஒண்ணும் வேணாம்!', translit: 'oṇṇum vēṇām!', literal: 'Anything is-not-wanted!', english: 'Nothing at all!', speaker: 'மீனா', constructions: ['venaam'], notes: [{ type: 'morphology', text: 'வேணாம் is the fixed negative of வேணும்: NOUN + வேணாம் = "I don\'t want NOUN", with the refused thing first. It is also the polite way to wave off street vendors.', anchor: 'வேணாம்' }] },
 		{ target: 'கொஞ்சம் ஸ்வீட் கொண்டு வரேன்.', translit: 'konjam sweet koṇḍu varēn.', literal: 'A-little sweet having-taken I-come.', english: "I'll bring some sweets.", speaker: 'ராஜா', constructions: ['kondu-vara'], notes: [{ type: 'culture', text: '"ஒண்ணும் வேணாம்" is politeness, not instruction. Arriving with sweets or fruit is expected.', anchor: 'ஒண்ணும் வேணாம்' }] },
 		{ target: 'உங்க இஷ்டம். ரொம்ப நல்லது.', translit: 'uṅga ishṭam. romba nalladhu.', literal: 'Your wish. Very good.', english: 'As you like. That’s kind.', speaker: 'மீனா', constructions: ['romba-nalla'] },
 		{ target: 'சனிக்கிழமை பார்க்கலாம்!', translit: 'sanikkizhamai pārkkalām!', literal: 'Saturday let-us-see!', english: 'See you Saturday!', speaker: 'ராஜா', constructions: ['pona'] }
@@ -392,7 +405,8 @@ const l13 = d({
 		{ kind: 'comprehension', lineIndex: 3, prompt: 'Line 4 means…', options: ['"What should I bring?"', '"What time should I come?"', '"Can I bring a friend?"'], answerIndex: 0, constructions: ['kondu-vara'] },
 		{ kind: 'recall', prompt: 'Say it in Tamil: "Will you come for dinner on Saturday?"', canonical: 'சனிக்கிழமை சாப்பிட வரீங்களா?', accepted: ['சனிக்கிழமை சாப்பிட வரீங்களா?'], hints: ['சனிக்கிழமை…'], constructions: ['varingala'] },
 		{ kind: 'completion', prompt: 'Fill in the missing piece:', template: 'சனிக்கிழமை சாப்பிட வர___?', options: ['ீங்களா', 'ேன்', 'லாம்'], answer: 'ீங்களா', rule: '-றீங்களா addresses "you" politely and asks a question.', constructions: ['varingala'] },
-		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ You want to invite a colleague for coffee tomorrow.', use: 'varingala', exemplar: 'நாளைக்கு காபி குடிக்க வரீங்களா?', constructions: ['varingala'] }
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '☕ You want to invite a colleague for coffee tomorrow.', use: 'varingala', exemplar: 'நாளைக்கு காபி குடிக்க வரீங்களா?', constructions: ['varingala'] },
+		{ kind: 'transfer', prompt: 'Use a construction you already own:', situation: '🥜 A street vendor offers you sundal, but you have just eaten. Turn it down politely.', use: 'venaam', exemplar: 'சுண்டல் வேணாம், நன்றி.', constructions: ['venaam'] }
 	]
 });
 
