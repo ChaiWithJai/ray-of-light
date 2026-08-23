@@ -11,12 +11,17 @@
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	const course = $derived(COURSES[profile.language]);
-	const nextIndex = $derived(profile.completedLessons.length + 1);
 	const activeLessonId = $derived(profile.activeSession?.lessonId);
+	const today = $derived(toDayKey(new Date()));
+	const assignedNewLessonId = $derived(profile.dailyAssignment(today)?.newLessonId);
 
 	function start(lessonId: string, kind: 'regular' | 'synthesis') {
 		const dayKey = toDayKey(new Date());
-		const assignmentDay = profile.dailyAssignment(dayKey)?.newLessonId === lessonId ? dayKey : undefined;
+		const assignment = profile.dailyAssignment(dayKey);
+		const assignmentDay =
+			assignment?.newLessonId === lessonId && !assignment.completedModes.includes('learn')
+				? dayKey
+				: undefined;
 		goto(profile.startSession('learn', lessonId, flowFor(kind), assignmentDay));
 	}
 </script>
@@ -45,7 +50,7 @@
 	<div class="flex flex-col gap-[6px]">
 		{#each course.lessons as lesson (lesson.id)}
 			{@const done = profile.hasCompleted(lesson.id)}
-			{@const open = done || lesson.index <= nextIndex}
+			{@const open = done || lesson.id === assignedNewLessonId}
 			<W.SketchCard
 				tone={lesson.kind === 'synthesis' ? 'parchment' : 'default'}
 				class="p-[8px] {open ? '' : 'opacity-45'}"
@@ -80,7 +85,7 @@
 					{/if}
 				{:else}
 					<W.Muted class="text-[11px]">
-						Opens after lesson {lesson.index - 1}.
+						Opens when Today assigns this lesson.
 					</W.Muted>
 				{/if}
 			</W.SketchCard>

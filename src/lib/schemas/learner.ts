@@ -233,6 +233,8 @@ export const ActiveSession = z.object({
 	currentStep: SessionStep,
 	completedSteps: z.array(SessionStep).default([]),
 	recallDraft: RecallSessionDraft.optional(),
+	/** Where authorization came from; legacy sessions infer this from assignmentDay. */
+	origin: z.enum(['today', 'book']).optional(),
 	/** Local day whose frozen Today assignment this session belongs to. */
 	assignmentDay: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 	startedAt: z.number().int().nonnegative(),

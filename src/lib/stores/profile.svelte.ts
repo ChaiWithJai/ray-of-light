@@ -37,8 +37,13 @@ import {
 } from '$lib/session.js';
 
 const STORAGE_KEY = 'ray-of-light.profile.v1';
+let loadPersistenceFailed = false;
 
-function sessionMatchesCourse(session: ActiveSession, activeLanguage: LanguageCode): boolean {
+function sessionMatchesCourse(
+	session: ActiveSession,
+	activeLanguage: LanguageCode,
+	profile?: LearnerProfile
+): boolean {
 	const lesson = getLesson(activeLanguage, session.lessonId);
 	const expectedFlow = lesson
 		? session.mode === 'recall'
@@ -47,7 +52,55 @@ function sessionMatchesCourse(session: ActiveSession, activeLanguage: LanguageCo
 				: null
 			: flowFor(lesson.kind)
 		: null;
-	return currentSessionMatchesExpected(session, activeLanguage, expectedFlow);
+	if (!currentSessionMatchesExpected(session, activeLanguage, expectedFlow)) return false;
+	const origin = session.origin ?? (session.assignmentDay ? 'today' : 'book');
+	if (origin === 'book') return !session.assignmentDay;
+	if (!session.assignmentDay || !profile) return false;
+	const assignment = profile.dailyAssignments[activeLanguage]?.[session.assignmentDay];
+	const expectedLessonId = session.mode === 'learn' ? assignment?.newLessonId : assignment?.recallLessonId;
+	return (
+		assignment?.day === session.assignmentDay &&
+		expectedLessonId === session.lessonId &&
+		!assignment.completedModes.includes(session.mode)
+	);
+}
+
+function recoverSequencing(profile: LearnerProfile): LearnerProfile {
+	let changed = false;
+	const completedLessons = { ...profile.completedLessons };
+	const completedRecallLessons = { ...profile.completedRecallLessons };
+	for (const language of ['fr', 'ta'] as const) {
+		const course = COURSES[language];
+		const storedLessons = profile.completedLessons[language] ?? [];
+		const validLessons: string[] = [];
+		for (let index = 0; index < storedLessons.length; index += 1) {
+			if (storedLessons[index] !== course.lessons[index]?.id) break;
+			validLessons.push(storedLessons[index]);
+		}
+		if (validLessons.length !== storedLessons.length) {
+			completedLessons[language] = validLessons;
+			changed = true;
+		}
+
+		const eligibleRecall = course.lessons
+			.filter(
+				(lesson) =>
+					validLessons.includes(lesson.id) &&
+					lesson.exercises.some((exercise) => exercise.kind === 'recall')
+			)
+			.map((lesson) => lesson.id);
+		const storedRecall = profile.completedRecallLessons[language] ?? [];
+		const validRecall: string[] = [];
+		for (let index = 0; index < storedRecall.length; index += 1) {
+			if (storedRecall[index] !== eligibleRecall[index]) break;
+			validRecall.push(storedRecall[index]);
+		}
+		if (validRecall.length !== storedRecall.length) {
+			completedRecallLessons[language] = validRecall;
+			changed = true;
+		}
+	}
+	return changed ? { ...profile, completedLessons, completedRecallLessons } : profile;
 }
 
 function todaysAssignmentIsValid(profile: LearnerProfile, day: string): boolean {
@@ -111,33 +164,35 @@ function load(): LearnerProfile {
 		// Starting clean loses progress, but silently running on malformed state
 		// would corrupt the evidence log, which is worse.
 		if (!parsed.success) return emptyProfile();
+		const sequenced = recoverSequencing(parsed.data);
 		const day = toDayKey(new Date());
 		const invalidSession = Boolean(
-			parsed.data.activeSession &&
-				!sessionMatchesCourse(parsed.data.activeSession, parsed.data.activeLanguage)
+			sequenced.activeSession &&
+				!sessionMatchesCourse(sequenced.activeSession, sequenced.activeLanguage, sequenced)
 		);
-		const invalidToday = !todaysAssignmentIsValid(parsed.data, day);
-		if (invalidSession || invalidToday) {
-			const languageAssignments = parsed.data.dailyAssignments[parsed.data.activeLanguage] ?? {};
+		const invalidToday = !todaysAssignmentIsValid(sequenced, day);
+		if (sequenced !== parsed.data || invalidSession || invalidToday) {
+			const languageAssignments = sequenced.dailyAssignments[sequenced.activeLanguage] ?? {};
 			const { [day]: _invalid, ...validAssignments } = languageAssignments;
 			const recovered = {
-				...parsed.data,
-				activeSession: invalidSession ? null : parsed.data.activeSession,
+				...sequenced,
+				activeSession: invalidSession ? null : sequenced.activeSession,
 				dailyAssignments: invalidToday
 					? {
-							...parsed.data.dailyAssignments,
-							[parsed.data.activeLanguage]: validAssignments
+							...sequenced.dailyAssignments,
+							[sequenced.activeLanguage]: validAssignments
 						}
-					: parsed.data.dailyAssignments
+					: sequenced.dailyAssignments
 			};
 			try {
 				localStorage.setItem(STORAGE_KEY, JSON.stringify(recovered));
 			} catch {
 				// Keep the valid profile in memory even when cleanup cannot be persisted.
+				loadPersistenceFailed = true;
 			}
 			return recovered;
 		}
-		return parsed.data;
+		return sequenced;
 	} catch {
 		return emptyProfile();
 	}
@@ -146,11 +201,13 @@ function load(): LearnerProfile {
 class ProfileStore {
 	#profile = $state<LearnerProfile>(emptyProfile());
 	#loaded = $state(false);
+	#persisted = $state(true);
 
 	/** Call once on the client. SSR renders the empty profile. */
 	hydrate() {
 		if (!browser || this.#loaded) return;
 		this.#profile = load();
+		this.#persisted = !loadPersistenceFailed;
 		this.#loaded = true;
 	}
 
@@ -160,6 +217,10 @@ class ProfileStore {
 
 	get loaded(): boolean {
 		return this.#loaded;
+	}
+
+	get persisted(): boolean {
+		return this.#persisted;
 	}
 
 	get language(): LanguageCode {
@@ -192,7 +253,7 @@ class ProfileStore {
 	}
 
 	get activeSessionHref(): string | null {
-		return this.activeSession && sessionMatchesCourse(this.activeSession, this.language)
+		return this.activeSession && sessionMatchesCourse(this.activeSession, this.language, this.#profile)
 			? resumeHref(this.activeSession)
 			: null;
 	}
@@ -208,12 +269,16 @@ class ProfileStore {
 	}
 
 	#persist() {
-		if (!browser) return;
+		if (!browser) return true;
 		try {
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(this.#profile));
+			this.#persisted = true;
+			return true;
 		} catch {
 			// Storage full or blocked (private mode). The session continues in
 			// memory rather than throwing mid-lesson.
+			this.#persisted = false;
+			return false;
 		}
 	}
 

@@ -4,6 +4,7 @@
 	 * scheduler. There is deliberately no lesson picker here.
 	 */
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 	import * as W from '$lib/components/wireframe/index.js';
 	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
 	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
@@ -14,8 +15,20 @@
 		if (profile.loaded && !profile.onboarded) goto('/onboarding/language', { replaceState: true });
 	});
 
+	let clock = $state(new Date());
 	const course = $derived(COURSES[profile.language]);
-	const day = $derived(toDayKey(new Date()));
+	const day = $derived(toDayKey(clock));
+	onMount(() => {
+		const refreshClock = () => (clock = new Date());
+		const timer = window.setInterval(refreshClock, 30_000);
+		window.addEventListener('focus', refreshClock);
+		document.addEventListener('visibilitychange', refreshClock);
+		return () => {
+			window.clearInterval(timer);
+			window.removeEventListener('focus', refreshClock);
+			document.removeEventListener('visibilitychange', refreshClock);
+		};
+	});
 	const activeLesson = $derived(
 		profile.activeSession ? getLesson(profile.language, profile.activeSession.lessonId) : undefined
 	);
@@ -25,7 +38,7 @@
 			? planToday({
 					language: profile.language,
 					startedOn: profile.plan.startedOn,
-					today: toDayKey(new Date()),
+					today: day,
 					lessonCount: course.lessons.length,
 					completedCount: profile.completedLessons.length
 				})

@@ -486,3 +486,111 @@ test('Book review is off-assignment and preserves the frozen new lesson', async 
 		expect.objectContaining({ newLessonId: 'fr-02', completedModes: [] })
 	);
 });
+
+test('Book cannot advance beyond a completed frozen assignment before rollover', async ({ page }) => {
+	await onboard(page);
+	await seedDailyClosure(page, 'learn', false, 'fr-01');
+	await finishSeededClosure(page);
+	await page.goto('/book');
+	await expect(page.getByRole('button', { name: 'Review' })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toHaveCount(0);
+	await expect(page.getByText('Opens when Today assigns this lesson.').first()).toBeVisible();
+
+	await page.getByRole('button', { name: 'Review' }).click();
+	let stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+	expect(stored.activeSession.assignmentDay).toBeUndefined();
+	const todayAssignment = Object.values(stored.dailyAssignments.fr)[0] as {
+		newLessonId: string;
+		completedModes: string[];
+	};
+	expect(todayAssignment).toEqual(expect.objectContaining({
+		newLessonId: 'fr-01', completedModes: ['learn']
+	}));
+
+	await page.goto('/today');
+	await page.getByRole('button', { name: 'Abandon session' }).click();
+	await page.evaluate((key) => {
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		const [today, assignment] = Object.entries(stored.dailyAssignments.fr)[0] as [string, Record<string, unknown>];
+		const date = new Date(`${today}T12:00:00`);
+		date.setDate(date.getDate() - 1);
+		const yesterday = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+		stored.dailyAssignments.fr = { [yesterday]: { ...assignment, day: yesterday } };
+		localStorage.setItem(key, JSON.stringify(stored));
+	}, STORAGE_KEY);
+	await page.reload();
+	await expect(page.getByText(/Lesson 2 ·/)).toBeVisible();
+});
+
+test('Today notices a local day change without a reload', async ({ page }) => {
+	await page.clock.install({ time: new Date('2026-08-23T10:00:00') });
+	await onboard(page);
+	const beforeUrl = page.url();
+	await page.clock.setSystemTime(new Date('2026-08-24T10:00:00'));
+	await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+	await expect(page.getByText('Day 2', { exact: true })).toBeVisible();
+	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+	expect(page.url()).toBe(beforeUrl);
+});
+
+test('corrupt sequencing cursors recover to ordered course prefixes', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate((key) => {
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		stored.completedLessons = {
+			fr: ['fr-01', 'fr-03', 'fr-02'],
+			ta: ['ta-01', 'fr-02']
+		};
+		stored.completedRecallLessons = { fr: ['fr-02', 'fr-01'], ta: ['ta-02'] };
+		stored.evidence = [{
+			id: 'keep-cursor-recovery', constructionId: 'fr.je-voudrais', language: 'fr',
+			kind: 'parallel-read', lessonId: 'fr-01', at: 1, day: '2026-08-23', hinted: false
+		}];
+		stored.settings.textScale = 73;
+		stored.activeSession = null;
+		localStorage.setItem(key, JSON.stringify(stored));
+	}, STORAGE_KEY);
+	await page.reload();
+	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+	expect(stored.completedLessons).toEqual({ fr: ['fr-01'], ta: ['ta-01'] });
+	expect(stored.completedRecallLessons).toEqual({ fr: [], ta: [] });
+	expect(stored.evidence.map((event: { id: string }) => event.id)).toEqual(['keep-cursor-recovery']);
+	expect(stored.settings.textScale).toBe(73);
+	await expect(page.getByText(/Lesson 2 ·/)).toBeVisible();
+});
+
+test('assignment-origin session must match its persisted assignment authorization', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate((key) => {
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		const day = Object.keys(stored.dailyAssignments.fr)[0];
+		stored.activeSession = {
+			id: 'mismatched-assignment-session', mode: 'learn', origin: 'today',
+			language: 'fr', lessonId: 'fr-02',
+			flow: ['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion', 'transfer', 'closure'],
+			currentStep: 'preview', completedSteps: [], assignmentDay: day,
+			startedAt: 1, updatedAt: 1
+		};
+		localStorage.setItem(key, JSON.stringify(stored));
+	}, STORAGE_KEY);
+	await page.reload();
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
+	expect(stored.activeSession).toBeNull();
+});
+
+test('storage failure warns before navigation state is lost on refresh', async ({ page }) => {
+	await onboard(page);
+	await page.addInitScript(() => {
+		Storage.prototype.setItem = () => {
+			throw new DOMException('blocked', 'QuotaExceededError');
+		};
+	});
+	await page.reload();
+	await page.getByRole('button', { name: 'Start', exact: true }).click();
+	await expect(page.getByRole('alert')).toContainText('will be lost on refresh');
+	await expect(page).toHaveURL(/\/learn\/fr-01\/preview/);
+	await page.reload();
+	await expect(page).toHaveURL(/\/today/);
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+});
