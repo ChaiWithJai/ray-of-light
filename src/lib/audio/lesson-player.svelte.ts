@@ -20,6 +20,13 @@ export class LessonPlayer {
 	/** Index into lesson.lines currently sounding, -1 when none. */
 	activeLine = $state(-1);
 	rate = $state(1);
+	/**
+	 * The recording failed to load. Audio is generated locally and untracked
+	 * (issue #19), so offsets can exist while the file does not — a fresh clone
+	 * before `npx tsx scripts/generate-audio.mts`. Surfaces the honest
+	 * "no recording on this machine" state instead of a dead play button.
+	 */
+	failed = $state(false);
 
 	#lesson: Lesson;
 	#audio: HTMLAudioElement | null = null;
@@ -30,9 +37,9 @@ export class LessonPlayer {
 		this.#lesson = lesson;
 	}
 
-	/** False while the lesson's recording is still pending (L1). */
+	/** False while the lesson's recording is pending (L1) or failed to load. */
 	get available(): boolean {
-		return !(this.#lesson.lines[0]?.audio.pending ?? true);
+		return !this.failed && !(this.#lesson.lines[0]?.audio.pending ?? true);
 	}
 
 	/**
@@ -55,6 +62,11 @@ export class LessonPlayer {
 			a.addEventListener('ended', () => this.#finish());
 			a.addEventListener('pause', () => (this.playing = false));
 			a.addEventListener('play', () => (this.playing = true));
+			a.addEventListener('error', () => {
+				this.failed = true;
+				this.playing = false;
+				this.activeLine = -1;
+			});
 			this.#audio = a;
 		}
 		this.#audio.playbackRate = this.rate;

@@ -1,28 +1,59 @@
 /**
- * Generate draft sentence-level TTS audio for every canonical line.
+ * Generate sentence-level lesson audio for every canonical line — locally.
  *
- * ⚠️ SYNTHESIZED PLACEHOLDER — macOS `say` voices (Thomas fr_FR, Vani ta_IN).
- * This exists so the audio-first preview, sentence slicing, and shadowing
- * surfaces are testable end-to-end (issue #1 L1). It is NOT the native
- * recording AC 8 ultimately requires; swap files in place when recorded.
+ * Two engines (AUDIO_ENGINE env, issue #19):
+ *
+ *   mlx (default)  personal-voice zero-shot cloning via mlx-audio/OmniVoice
+ *                  (scripts/audio/). Reference recordings live OUTSIDE the
+ *                  repo (~/.ray-of-light/voice/); generated audio lands in the
+ *                  UNTRACKED static/audio/ and must never be committed or
+ *                  distributed — output scope is personal-experimental.
+ *                  AUDIO_NO_CLONE=1 uses the model's default voice (smoke).
+ *   say            the previous macOS `say` placeholder (Thomas/Vani) — kept
+ *                  as a dependency-free fallback for pipeline testing.
+ *
+ * Neither engine produces the native-reviewed recording AC 8 ultimately
+ * requires; provenance says so explicitly and travels with the assets.
  *
  * Output:
- *   static/audio/<lang>/<lessonId>.mp3          one file per lesson
+ *   static/audio/<lang>/<lessonId>.mp3          one file per lesson (untracked)
  *   src/lib/content/audio-offsets.json          real per-line startMs/endMs
+ *   src/lib/content/audio-provenance.json       engine, consent, lineage,
+ *                                               per-asset hashes, review state
  *
  * Run: npx tsx scripts/generate-audio.mts
  */
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { FR_LESSONS } from '../src/lib/content/fr.js';
 import { TA_LESSONS } from '../src/lib/content/ta.js';
 
+const ENGINE = (process.env.AUDIO_ENGINE ?? 'mlx') as 'mlx' | 'say';
+const NO_CLONE = process.env.AUDIO_NO_CLONE === '1';
+
 const VOICES: Record<string, string> = { fr: 'Thomas', ta: 'Vani' };
 const GAP_MS = 400; // silence between sentences inside a lesson file
 const RATE: Record<string, number> = { fr: 160, ta: 150 }; // slightly slower than default for learners
+
+const AUDIO_PY_DIR = join(import.meta.dirname, 'audio');
+const MODEL_LOCK = JSON.parse(readFileSync(join(AUDIO_PY_DIR, 'model.lock.json'), 'utf8'));
+
+/** Synthesize one line to a WAV/AIFF at `out`; returns the produced path. */
+function synthesize(lang: string, text: string, out: string): string {
+	if (ENGINE === 'say') {
+		const aiff = out.replace(/\.wav$/, '.aiff');
+		execFileSync('say', ['-v', VOICES[lang], '-r', String(RATE[lang]), '-o', aiff, text]);
+		return aiff;
+	}
+	const args = [join(AUDIO_PY_DIR, 'synth.py'), '--lang', lang, '--text', text, '--out', out];
+	if (NO_CLONE) args.push('--no-clone');
+	execFileSync(join(AUDIO_PY_DIR, '.venv', 'bin', 'python'), args, { stdio: ['ignore', 'inherit', 'inherit'] });
+	return out;
+}
 
 const offsets: Record<string, { startMs: number; endMs: number }[]> = {};
 const work = join(tmpdir(), 'rol-audio');
@@ -77,21 +108,54 @@ writeFileSync(
 );
 console.log('wrote src/lib/content/audio-offsets.json');
 
-// Provenance travels with the assets: the UI discloses synthesized audio from
-// this file, and it is rewritten by whichever pipeline produced the recordings.
+// Provenance travels with the assets (issue #19 occurrence B): not just the
+// engine, but consent, private-input handling, model lineage, output scope,
+// per-asset hashes, and review state. Rewritten by whichever pipeline runs.
+const assetHashes: Record<string, string> = {};
+for (const lid of Object.keys(offsets)) {
+	const lang = lid.slice(0, 2);
+	const file = join(import.meta.dirname, '..', 'static', 'audio', lang, `${lid}.mp3`);
+	assetHashes[lid] = createHash('sha256').update(readFileSync(file)).digest('hex');
+}
+
+const provenance =
+	ENGINE === 'say'
+		? {
+				synthesized: true,
+				engine: 'macOS say',
+				voices: { fr: 'Thomas (fr_FR)', ta: 'Vani (ta_IN)' },
+				outputScope: 'placeholder',
+				review: 'none',
+				assets: assetHashes,
+				note: 'Draft placeholder pending native recordings — see docs/ISSUE-1-LIMITATIONS.md L1.'
+			}
+		: {
+				synthesized: true,
+				engine: 'mlx-audio (local Apple Silicon inference)',
+				model: {
+					id: MODEL_LOCK.model,
+					revision: MODEL_LOCK.revision,
+					package: `${MODEL_LOCK.package}==${MODEL_LOCK.packageVersion}`,
+					license: MODEL_LOCK.modelLicense
+				},
+				voice: NO_CLONE
+					? { kind: 'model-default', note: 'smoke run — no personal reference used' }
+					: {
+							kind: 'personal-zero-shot-clone',
+							consent:
+								'Owner-provided reference recordings of their own voice; personal, noncommercial use authorized by the owner for this project (issue #19).',
+							privateInputs:
+								'Reference audio/transcript live outside the repo (~/.ray-of-light/voice/), are never committed, logged, or uploaded; all inference is local.'
+						},
+				outputScope:
+					'personal-experimental — generated audio is untracked and must never be committed, distributed, or presented as native speech',
+				review: 'none — voice similarity does not establish native pronunciation; see docs/NATIVE-REVIEW.md',
+				assets: assetHashes,
+				note: 'Locally generated; not the native-reviewed recording AC 8 requires.'
+			};
+
 writeFileSync(
 	join(import.meta.dirname, '..', 'src', 'lib', 'content', 'audio-provenance.json'),
-	JSON.stringify(
-		{
-			synthesized: true,
-			engine: 'macOS say',
-			voices: Object.fromEntries(
-				Object.entries(VOICES).map(([lang, voice]) => [lang, voice + (lang === 'fr' ? ' (fr_FR)' : ' (ta_IN)')])
-			),
-			note: 'Draft placeholder pending native recordings — see docs/ISSUE-1-LIMITATIONS.md L1.'
-		},
-		null,
-		'\t'
-	) + '\n'
+	JSON.stringify(provenance, null, '\t') + '\n'
 );
 console.log('wrote src/lib/content/audio-provenance.json');
