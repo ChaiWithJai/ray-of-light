@@ -6,7 +6,7 @@
  * quietly shipping.
  */
 import { describe, expect, it } from 'vitest';
-import { COURSES, constructionsMetBy, courseManifest, getLessonByIndex } from './index.js';
+import { COURSES, constructionsMetBy, courseManifest, getLessonByIndex, validateCourse } from './index.js';
 import type { LanguageCode } from '$lib/schemas/content.js';
 
 const LANGUAGES: LanguageCode[] = ['fr', 'ta'];
@@ -220,5 +220,49 @@ describe('lookups', () => {
 	it('finds a lesson by index', () => {
 		expect(getLessonByIndex('ta', 3)?.id).toBe('ta-03');
 		expect(getLessonByIndex('ta', 99)).toBeUndefined();
+	});
+});
+
+describe('construction identity invariants (issue #12)', () => {
+	// validateCourse is the gate every course passes through at import; these
+	// exercise its two rejection paths on mutated copies of real content.
+	const mutated = () => structuredClone(COURSES.fr.lessons);
+
+	it('rejects a re-declaration that disagrees about meaning', () => {
+		const lessons = mutated();
+		const donor = lessons[0].constructions[0];
+		lessons[6].constructions.push({ ...donor, label: donor.label + ' (drifted)' });
+		expect(() => validateCourse('fr', lessons)).toThrowError(
+			/conflicting construction metadata/
+		);
+	});
+
+	it('rejects a re-declaration that disagrees about origin', () => {
+		const lessons = mutated();
+		const donor = lessons[0].constructions[0];
+		lessons[6].constructions.push({ ...donor, introducedIn: lessons[6].id });
+		expect(() => validateCourse('fr', lessons)).toThrowError(
+			/conflicting construction metadata/
+		);
+	});
+
+	it('accepts a verbatim re-declaration', () => {
+		const lessons = mutated();
+		lessons[6].constructions.push({ ...lessons[0].constructions[0] });
+		expect(() => validateCourse('fr', lessons)).not.toThrow();
+	});
+
+	it('rejects a declared construction no line or exercise references', () => {
+		const lessons = mutated();
+		lessons[0].constructions.push({
+			id: 'fr.phantom-construction',
+			language: 'fr',
+			label: 'phantom + noun',
+			gloss: 'declared but never taught',
+			introducedIn: lessons[0].id
+		});
+		expect(() => validateCourse('fr', lessons)).toThrowError(
+			/declares constructions no line or exercise references/
+		);
 	});
 });
