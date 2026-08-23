@@ -54,7 +54,14 @@ export const AudioClip = z.object({
 	slowUrl: z.string().min(1).optional(),
 	speakerId: z.string().min(1),
 	startMs: z.number().int().nonnegative().optional(),
-	endMs: z.number().int().nonnegative().optional()
+	endMs: z.number().int().nonnegative().optional(),
+	/**
+	 * True when the referenced recording does not exist yet. The schema shape from
+	 * issue #1 is unchanged; this is an additive field so the UI can say "audio
+	 * pending native recording" instead of presenting a broken player. See
+	 * `docs/ISSUE-1-LIMITATIONS.md` L1.
+	 */
+	pending: z.boolean().default(false)
 });
 export type AudioClip = z.infer<typeof AudioClip>;
 
@@ -288,18 +295,10 @@ export const Lesson = z
 			}
 		}
 
-		// Every construction referenced by a line or exercise must be declared,
-		// or the progress map would render state for something with no definition.
-		const declared = new Set(lesson.constructions.map((c) => c.id));
-		const referenced = new Set([
-			...lesson.lines.flatMap((l) => l.constructions),
-			...lesson.exercises.flatMap((e) => e.constructions)
-		]);
-		for (const ref of referenced) {
-			if (!declared.has(ref)) {
-				issue(`construction "${ref}" is referenced but not declared`, ['constructions']);
-			}
-		}
+		// Note: "is every referenced construction defined?" is deliberately NOT
+		// checked here. Lessons are supposed to recombine constructions introduced
+		// earlier — that is the whole point of the course building on itself — so
+		// resolution is a course-level property. See `validateCourse`.
 	});
 export type Lesson = z.infer<typeof Lesson>;
 

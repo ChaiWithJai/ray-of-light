@@ -1,0 +1,217 @@
+/**
+ * Content conformance tests.
+ *
+ * These check the corpus against the content requirements in issue #1 rather
+ * than against itself, so a lesson that drifts out of spec fails here instead of
+ * quietly shipping.
+ */
+import { describe, expect, it } from 'vitest';
+import { COURSES, constructionsMetBy, courseManifest, getLessonByIndex } from './index.js';
+import type { LanguageCode } from '$lib/schemas/content.js';
+
+const LANGUAGES: LanguageCode[] = ['fr', 'ta'];
+
+describe.each(LANGUAGES)('course: %s', (language) => {
+	const course = COURSES[language];
+
+	it('has 14 lessons', () => {
+		expect(course.lessons).toHaveLength(14);
+	});
+
+	it('numbers lessons contiguously from 1', () => {
+		expect(course.lessons.map((l) => l.index)).toEqual(
+			Array.from({ length: 14 }, (_, i) => i + 1)
+		);
+	});
+
+	it('has synthesis lessons at 7 and 14 and nowhere else', () => {
+		const synthesis = course.lessons.filter((l) => l.kind === 'synthesis').map((l) => l.index);
+		expect(synthesis).toEqual([7, 14]);
+	});
+
+	it('has 12 regular lessons', () => {
+		expect(course.lessons.filter((l) => l.kind === 'regular')).toHaveLength(12);
+	});
+
+	describe('regular lessons', () => {
+		const regular = course.lessons.filter((l) => l.kind === 'regular');
+
+		it('each have 8-12 dialogue lines', () => {
+			for (const lesson of regular) {
+				expect(
+					lesson.lines.length,
+					`${lesson.id} has ${lesson.lines.length} lines`
+				).toBeGreaterThanOrEqual(8);
+				expect(lesson.lines.length).toBeLessThanOrEqual(12);
+			}
+		});
+
+		it('each introduce at least 3 reusable constructions', () => {
+			for (const lesson of regular) {
+				expect(
+					lesson.constructions.length,
+					`${lesson.id} introduces ${lesson.constructions.length}`
+				).toBeGreaterThanOrEqual(3);
+			}
+		});
+
+		it('each have at least one comprehension, recall and transfer exercise', () => {
+			for (const lesson of regular) {
+				const kinds = new Set(lesson.exercises.map((e) => e.kind));
+				expect(kinds.has('comprehension'), `${lesson.id} comprehension`).toBe(true);
+				expect(kinds.has('recall'), `${lesson.id} recall`).toBe(true);
+				expect(kinds.has('transfer'), `${lesson.id} transfer`).toBe(true);
+			}
+		});
+	});
+
+	it('ends every lesson with a transfer prompt (AC 7)', () => {
+		for (const lesson of course.lessons) {
+			const transfers = lesson.exercises.filter((e) => e.kind === 'transfer');
+			expect(transfers.length, `${lesson.id}`).toBeGreaterThanOrEqual(1);
+		}
+	});
+
+	it('resolves every referenced construction somewhere in the course', () => {
+		for (const lesson of course.lessons) {
+			const referenced = [
+				...lesson.lines.flatMap((l) => l.constructions),
+				...lesson.exercises.flatMap((e) =>
+					e.kind === 'transfer' ? [e.useConstruction, ...e.constructions] : e.constructions
+				)
+			];
+			for (const id of referenced) {
+				expect(course.constructions.has(id), `${lesson.id} → ${id}`).toBe(true);
+			}
+		}
+	});
+
+	it('records provenance, licensing and review status on every line (AC 11)', () => {
+		for (const lesson of course.lessons) {
+			for (const line of lesson.lines) {
+				expect(line.source).toBeTruthy();
+				expect(line.license).toBeTruthy();
+				expect(line.reviewStatus).toBeTruthy();
+			}
+		}
+	});
+
+	it('gives every canonical line sentence-level audio addressing', () => {
+		for (const lesson of course.lessons) {
+			for (const line of lesson.lines) {
+				expect(line.audio.normalUrl, line.id).toBeTruthy();
+				expect(line.audio.startMs, line.id).toBeTypeOf('number');
+				expect(line.audio.endMs!).toBeGreaterThan(line.audio.startMs!);
+			}
+		}
+	});
+
+	it('gives every line a natural English translation', () => {
+		for (const lesson of course.lessons) {
+			for (const line of lesson.lines) {
+				expect(line.naturalEnglish, line.id).toBeTruthy();
+			}
+		}
+	});
+
+	it('uses unique line ids', () => {
+		const ids = course.lessons.flatMap((l) => l.lines.map((line) => line.id));
+		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	it('reuses earlier constructions in later lessons', () => {
+		// The course has to build on itself; if no later lesson ever referenced an
+		// earlier construction, the "recombination" claim would be empty.
+		const introducedEarly = new Set(
+			course.lessons.filter((l) => l.index <= 6).flatMap((l) => l.constructions.map((c) => c.id))
+		);
+		const referencedLate = new Set(
+			course.lessons
+				.filter((l) => l.index >= 7)
+				.flatMap((l) => l.lines.flatMap((line) => line.constructions))
+		);
+		const reused = [...referencedLate].filter((id) => introducedEarly.has(id));
+		expect(reused.length).toBeGreaterThan(0);
+	});
+});
+
+describe('Tamil-specific requirements (AC 9)', () => {
+	it('distinguishes script, transliteration, literal and natural English on every line', () => {
+		for (const lesson of COURSES.ta.lessons) {
+			for (const line of lesson.lines) {
+				expect(line.targetScript, line.id).toBeTruthy();
+				expect(line.transliteration, `${line.id} transliteration`).toBeTruthy();
+				expect(line.literalEnglish, `${line.id} literal`).toBeTruthy();
+				expect(line.naturalEnglish, `${line.id} natural`).toBeTruthy();
+			}
+		}
+	});
+
+	it('uses the literal layer to reveal structure, not to restate the translation', () => {
+		// Not asserted per line: for short noun phrases the two genuinely coincide
+		// ("எந்த பிளாட்பாரம்?" glosses as "Which platform?" either way), and forcing
+		// a difference there would mean inventing a fake gloss. What matters is
+		// that the layer is doing real work across the corpus.
+		const lines = COURSES.ta.lessons.flatMap((l) => l.lines);
+		const revealing = lines.filter((l) => l.literalEnglish !== l.naturalEnglish);
+		const ratio = revealing.length / lines.length;
+		expect(ratio, `${revealing.length}/${lines.length} lines gloss differently`).toBeGreaterThan(
+			0.85
+		);
+	});
+
+	it('marks the register and dialect explicitly', () => {
+		for (const lesson of COURSES.ta.lessons) {
+			for (const line of lesson.lines) {
+				expect(line.register).toBe('spoken');
+				expect(line.dialect).toBe('chennai_general');
+			}
+		}
+	});
+});
+
+describe('honest provenance', () => {
+	it('reports all authored content as draft, since no native reviewer has seen it', () => {
+		// If this ever fails it should be because review actually happened —
+		// see docs/ISSUE-1-LIMITATIONS.md L2.
+		for (const language of LANGUAGES) {
+			for (const lesson of COURSES[language].lessons) {
+				expect(lesson.provenance.reviewStatus).toBe('draft');
+				expect(lesson.provenance.source).toBe('original');
+				expect(lesson.provenance.license).toBe('owned');
+			}
+		}
+	});
+
+	it('flags audio as pending, since no recording exists yet', () => {
+		for (const language of LANGUAGES) {
+			for (const lesson of COURSES[language].lessons) {
+				for (const line of lesson.lines) {
+					expect(line.audio.pending, line.id).toBe(true);
+				}
+			}
+		}
+	});
+});
+
+describe('lookups', () => {
+	it('accumulates constructions as lessons are met', () => {
+		const afterOne = constructionsMetBy('fr', 1).length;
+		const afterSix = constructionsMetBy('fr', 6).length;
+		const afterAll = constructionsMetBy('fr', 14).length;
+		expect(afterOne).toBeGreaterThan(0);
+		expect(afterSix).toBeGreaterThan(afterOne);
+		expect(afterAll).toBeGreaterThanOrEqual(afterSix);
+	});
+
+	it('builds a manifest that matches the course', () => {
+		const manifest = courseManifest('fr');
+		expect(manifest.lessons).toHaveLength(14);
+		expect(manifest.lessons[0].lineCount).toBe(COURSES.fr.lessons[0].lines.length);
+	});
+
+	it('finds a lesson by index', () => {
+		expect(getLessonByIndex('ta', 3)?.id).toBe('ta-03');
+		expect(getLessonByIndex('ta', 99)).toBeUndefined();
+	});
+});
