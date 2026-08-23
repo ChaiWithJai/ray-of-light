@@ -7,6 +7,7 @@
 	import Spread from '$lib/components/app/spread.svelte';
 	import * as W from '$lib/components/wireframe/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
+	import { describe } from '$lib/morphology.js';
 	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -33,6 +34,14 @@
 			contentVersion: CONTENT_VERSION
 		});
 	});
+
+	// The word a note is anchored to, else the line's first substantive word.
+	const anchorWord = $derived(
+		line?.notes[0]?.anchor?.split(/\s+/).at(-1) ?? line?.targetScript.split(/\s+/)[0] ?? ''
+	);
+	const morphology = $derived(
+		anchorWord ? describe(lesson.language, anchorWord) : null
+	);
 
 	function onlineactivate(l: LessonLine) {
 		if (l.notes.length > 0) overlay = 'notes';
@@ -82,6 +91,15 @@
 			{/each}
 		{:else}
 			<W.Muted>No note on this line. Notes appear only where they earn their place.</W.Muted>
+		{/if}
+
+		<!-- Morphology from Universal Dependencies: reference annotation, not
+		     teaching content. Only shown for the anchored word, so it stays
+		     just-in-time rather than becoming a grammar table. -->
+		{#if morphology}
+			<W.Muted class="border-t border-rule pt-[6px] text-[11.5px]">
+				<span class="font-mono">{anchorWord}</span> — {morphology}
+			</W.Muted>
 		{/if}
 	</W.SketchCard>
 {:else if overlay === 'pronounce'}

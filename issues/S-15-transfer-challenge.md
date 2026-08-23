@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-15 · Transfer challenge
 
 Surface 15 of 22 · canvas id `1o` · Active wave (Day 50+)
-Wireframe: `app/src/lib/components/surfaces/transfer-challenge.svelte` → `/surfaces/transfer-challenge`
+Design reference: `src/lib/components/surfaces/transfer-challenge.svelte` → `/surfaces/transfer-challenge`
 
 ## Matrix row
 

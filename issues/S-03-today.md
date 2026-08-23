@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-03 · Today
 
 Surface 3 of 22 · canvas id `1c` · Onboarding & scheduling
-Wireframe: `app/src/lib/components/surfaces/today.svelte` → `/surfaces/today`
+Design reference: `src/lib/components/surfaces/today.svelte` → `/surfaces/today`
 
 ## Matrix row
 

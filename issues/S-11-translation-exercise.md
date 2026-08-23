@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-11 · Translation exercise (target → source)
 
 Surface 11 of 22 · canvas id `1k` · Checks & exercises (passive wave)
-Wireframe: `app/src/lib/components/surfaces/translation-exercise.svelte` → `/surfaces/translation-exercise`
+Design reference: `src/lib/components/surfaces/translation-exercise.svelte` → `/surfaces/translation-exercise`
 
 ## Matrix row
 

@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-02 · Learning plan
 
 Surface 2 of 22 · canvas id `1b` · Onboarding & scheduling
-Wireframe: `app/src/lib/components/surfaces/learning-plan.svelte` → `/surfaces/learning-plan`
+Design reference: `src/lib/components/surfaces/learning-plan.svelte` → `/surfaces/learning-plan`
 
 ## Matrix row
 

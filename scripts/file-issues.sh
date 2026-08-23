@@ -35,7 +35,7 @@ fi
 
 # Collect labels first — gh errors on labels that do not exist yet.
 declare -A seen_labels=()
-for file in issues/[FSD]-*.md; do
+for file in issues/[FSDT]-*.md; do
 	labels=$(awk '/^labels: \[/ { gsub(/^labels: \[|\]$/, ""); print; exit }' "$file")
 	IFS=',' read -ra parts <<<"$labels"
 	for label in "${parts[@]}"; do
@@ -52,7 +52,7 @@ if ! $DRY_RUN; then
 fi
 
 count=0
-for file in issues/[FSD]-*.md; do
+for file in issues/[FSDT]-*.md; do
 	title=$(awk -F'"' '/^title: / { print $2; exit }' "$file")
 	labels=$(awk '/^labels: \[/ { gsub(/^labels: \[|\]$/, ""); gsub(/, */, ","); print; exit }' "$file")
 	body=$(awk 'f { print } /^---$/ { c++; if (c == 2) f = 1 }' "$file")

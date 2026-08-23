@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-07 · Pronunciation layer
 
 Surface 7 of 22 · canvas id `1g` · The lesson core
-Wireframe: `app/src/lib/components/surfaces/pronunciation.svelte` → `/surfaces/pronunciation`
+Design reference: `src/lib/components/surfaces/pronunciation.svelte` → `/surfaces/pronunciation`
 
 ## Matrix row
 

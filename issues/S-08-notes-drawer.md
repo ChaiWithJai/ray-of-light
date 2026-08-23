@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-08 · Notes drawer
 
 Surface 8 of 22 · canvas id `1h` · The lesson core
-Wireframe: `app/src/lib/components/surfaces/notes-drawer.svelte` → `/surfaces/notes-drawer`
+Design reference: `src/lib/components/surfaces/notes-drawer.svelte` → `/surfaces/notes-drawer`
 
 ## Matrix row
 

@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-21 · Conversation bridge
 
 Surface 21 of 22 · canvas id `1u` · Book-wide surfaces (persistent nav)
-Wireframe: `app/src/lib/components/surfaces/conversation-bridge.svelte` → `/surfaces/conversation-bridge`
+Design reference: `src/lib/components/surfaces/conversation-bridge.svelte` → `/surfaces/conversation-bridge`
 
 ## Matrix row
 

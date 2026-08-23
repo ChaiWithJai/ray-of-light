@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-17 · Lesson closure
 
 Surface 17 of 22 · canvas id `1q` · Closure & consolidation
-Wireframe: `app/src/lib/components/surfaces/lesson-closure.svelte` → `/surfaces/lesson-closure`
+Design reference: `src/lib/components/surfaces/lesson-closure.svelte` → `/surfaces/lesson-closure`
 
 ## Matrix row
 

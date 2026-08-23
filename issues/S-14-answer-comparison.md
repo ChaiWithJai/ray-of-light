@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-14 · Answer comparison
 
 Surface 14 of 22 · canvas id `1n` · Active wave (Day 50+)
-Wireframe: `app/src/lib/components/surfaces/answer-comparison.svelte` → `/surfaces/answer-comparison`
+Design reference: `src/lib/components/surfaces/answer-comparison.svelte` → `/surfaces/answer-comparison`
 
 ## Matrix row
 

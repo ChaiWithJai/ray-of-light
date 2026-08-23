@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-06 · Finger-tracking layer
 
 Surface 6 of 22 · canvas id `1f` · The lesson core
-Wireframe: `app/src/lib/components/surfaces/finger-tracking.svelte` → `/surfaces/finger-tracking`
+Design reference: `src/lib/components/surfaces/finger-tracking.svelte` → `/surfaces/finger-tracking`
 
 ## Matrix row
 

@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-20 · Phrase library
 
 Surface 20 of 22 · canvas id `1t` · Book-wide surfaces (persistent nav)
-Wireframe: `app/src/lib/components/surfaces/phrase-library.svelte` → `/surfaces/phrase-library`
+Design reference: `src/lib/components/surfaces/phrase-library.svelte` → `/surfaces/phrase-library`
 
 ## Matrix row
 

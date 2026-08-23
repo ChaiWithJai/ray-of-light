@@ -1,7 +1,7 @@
 import adapter from '@sveltejs/adapter-node';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [
@@ -18,5 +18,13 @@ export default defineConfig({
 			// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 			adapter: adapter()
 		})
-	]
+	],
+
+	test: {
+		// Playwright owns e2e/; vitest owns the unit suites next to their sources.
+		// Without this, vitest tries to run the Playwright spec and fails on its
+		// fixtures rather than on anything real.
+		include: ['src/**/*.{test,spec}.{js,ts}'],
+		exclude: ['e2e/**', 'node_modules/**']
+	}
 });

@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-22 · Settings / accessibility
 
 Surface 22 of 22 · canvas id `1v` · Book-wide surfaces (persistent nav)
-Wireframe: `app/src/lib/components/surfaces/settings.svelte` → `/surfaces/settings`
+Design reference: `src/lib/components/surfaces/settings.svelte` → `/surfaces/settings`
 
 ## Matrix row
 

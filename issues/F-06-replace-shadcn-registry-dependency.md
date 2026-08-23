@@ -48,7 +48,7 @@ of rules) go, and removes the base-layer/utilities-layer override dance in
 
 ## Acceptance criteria
 
-- [ ] `app/src/lib/components/ui/` and `src/lib/styles/style-vega.css` are removed
+- [ ] `src/lib/components/ui/` and `src/lib/styles/style-vega.css` are removed
 - [ ] `shadcn-svelte` and `components.json` are removed from the project
 - [ ] `SketchSlider`, `TabBar` and `Rail` wrap bits-ui primitives directly
 - [ ] The remaining wireframe components use plain elements plus tailwind-variants

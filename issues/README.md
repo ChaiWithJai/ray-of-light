@@ -7,7 +7,7 @@ This repo has no git remote yet, so issues live here as tracked markdown. Once a
 remote exists, `scripts/file-issues.sh` pushes every file to GitHub verbatim
 (front matter supplies title and labels).
 
-41 issues: 7 foundation, 22 screens, 12 data layer.
+48 issues: 7 foundation, 22 screens, 12 data layer, 7 sourcing tickets.
 
 ## Foundation
 
@@ -58,3 +58,13 @@ remote exists, `scripts/file-issues.sh` pushes every file to GitHub verbatim
 - [`D-10`](D-10-scheduling-engine.md) — Scheduling engine: two waves, spacing, synthesis
 - [`D-11`](D-11-provenance-licensing.md) — Provenance and licensing enforcement at ingest
 - [`D-12`](D-12-tamil-register-layers.md) — Tamil register, script and transliteration handling
+
+## Sourcing tickets
+
+- [`T-01`](T-01-commission-native-audio.md) — Commission native audio for all 28 lessons
+- [`T-02`](T-02-native-review-french.md) — Native review pass on the French corpus
+- [`T-03`](T-03-native-review-tamil.md) — Native review pass on the Tamil corpus (highest risk)
+- [`T-04`](T-04-unblock-open-corpora.md) — Ingest the blocked open corpora (Tatoeba, Common Voice, Wiktionary, FSI)
+- [`T-05`](T-05-tamil-morphology-licence.md) — Find a usable-licence source for Tamil morphology
+- [`T-06`](T-06-microphone-and-transcription.md) — Microphone capture and transcription (never scoring)
+- [`T-07`](T-07-connect-github-app.md) — Connect the Claude GitHub App so agents can file issues

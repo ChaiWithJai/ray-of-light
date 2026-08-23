@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-18 · Weekly synthesis
 
 Surface 18 of 22 · canvas id `1r` · Closure & consolidation
-Wireframe: `app/src/lib/components/surfaces/weekly-synthesis.svelte` → `/surfaces/weekly-synthesis`
+Design reference: `src/lib/components/surfaces/weekly-synthesis.svelte` → `/surfaces/weekly-synthesis`
 
 ## Matrix row
 

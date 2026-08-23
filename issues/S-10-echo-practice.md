@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-10 · Echo practice
 
 Surface 10 of 22 · canvas id `1j` · Checks & exercises (passive wave)
-Wireframe: `app/src/lib/components/surfaces/echo-practice.svelte` → `/surfaces/echo-practice`
+Design reference: `src/lib/components/surfaces/echo-practice.svelte` → `/surfaces/echo-practice`
 
 ## Matrix row
 

@@ -209,7 +209,7 @@ Deleting \`ui/\` also lets \`style-vega.css\` (1361 lines, of which we use a han
 of rules) go, and removes the base-layer/utilities-layer override dance in
 \`app.css\` entirely — the sketch skin becomes the only skin.`,
 		ac: [
-			'`app/src/lib/components/ui/` and `src/lib/styles/style-vega.css` are removed',
+			'`src/lib/components/ui/` and `src/lib/styles/style-vega.css` are removed',
 			'`shadcn-svelte` and `components.json` are removed from the project',
 			'`SketchSlider`, `TabBar` and `Rail` wrap bits-ui primitives directly',
 			'The remaining wireframe components use plain elements plus tailwind-variants',
@@ -947,6 +947,184 @@ English, and formal Tamil *only when meaningfully different*.`,
 	}
 ];
 
+
+/* ------------------------------------------------------------------ */
+/* Sourcing tickets — work that needs a human or wider access          */
+/* ------------------------------------------------------------------ */
+
+const tickets = [
+	{
+		id: 'T-01', slug: 'commission-native-audio',
+		title: 'Commission native audio for all 28 lessons',
+		labels: ['ticket', 'content', 'blocked'],
+		body: `AC 8 requires sentence-level audio for every canonical line. The text ships;
+the audio does not. No native speakers are available to an agent, and synthesised
+speech is the wrong pedagogy for a product built on imitation.
+
+**Everything except the bytes is already built.** \`AudioClip\` carries
+\`startMs\`/\`endMs\` so one clean recording per lesson can be sliced per sentence,
+\`chunks\` carries phrase-level boundaries for shadowing, and slow playback is
+derived via \`playbackRate\` (issue #1 permits time-stretch). Every line is flagged
+\`audio.pending: true\`, and the UI says so plainly instead of showing a dead player.
+
+Filling in \`normalUrl\` and the offsets completes AC 8 with no code change.`,
+		ac: [
+			'One native speaker recruited per language (fr, ta — Chennai-oriented spoken)',
+			'One clean recording per lesson, consistent pace and room',
+			'Sentence offsets filled into each line\'s `audio.startMs` / `endMs`',
+			'Phrase-level chunk boundaries confirmed against the recording',
+			'`audio.pending` flipped to false; the pending-audio notices disappear on their own'
+		],
+		deps: []
+	},
+	{
+		id: 'T-02', slug: 'native-review-french',
+		title: 'Native review pass on the French corpus',
+		labels: ['ticket', 'content', 'blocked'],
+		body: `All 14 French lessons are \`reviewStatus: 'draft'\` — honest, because no native
+reviewer has seen them. AC 11 requires the status to be recorded (it is), but the
+corpus should not be treated as publishable until it is reviewed.
+
+Check naturalness and register, not just grammaticality: the lessons aim at
+everyday spoken French, and a technically correct sentence nobody says is a bug.`,
+		ac: [
+			'One native French curriculum reviewer passes all 14 lessons',
+			'A second bilingual editor confirms the English translations',
+			'`reviewStatus` moves to `two-native-review` in `FR_PROFILE`',
+			'The content test asserting `draft` is updated in the same commit'
+		],
+		deps: []
+	},
+	{
+		id: 'T-03', slug: 'native-review-tamil',
+		title: 'Native review pass on the Tamil corpus (highest risk)',
+		labels: ['ticket', 'content', 'blocked'],
+		body: `Higher risk than T-02 and should be scheduled first.
+
+The course deliberately teaches **contemporary educated spoken Tamil**, not
+literary Tamil — and spoken register is precisely the axis a non-native author
+cannot self-check. Script, transliteration, literal gloss and natural English are
+all structurally present and schema-valid, but treat the Tamil corpus as a
+**placeholder with the right shape**, not as content.
+
+Specific things to check: whether each line is what someone would actually say;
+whether the transliteration matches Chennai-general pronunciation; whether the
+literal glosses genuinely expose Tamil structure; and whether any line should
+carry a formal variant that is currently missing.`,
+		ac: [
+			'Native spoken-Tamil reviewer passes all 14 lessons for naturalness',
+			'Transliteration scheme reviewed for consistency by a Tamil linguist',
+			'Literal glosses confirmed to reveal structure rather than restate meaning',
+			'Lines needing a formal variant are identified and authored',
+			'`reviewStatus` moves to `two-native-review` in `TA_PROFILE`'
+		],
+		deps: []
+	},
+	{
+		id: 'T-04', slug: 'unblock-open-corpora',
+		title: 'Ingest the blocked open corpora (Tatoeba, Common Voice, Wiktionary, FSI)',
+		labels: ['ticket', 'data', 'blocked'],
+		body: `These hosts return **403 policy denials** at this environment's egress proxy, so
+the supplementary-data layers are unbuilt:
+
+| Host | Intended use |
+| --- | --- |
+| \`downloads.tatoeba.org\` | Supplementary sentence pairs, assessment candidates |
+| \`commonvoice.mozilla.org\` | Accent exposure, ASR robustness testing |
+| \`kaikki.org\` | Wiktionary extracts for the dictionary layer |
+| \`archive.org\` | Public-domain FSI French course, as a structural reference |
+
+UD was reachable and **is** sourced — see \`scripts/source-ud.mjs\`, which is the
+template to follow for each of these.
+
+Per-record licence checking is mandatory for Tatoeba: its sentences and audio
+carry differing licences, and a blanket import would be wrong. FSI is public
+domain but dated — modernise, do not present as-is.`,
+		ac: [
+			'Hosts allowlisted, or datasets fetched elsewhere and committed',
+			'Each import records `source`, `license` and `reviewStatus` per record',
+			'Tatoeba import checks licences per record, not per corpus',
+			'Open-corpus material is structurally prevented from entering the teaching sequence',
+			'A licence audit can be produced for any shipped lesson'
+		],
+		deps: []
+	},
+	{
+		id: 'T-05', slug: 'tamil-morphology-licence',
+		title: 'Find a usable-licence source for Tamil morphology',
+		labels: ['ticket', 'data', 'legal'],
+		body: `French morphology is sourced from UD_French-GSD (CC BY-SA 4.0) and wired into
+the notes drawer. Tamil has no equivalent, and this is a **licence** problem, not
+a network one: **UD_Tamil-TTB is CC BY-NC-SA 3.0 — non-commercial.**
+
+It is excluded deliberately, and \`morphology.test.ts\` asserts Tamil has no lexicon
+so that nobody "fixes" it by vendoring an NC corpus by accident.
+
+Also note CC BY-SA 4.0 is **share-alike**: the derived French lexicon carries that
+obligation, which is why it is isolated in \`data/reference/\` instead of merged
+into the canonical corpus.
+
+Options: a differently-licensed Tamil treebank; a commercial licence for TTB; or a
+native linguist annotating our own 14 lessons directly (small — ~110 lines).`,
+		ac: [
+			'A Tamil morphology source is identified with a licence compatible with shipping',
+			'Or our own lines are annotated directly and owned outright',
+			'`data/reference/LICENSE.md` updated with the decision',
+			'The test asserting no Tamil lexicon is updated deliberately, not incidentally'
+		],
+		deps: []
+	},
+	{
+		id: 'T-06', slug: 'microphone-and-transcription',
+		title: 'Microphone capture and transcription (never scoring)',
+		labels: ['ticket', 'audio', 'feature'],
+		body: `Every mic affordance is present and wired to UI state, but nothing records yet:
+\`MediaRecorder\` plus a permission flow is unbuilt, and no transcription provider
+is chosen.
+
+**Hard constraint, from the spec and from issue #1's out-of-scope list:**
+recognition may *transcribe* in order to diff an answer, but must never *score*
+pronunciation. No percentages, no grades, no red marks. 1g compares by ear on
+purpose; 1n asks the learner to notice a difference before showing the fix.
+
+Failure to transcribe must degrade to by-ear comparison, never block progress.`,
+		ac: [
+			'Recording works on mobile and desktop behind an explicit permission prompt',
+			'Learner audio is kept only for the current comparison unless deliberately saved',
+			'Transcription feeds difference detection only',
+			'No numeric pronunciation output exists in any API or any surface',
+			'Transcription failure degrades to by-ear comparison'
+		],
+		deps: ['T-01']
+	},
+	{
+		id: 'T-07', slug: 'connect-github-app',
+		title: 'Connect the Claude GitHub App so agents can file issues',
+		labels: ['ticket', 'infra'],
+		body: `Agents working in this repo cannot comment on or open issues.
+\`api.github.com\` returns:
+
+\`\`\`
+403 GitHub access is not enabled for this session.
+An org admin must connect the Claude GitHub App for this organization.
+\`\`\`
+
+That response comes from the Anthropic egress proxy, not GitHub — it is returned
+even with \`GITHUB_TOKEN\` and \`GH_TOKEN\` present in the environment, and \`gh\` is
+not installed. Cloning and pushing work because git traffic takes a different path,
+which is why code lands but issue comments do not.
+
+Until this is connected, \`docs/ISSUE-1-LIMITATIONS.md\` is the handoff surface and
+has to be pasted into issue #1 by hand.`,
+		ac: [
+			'An org admin connects the Claude GitHub App for `ChaiWithJai`',
+			'`scripts/file-issues.sh` can push `issues/` to GitHub',
+			'`docs/ISSUE-1-LIMITATIONS.md` is posted to issue #1 and kept current there'
+		],
+		deps: []
+	}
+];
+
 /* ------------------------------------------------------------------ */
 /* Rendering                                                           */
 /* ------------------------------------------------------------------ */
@@ -981,7 +1159,7 @@ function renderScreen(s) {
 # S-${String(s.n).padStart(2, '0')} · ${s.title}
 
 Surface ${s.n} of 22 · canvas id \`${s.cid}\` · ${s.group}
-Wireframe: \`app/src/lib/components/surfaces/${s.slug}.svelte\` → \`/surfaces/${s.slug}\`
+Design reference: \`src/lib/components/surfaces/${s.slug}.svelte\` → \`/surfaces/${s.slug}\`
 
 ## Matrix row
 
@@ -1053,7 +1231,13 @@ for (const d of data) {
 	written.push({ file, id: d.id, title: d.title, group: 'Data layer' });
 }
 
-const groups = ['Foundation', 'Screens', 'Data layer'];
+for (const t of tickets) {
+	const file = `${t.id}-${t.slug}.md`;
+	fs.writeFileSync(path.join(OUT, file), renderData(t));
+	written.push({ file, id: t.id, title: t.title, group: 'Sourcing tickets' });
+}
+
+const groups = ['Foundation', 'Screens', 'Data layer', 'Sourcing tickets'];
 const index = `# Issues
 
 Generated by \`scripts/generate-issues.mjs\` from the product model in

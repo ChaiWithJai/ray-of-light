@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-12 · Completion exercise
 
 Surface 12 of 22 · canvas id `1l` · Checks & exercises (passive wave)
-Wireframe: `app/src/lib/components/surfaces/completion-exercise.svelte` → `/surfaces/completion-exercise`
+Design reference: `src/lib/components/surfaces/completion-exercise.svelte` → `/surfaces/completion-exercise`
 
 ## Matrix row
 

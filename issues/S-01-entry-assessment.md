@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-01 · Entry assessment
 
 Surface 1 of 22 · canvas id `1a` · Onboarding & scheduling
-Wireframe: `app/src/lib/components/surfaces/entry-assessment.svelte` → `/surfaces/entry-assessment`
+Design reference: `src/lib/components/surfaces/entry-assessment.svelte` → `/surfaces/entry-assessment`
 
 ## Matrix row
 

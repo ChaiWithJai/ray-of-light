@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-09 · Comprehension check
 
 Surface 9 of 22 · canvas id `1i` · Checks & exercises (passive wave)
-Wireframe: `app/src/lib/components/surfaces/comprehension-check.svelte` → `/surfaces/comprehension-check`
+Design reference: `src/lib/components/surfaces/comprehension-check.svelte` → `/surfaces/comprehension-check`
 
 ## Matrix row
 

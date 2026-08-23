@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-05 · Parallel spread
 
 Surface 5 of 22 · canvas id `1e` · The lesson core
-Wireframe: `app/src/lib/components/surfaces/parallel-spread.svelte` → `/surfaces/parallel-spread`
+Design reference: `src/lib/components/surfaces/parallel-spread.svelte` → `/surfaces/parallel-spread`
 
 ## Matrix row
 

@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-16 · Error repair
 
 Surface 16 of 22 · canvas id `1p` · Active wave (Day 50+)
-Wireframe: `app/src/lib/components/surfaces/error-repair.svelte` → `/surfaces/error-repair`
+Design reference: `src/lib/components/surfaces/error-repair.svelte` → `/surfaces/error-repair`
 
 ## Matrix row
 

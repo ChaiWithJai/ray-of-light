@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-19 · Progress map
 
 Surface 19 of 22 · canvas id `1s` · Book-wide surfaces (persistent nav)
-Wireframe: `app/src/lib/components/surfaces/progress-map.svelte` → `/surfaces/progress-map`
+Design reference: `src/lib/components/surfaces/progress-map.svelte` → `/surfaces/progress-map`
 
 ## Matrix row
 

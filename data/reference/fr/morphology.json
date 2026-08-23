@@ -1,0 +1,1056 @@
+{
+	"$comment": "Derived from Universal Dependencies. Reference annotation only — never teaching content.",
+	"source": "UD_French-GSD",
+	"sourceFile": "fr_gsd-ud-train.conllu",
+	"license": "CC BY-SA 4.0",
+	"attribution": "Universal Dependencies French-GSD treebank, https://github.com/UniversalDependencies/UD_French-GSD",
+	"derivedAt": null,
+	"vocabularySize": 184,
+	"covered": 174,
+	"lexicon": {
+		"a": {
+			"lemma": "avoir",
+			"upos": "AUX",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 2050
+		},
+		"à": {
+			"lemma": "à",
+			"upos": "ADP",
+			"feats": null,
+			"count": 9280
+		},
+		"abord": {
+			"lemma": "abord",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 46
+		},
+		"ai": {
+			"lemma": "avoir",
+			"upos": "AUX",
+			"feats": "Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin",
+			"count": 156
+		},
+		"aider": {
+			"lemma": "aider",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 13
+		},
+		"aller": {
+			"lemma": "aller",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 45
+		},
+		"aller-retour": {
+			"lemma": "aller-retour",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 2
+		},
+		"alors": {
+			"lemma": "alors",
+			"upos": "ADV",
+			"feats": null,
+			"count": 333
+		},
+		"après": {
+			"lemma": "après",
+			"upos": "ADP",
+			"feats": null,
+			"count": 440
+		},
+		"assez": {
+			"lemma": "assez",
+			"upos": "ADV",
+			"feats": null,
+			"count": 56
+		},
+		"au": {
+			"lemma": "au",
+			"upos": "PROPN",
+			"feats": null,
+			"count": 2
+		},
+		"aussi": {
+			"lemma": "aussi",
+			"upos": "ADV",
+			"feats": null,
+			"count": 348
+		},
+		"avec": {
+			"lemma": "avec",
+			"upos": "ADP",
+			"feats": null,
+			"count": 1226
+		},
+		"avez": {
+			"lemma": "avoir",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Plur|Person=2|Tense=Pres|VerbForm=Fin",
+			"count": 13
+		},
+		"avion": {
+			"lemma": "avion",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 25
+		},
+		"banque": {
+			"lemma": "banque",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 20
+		},
+		"bateau": {
+			"lemma": "bateau",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 9
+		},
+		"beaucoup": {
+			"lemma": "beaucoup",
+			"upos": "ADV",
+			"feats": "ExtPos=PRON",
+			"count": 99
+		},
+		"bien": {
+			"lemma": "bien",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 318
+		},
+		"billet": {
+			"lemma": "billet",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 7
+		},
+		"boire": {
+			"lemma": "boire",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 4
+		},
+		"boisson": {
+			"lemma": "boisson",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 4
+		},
+		"bon": {
+			"lemma": "Bon",
+			"upos": "PROPN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 82
+		},
+		"bonjour": {
+			"lemma": "bonjour",
+			"upos": "INTJ",
+			"feats": null,
+			"count": 3
+		},
+		"bonne": {
+			"lemma": "bon",
+			"upos": "ADJ",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 59
+		},
+		"bouteille": {
+			"lemma": "bouteille",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 6
+		},
+		"c": {
+			"lemma": "C",
+			"upos": "SYM",
+			"feats": "ExtPos=PROPN",
+			"count": 19
+		},
+		"ça": {
+			"lemma": "ça",
+			"upos": "PRON",
+			"feats": "Gender=Masc|Number=Sing|Person=3|PronType=Dem",
+			"count": 33
+		},
+		"cabinet": {
+			"lemma": "cabinet",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 18
+		},
+		"café": {
+			"lemma": "café",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 22
+		},
+		"calme": {
+			"lemma": "calme",
+			"upos": "ADJ",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 15
+		},
+		"canada": {
+			"lemma": "Canada",
+			"upos": "PROPN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 52
+		},
+		"carafe": {
+			"lemma": "carafe",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 3
+		},
+		"ce": {
+			"lemma": "ce",
+			"upos": "DET",
+			"feats": "Gender=Masc|Number=Sing|PronType=Dem",
+			"count": 1006
+		},
+		"ceci": {
+			"lemma": "ceci",
+			"upos": "PRON",
+			"feats": "Gender=Masc|Number=Sing|Person=3|PronType=Dem",
+			"count": 22
+		},
+		"chambre": {
+			"lemma": "chambre",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 50
+		},
+		"choisi": {
+			"lemma": "choisir",
+			"upos": "VERB",
+			"feats": "Gender=Masc|Number=Sing|VerbForm=Part|Voice=Pass",
+			"count": 22
+		},
+		"cinq": {
+			"lemma": "cinq",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 76
+		},
+		"cinquante": {
+			"lemma": "cinquante",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 9
+		},
+		"clé": {
+			"lemma": "clé",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 10
+		},
+		"colis": {
+			"lemma": "colis",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 2
+		},
+		"combien": {
+			"lemma": "combien",
+			"upos": "ADV",
+			"feats": "PronType=Int",
+			"count": 9
+		},
+		"comme": {
+			"lemma": "comme",
+			"upos": "ADP",
+			"feats": null,
+			"count": 639
+		},
+		"coûte": {
+			"lemma": "coûter",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 2
+		},
+		"d": {
+			"lemma": "de",
+			"upos": "ADP",
+			"feats": null,
+			"count": 12
+		},
+		"dans": {
+			"lemma": "dans",
+			"upos": "ADP",
+			"feats": null,
+			"count": 2779
+		},
+		"de": {
+			"lemma": "de",
+			"upos": "ADP",
+			"feats": null,
+			"count": 23926
+		},
+		"depuis": {
+			"lemma": "depuis",
+			"upos": "ADP",
+			"feats": null,
+			"count": 310
+		},
+		"désirez": {
+			"lemma": "désirer",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Plur|Person=2|Tense=Pres|VerbForm=Fin",
+			"count": 1
+		},
+		"deux": {
+			"lemma": "deux",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 568
+		},
+		"devant": {
+			"lemma": "devant",
+			"upos": "ADP",
+			"feats": null,
+			"count": 68
+		},
+		"dimanche": {
+			"lemma": "dimanche",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 31
+		},
+		"dîner": {
+			"lemma": "dîner",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 3
+		},
+		"dix": {
+			"lemma": "dix",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 29
+		},
+		"docteur": {
+			"lemma": "docteur",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 22
+		},
+		"doit": {
+			"lemma": "devoir",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 103
+		},
+		"dormir": {
+			"lemma": "dormir",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 5
+		},
+		"douze": {
+			"lemma": "douze",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 14
+		},
+		"droit": {
+			"lemma": "droit",
+			"upos": "ADV",
+			"feats": null,
+			"count": 115
+		},
+		"droite": {
+			"lemma": "droite",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 42
+		},
+		"du": {
+			"lemma": "du",
+			"upos": "DET",
+			"feats": "Definite=Ind|Gender=Masc|Number=Sing|PronType=Art",
+			"count": 94
+		},
+		"eau": {
+			"lemma": "eau",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 112
+		},
+		"elle": {
+			"lemma": "lui",
+			"upos": "PRON",
+			"feats": "Case=Nom|Emph=No|Gender=Fem|Number=Sing|Person=3|PronType=Prs",
+			"count": 849
+		},
+		"en": {
+			"lemma": "en",
+			"upos": "ADP",
+			"feats": null,
+			"count": 5479
+		},
+		"envoyer": {
+			"lemma": "envoyer",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 6
+		},
+		"est": {
+			"lemma": "être",
+			"upos": "AUX",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 4738
+		},
+		"et": {
+			"lemma": "et",
+			"upos": "CCONJ",
+			"feats": null,
+			"count": 7213
+		},
+		"étage": {
+			"lemma": "étage",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 12
+		},
+		"euros": {
+			"lemma": "euro",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Plur",
+			"count": 57
+		},
+		"fait": {
+			"lemma": "faire",
+			"upos": "VERB",
+			"feats": "Gender=Masc|Number=Sing|VerbForm=Part|Voice=Act",
+			"count": 518
+		},
+		"faut": {
+			"lemma": "falloir",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 86
+		},
+		"fromage": {
+			"lemma": "fromage",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 6
+		},
+		"gare": {
+			"lemma": "gare",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 46
+		},
+		"gauche": {
+			"lemma": "gauche",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 59
+		},
+		"heure": {
+			"lemma": "heure",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 24
+		},
+		"heures": {
+			"lemma": "heure",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Plur",
+			"count": 44
+		},
+		"hier": {
+			"lemma": "hier",
+			"upos": "ADV",
+			"feats": null,
+			"count": 17
+		},
+		"ici": {
+			"lemma": "ici",
+			"upos": "ADV",
+			"feats": null,
+			"count": 42
+		},
+		"il": {
+			"lemma": "lui",
+			"upos": "PRON",
+			"feats": "Case=Nom|Emph=No|Gender=Masc|Number=Sing|Person=3|PronType=Prs",
+			"count": 3213
+		},
+		"j": {
+			"lemma": "J",
+			"upos": "X",
+			"feats": "ExtPos=PROPN",
+			"count": 6
+		},
+		"je": {
+			"lemma": "moi",
+			"upos": "PRON",
+			"feats": "Case=Nom|Emph=No|Number=Sing|Person=1|PronType=Prs",
+			"count": 279
+		},
+		"journée": {
+			"lemma": "journée",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 31
+		},
+		"jours": {
+			"lemma": "jour",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Plur",
+			"count": 93
+		},
+		"kilos": {
+			"lemma": "kilo",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Plur",
+			"count": 4
+		},
+		"la": {
+			"lemma": "le",
+			"upos": "DET",
+			"feats": "Definite=Def|Gender=Fem|Number=Sing|PronType=Art",
+			"count": 9830
+		},
+		"le": {
+			"lemma": "le",
+			"upos": "DET",
+			"feats": "Definite=Def|Gender=Masc|Number=Sing|PronType=Art",
+			"count": 13924
+		},
+		"lyon": {
+			"lemma": "Lyon",
+			"upos": "PROPN",
+			"feats": null,
+			"count": 25
+		},
+		"madame": {
+			"lemma": "madame",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 12
+		},
+		"mais": {
+			"lemma": "mais",
+			"upos": "CCONJ",
+			"feats": null,
+			"count": 734
+		},
+		"mal": {
+			"lemma": "mal",
+			"upos": "ADV",
+			"feats": null,
+			"count": 40
+		},
+		"marché": {
+			"lemma": "marché",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 43
+		},
+		"martin": {
+			"lemma": "Martin",
+			"upos": "PROPN",
+			"feats": null,
+			"count": 20
+		},
+		"matin": {
+			"lemma": "matin",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 25
+		},
+		"merci": {
+			"lemma": "merci",
+			"upos": "INTJ",
+			"feats": null,
+			"count": 21
+		},
+		"minutes": {
+			"lemma": "minute",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Plur",
+			"count": 35
+		},
+		"monsieur": {
+			"lemma": "monsieur",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 13
+		},
+		"musée": {
+			"lemma": "musée",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 30
+		},
+		"ne": {
+			"lemma": "ne",
+			"upos": "ADV",
+			"feats": "Polarity=Neg",
+			"count": 722
+		},
+		"non": {
+			"lemma": "non",
+			"upos": "ADV",
+			"feats": "ExtPos=ADV|Polarity=Neg",
+			"count": 124
+		},
+		"nuit": {
+			"lemma": "nuit",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 40
+		},
+		"nuits": {
+			"lemma": "nuit",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Plur",
+			"count": 4
+		},
+		"numéro": {
+			"lemma": "numéro",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 18
+		},
+		"on": {
+			"lemma": "on",
+			"upos": "PRON",
+			"feats": "Case=Nom|Emph=No|Gender=Masc|Number=Sing|Person=3|PronType=Ind",
+			"count": 479
+		},
+		"ou": {
+			"lemma": "ou",
+			"upos": "CCONJ",
+			"feats": null,
+			"count": 809
+		},
+		"où": {
+			"lemma": "où",
+			"upos": "ADV",
+			"feats": "PronType=Rel",
+			"count": 357
+		},
+		"oui": {
+			"lemma": "oui",
+			"upos": "INTJ",
+			"feats": null,
+			"count": 6
+		},
+		"pain": {
+			"lemma": "pain",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 11
+		},
+		"par": {
+			"lemma": "par",
+			"upos": "ADP",
+			"feats": null,
+			"count": 2184
+		},
+		"pardon": {
+			"lemma": "pardon",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 2
+		},
+		"parler": {
+			"lemma": "parler",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 24
+		},
+		"part": {
+			"lemma": "part",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 110
+		},
+		"pas": {
+			"lemma": "pas",
+			"upos": "ADV",
+			"feats": "Polarity=Neg",
+			"count": 901
+		},
+		"pense": {
+			"lemma": "penser",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 24
+		},
+		"peu": {
+			"lemma": "peu",
+			"upos": "NOUN",
+			"feats": "Gender=Masc",
+			"count": 215
+		},
+		"peux": {
+			"lemma": "pouvoir",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin",
+			"count": 9
+		},
+		"pied": {
+			"lemma": "pied",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 31
+		},
+		"plaisir": {
+			"lemma": "plaisir",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 12
+		},
+		"plaît": {
+			"lemma": "plaire",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 2
+		},
+		"plus": {
+			"lemma": "plus",
+			"upos": "ADV",
+			"feats": "Polarity=Neg",
+			"count": 1180
+		},
+		"poisson": {
+			"lemma": "poisson",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 10
+		},
+		"pour": {
+			"lemma": "pour",
+			"upos": "ADP",
+			"feats": null,
+			"count": 2241
+		},
+		"prend": {
+			"lemma": "prendre",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 63
+		},
+		"prends": {
+			"lemma": "prendre",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin",
+			"count": 1
+		},
+		"prochain": {
+			"lemma": "prochain",
+			"upos": "ADJ",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 18
+		},
+		"puis": {
+			"lemma": "puis",
+			"upos": "CCONJ",
+			"feats": null,
+			"count": 232
+		},
+		"qu": {
+			"lemma": "que",
+			"upos": "SCONJ",
+			"feats": null,
+			"count": 2
+		},
+		"quai": {
+			"lemma": "quai",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 8
+		},
+		"quand": {
+			"lemma": "quand",
+			"upos": "SCONJ",
+			"feats": null,
+			"count": 86
+		},
+		"quarante": {
+			"lemma": "quarante",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 8
+		},
+		"quatorze": {
+			"lemma": "quatorze",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 7
+		},
+		"que": {
+			"lemma": "que",
+			"upos": "SCONJ",
+			"feats": null,
+			"count": 1721
+		},
+		"quel": {
+			"lemma": "quel",
+			"upos": "ADJ",
+			"feats": "Gender=Masc|Number=Sing|PronType=Rel",
+			"count": 28
+		},
+		"quelle": {
+			"lemma": "quel",
+			"upos": "ADJ",
+			"feats": "Gender=Fem|Number=Sing|PronType=Rel",
+			"count": 26
+		},
+		"qui": {
+			"lemma": "qui",
+			"upos": "PRON",
+			"feats": "PronType=Rel",
+			"count": 1913
+		},
+		"quinze": {
+			"lemma": "quinze",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 8
+		},
+		"rappeler": {
+			"lemma": "rappeler",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 8
+		},
+		"réserver": {
+			"lemma": "réserver",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 7
+		},
+		"réunion": {
+			"lemma": "réunion",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 33
+		},
+		"revoir": {
+			"lemma": "revoir",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 6
+		},
+		"rien": {
+			"lemma": "rien",
+			"upos": "PRON",
+			"feats": "Gender=Masc|Number=Sing|PronType=Neg",
+			"count": 69
+		},
+		"s": {
+			"lemma": "S",
+			"upos": "PROPN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 19
+		},
+		"samedi": {
+			"lemma": "samedi",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 26
+		},
+		"semaines": {
+			"lemma": "semaine",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Plur",
+			"count": 33
+		},
+		"sept": {
+			"lemma": "sept",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 37
+		},
+		"simple": {
+			"lemma": "simple",
+			"upos": "ADJ",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 36
+		},
+		"six": {
+			"lemma": "six",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 62
+		},
+		"soir": {
+			"lemma": "soir",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 40
+		},
+		"suite": {
+			"lemma": "suite",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 132
+		},
+		"tard": {
+			"lemma": "tard",
+			"upos": "ADV",
+			"feats": null,
+			"count": 108
+		},
+		"tête": {
+			"lemma": "tête",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Sing",
+			"count": 65
+		},
+		"tomates": {
+			"lemma": "tomate",
+			"upos": "NOUN",
+			"feats": "Gender=Fem|Number=Plur",
+			"count": 3
+		},
+		"toujours": {
+			"lemma": "toujours",
+			"upos": "ADV",
+			"feats": null,
+			"count": 120
+		},
+		"tout": {
+			"lemma": "tout",
+			"upos": "ADJ",
+			"feats": "Gender=Masc|Number=Sing|PronType=Ind",
+			"count": 333
+		},
+		"train": {
+			"lemma": "train",
+			"upos": "NOUN",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 19
+		},
+		"travailler": {
+			"lemma": "travailler",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 20
+		},
+		"très": {
+			"lemma": "très",
+			"upos": "ADV",
+			"feats": null,
+			"count": 434
+		},
+		"trois": {
+			"lemma": "trois",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 206
+		},
+		"troisième": {
+			"lemma": "troisième",
+			"upos": "ADJ",
+			"feats": "Gender=Masc|Number=Sing",
+			"count": 76
+		},
+		"tu": {
+			"lemma": "toi",
+			"upos": "PRON",
+			"feats": "Case=Nom|Emph=No|Number=Sing|Person=2|PronType=Prs",
+			"count": 12
+		},
+		"un": {
+			"lemma": "un",
+			"upos": "DET",
+			"feats": "Definite=Ind|Gender=Masc|Number=Sing|PronType=Art",
+			"count": 3881
+		},
+		"une": {
+			"lemma": "un",
+			"upos": "DET",
+			"feats": "Definite=Ind|Gender=Fem|Number=Sing|PronType=Art",
+			"count": 3339
+		},
+		"va": {
+			"lemma": "aller",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin",
+			"count": 68
+		},
+		"vais": {
+			"lemma": "aller",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin",
+			"count": 7
+		},
+		"venir": {
+			"lemma": "venir",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 28
+		},
+		"vers": {
+			"lemma": "vers",
+			"upos": "ADP",
+			"feats": null,
+			"count": 191
+		},
+		"veux": {
+			"lemma": "vouloir",
+			"upos": "VERB",
+			"feats": "Mood=Ind|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin",
+			"count": 2
+		},
+		"vingt": {
+			"lemma": "vingt",
+			"upos": "NUM",
+			"feats": "Number=Plur",
+			"count": 16
+		},
+		"visiter": {
+			"lemma": "visiter",
+			"upos": "VERB",
+			"feats": "VerbForm=Inf",
+			"count": 8
+		},
+		"voici": {
+			"lemma": "voici",
+			"upos": "VERB",
+			"feats": null,
+			"count": 9
+		},
+		"voilà": {
+			"lemma": "voilà",
+			"upos": "VERB",
+			"feats": null,
+			"count": 18
+		},
+		"votre": {
+			"lemma": "son",
+			"upos": "DET",
+			"feats": "Number=Sing|Number[psor]=Plur|Person[psor]=2|Poss=Yes|PronType=Prs",
+			"count": 48
+		},
+		"voudrais": {
+			"lemma": "vouloir",
+			"upos": "VERB",
+			"feats": "Mood=Cnd|Number=Sing|Person=1|Tense=Pres|VerbForm=Fin",
+			"count": 1
+		},
+		"vous": {
+			"lemma": "vous",
+			"upos": "PRON",
+			"feats": "Case=Nom|Emph=No|Number=Plur|Person=2|PronType=Prs",
+			"count": 235
+		},
+		"y": {
+			"lemma": "y",
+			"upos": "PRON",
+			"feats": "Emph=No|Person=3|PronType=Prs",
+			"count": 465
+		}
+	}
+}

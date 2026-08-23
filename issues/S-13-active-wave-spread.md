@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-13 · Active-wave spread
 
 Surface 13 of 22 · canvas id `1m` · Active wave (Day 50+)
-Wireframe: `app/src/lib/components/surfaces/active-wave-spread.svelte` → `/surfaces/active-wave-spread`
+Design reference: `src/lib/components/surfaces/active-wave-spread.svelte` → `/surfaces/active-wave-spread`
 
 ## Matrix row
 

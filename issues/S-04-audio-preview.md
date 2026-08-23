@@ -6,7 +6,7 @@ labels: [screen, surface]
 # S-04 · Audio preview
 
 Surface 4 of 22 · canvas id `1d` · The lesson core
-Wireframe: `app/src/lib/components/surfaces/audio-preview.svelte` → `/surfaces/audio-preview`
+Design reference: `src/lib/components/surfaces/audio-preview.svelte` → `/surfaces/audio-preview`
 
 ## Matrix row
 

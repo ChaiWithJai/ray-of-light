@@ -1,65 +1,106 @@
-# 22 surface areas — digital Assimil
+# Ray of Light
 
-SvelteKit implementation of the Claude Design handoff in
-[`../project/Surface Areas Wireframes.dc.html`](../project/Surface%20Areas%20Wireframes.dc.html).
+Learn French and contemporary spoken Tamil from English through an
+Assimil-inspired **parallel-text interface**.
 
-All 22 surfaces are built as individually routable screens. There is deliberately
-**no canvas index** — `/` redirects to the first surface.
+The organising idea: a bilingual spread where target and English lines stay
+spatially aligned, tracked together, with support removed a layer at a time —
+audio only → both columns → English covered → target covered → produced from
+memory → adapted to a new situation.
+
+POC for [issue #1](https://github.com/ChaiWithJai/ray-of-light/issues/1).
 
 ```sh
 npm install
-npm run dev      # http://localhost:5173 → /surfaces/entry-assessment
-npm run check    # svelte-check
-npm run build
+npm run dev          # http://localhost:5173
+npm run check        # svelte-check
+npm test             # unit + content conformance (70 tests)
+npm run test:e2e     # acceptance criteria through a real browser (9 tests)
 ```
+
+## The route through the product
+
+```
+/onboarding/language → /onboarding/assessment → /onboarding/plan
+        ↓
+      /today ──────────────► /learn/[lessonId]/[step]
+        │                      preview → spread → comprehension → shadow →
+        │                      translate → completion → transfer → closure
+        │                      (synthesis lessons: synthesis → transfer → closure)
+        │
+        └──────────────────► /recall/[lessonId]/[step]
+                               recall → compare → closure
+```
+
+Finishing the last step of a flow returns to Today. The four persistent
+destinations are **Today · Book · Phrases · Progress**; `/settings`,
+`/conversation` and `/repair` live off to the side.
+
+Steps are routes, so back, refresh and deep links all work — but the *order*
+lives in [`src/lib/flow.ts`](src/lib/flow.ts), not scattered through the route
+tree. Audio always comes first and a transfer prompt always comes last, because
+those are acceptance criteria rather than layout choices.
 
 ## Layout
 
 | Path | What it holds |
 | --- | --- |
-| `src/lib/surfaces.ts` | The 22 surfaces: canvas id, number, slug, title, group. `surfaceHref('1e')` resolves a canvas id to its route. |
-| `src/lib/components/surfaces/` | One component per surface, each headed by its canvas id (`<!-- 1e · 5 · … -->`). |
-| `src/lib/components/wireframe/` | The sketch primitives (`Phone`, `PairRow`, `CoveredCell`, `Chip`, `SketchCard`, `Waveform`, …). Each wraps a shadcn-svelte primitive where one exists. |
-| `src/lib/components/ui/` | shadcn-svelte components, unmodified. |
-| `src/lib/styles/style-vega.css` | The shadcn-svelte `vega` style sheet. |
-| `src/routes/surfaces/<slug>/` | One route per surface. |
+| `src/lib/schemas/` | Content, learner and scheduling schemas, runtime-validated with zod |
+| `src/lib/content/` | The 28 canonical lessons (14 French, 14 Tamil) and the course index |
+| `src/lib/components/app/` | `Spread` — the parallel bilingual spread, in all its states |
+| `src/lib/components/steps/` | One component per session step |
+| `src/lib/components/wireframe/` | The sketch design system |
+| `src/lib/stores/profile.svelte.ts` | Local-first learner profile and evidence log |
+| `data/reference/` | Sourced linguistic annotation, isolated by licence |
+| `design/` | The Claude Design source the interface was built from |
+| `docs/` | Architecture map, and the limitations log for issue #1 |
+| `issues/` | 48 issues: 7 foundation, 22 screens, 12 data layer, 7 sourcing tickets |
 
-## Routes
+## Three decisions worth knowing
 
-| id | Route | id | Route |
-| --- | --- | --- | --- |
-| 1a | `/surfaces/entry-assessment` | 1l | `/surfaces/completion-exercise` |
-| 1b | `/surfaces/learning-plan` | 1m | `/surfaces/active-wave-spread` |
-| 1c | `/surfaces/today` | 1n | `/surfaces/answer-comparison` |
-| 1d | `/surfaces/audio-preview` | 1o | `/surfaces/transfer-challenge` |
-| 1e | `/surfaces/parallel-spread` | 1p | `/surfaces/error-repair` |
-| 1f | `/surfaces/finger-tracking` | 1q | `/surfaces/lesson-closure` |
-| 1g | `/surfaces/pronunciation` | 1r | `/surfaces/weekly-synthesis` |
-| 1h | `/surfaces/notes-drawer` | 1s | `/surfaces/progress-map` |
-| 1i | `/surfaces/comprehension-check` | 1t | `/surfaces/phrase-library` |
-| 1j | `/surfaces/echo-practice` | 1u | `/surfaces/conversation-bridge` |
-| 1k | `/surfaces/translation-exercise` | 1v | `/surfaces/settings` |
+**Progress is derived, never stored.** There is no completion flag anywhere.
+Evidence is append-only, and each construction's state — `exposed → recognized →
+recalled → stabilized → transferable` — is recomputed from that log. `stabilized`
+cannot be granted by any single event; it needs retrieval on two distinct calendar
+days, which is the one thing a single session can never produce. A finished lesson
+whose constructions are still `exposed` shows as exactly that.
 
-## How the sketch look and shadcn coexist
+**Covering a column cannot move the layout.** Swapping text for a hatched box
+changes its height, so lines would shift the moment you covered a column —
+breaking the one thing the spread exists for. Text is never removed: it stays in
+the DOM reserving its own space, hidden from sight and from screen readers, with
+the hatch painted over it. An e2e test compares bounding boxes.
 
-The wireframe palette from the prototype is mapped onto shadcn's token names in
-`src/app.css`, so the `ui/` components inherit the sketch look rather than fighting
-it. The raw prototype values stay available as their own tokens (`bg-paper`,
-`text-ink-soft`, `border-accent-blue`, `font-script`, …).
+**The POC wave offsets differ from the book, deliberately.** Assimil starts the
+active wave around day 50, recalling the lesson from ~49 days earlier. With 14
+lessons the learner would run out of content before the active wave ever opened,
+making AC 5 untestable. `POC_WAVE_CONFIG` starts it at lesson 4 with a 3-lesson
+lag; `FULL_COURSE_WAVE_CONFIG` keeps the real numbers. The delay is preserved in
+structure and shortened in magnitude.
 
-Where a wireframe component needs to depart from a shadcn default (flat heights,
-2px ink borders, pill padding), it passes Tailwind utilities through `class`.
-That wins reliably: the `cn-*` rules ship in the `base` layer and utilities come
-after it, so no `!important` is needed anywhere.
+## What is not built
 
-The margin notes (`→ …`) from the design are rendered with the screens, since they
-are part of the wireframe. Cross-references between surfaces are live links.
+Read [`docs/ISSUE-1-LIMITATIONS.md`](docs/ISSUE-1-LIMITATIONS.md) before assuming
+anything ships. The short version:
 
-## Note on `shadcn-svelte add`
+- **No audio.** Every line is flagged `audio.pending`. The whole path exists —
+  sentence offsets, chunk boundaries, time-stretched slow playback — but no native
+  recordings were obtainable. See `T-01`.
+- **No native review.** All content is honestly marked `reviewStatus: 'draft'`.
+  This matters most for Tamil, where spoken register is exactly what a non-native
+  author cannot self-check. See `T-02`, `T-03`.
+- **No microphone capture.** Mic affordances are wired to UI state but do not
+  record. See `T-06`.
+- **French morphology is sourced; Tamil is not.** UD_French-GSD is CC BY-SA 4.0
+  and is used. UD_Tamil-TTB is CC BY-**NC**-SA 3.0 — non-commercial — so it is
+  excluded on purpose, with a test asserting the absence. See `T-05`.
 
-`shadcn-svelte.com` is blocked by this environment's egress policy, so the CLI
-cannot reach the component registry here. The `ui/` components were taken from the
-`huntabyte/shadcn-svelte` repo at the same version the CLI resolves (v1.5.0), which
-is the same source the CLI copies from. `components.json` is configured normally,
-so `npx shadcn-svelte@latest add <component>` will work from any network that can
-reach the registry.
+## Content and licensing
+
+Canonical lessons are **original and owned**. Assimil is the interaction reference
+only; no Assimil text is reproduced. Every line carries `source`, `license` and
+`reviewStatus`, and the schema refuses content without them.
+
+Sourced reference data is isolated in `data/reference/` with its own
+[`LICENSE.md`](data/reference/LICENSE.md), so the CC BY-SA share-alike boundary is
+explicit rather than accidental.
