@@ -4,7 +4,7 @@
 	 * never a mixed "mistakes review" pile. The error is found by clustering the
 	 * evidence log, so this surface has nothing to show until mistakes exist.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { COURSES, getConstruction, getLesson } from '$lib/content/index.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -40,41 +40,43 @@
 
 <svelte:head><title>Your pattern</title></svelte:head>
 
-<W.Phone>
-	<W.TitleBar left="✕" center="Your pattern" />
+<W.Shell title="Your pattern" back="/today" backKind="close">
+	<div class="anim-rise pt-2">
+		<W.Heading>Your pattern</W.Heading>
+	</div>
 
 	{#if !worst || !construction}
-		<W.SketchCard>
+		<W.Card>
 			<W.Muted>
 				Nothing to repair. This surface only appears once the same construction has gone
 				wrong more than once — it is not a list of every mistake you've made.
 			</W.Muted>
-		</W.SketchCard>
-		<W.SketchButton class="mt-auto" href="/today">Back to Today</W.SketchButton>
+		</W.Card>
+		<W.Button class="mt-auto" href="/today">Back to Today</W.Button>
 	{:else}
-		<W.SketchCard tone="warn">
-			<div class="text-[14px] font-semibold">You keep missing {construction.label}</div>
+		<W.Card tone="warn">
+			<div class="text-sm font-semibold">You keep missing {construction.label}</div>
 			<W.Muted>
 				seen {worst.count}× — let's fix just this one
 			</W.Muted>
-			<W.Muted class="text-[11.5px]">{construction.gloss}</W.Muted>
-		</W.SketchCard>
+			<W.Muted class="text-2xs">{construction.gloss}</W.Muted>
+		</W.Card>
 
-		<div class="flex flex-col gap-[6px]">
+		<div class="flex flex-col gap-2">
 			{#each contexts as line (line.id)}
 				{@const lesson = getLesson(profile.language, line.lessonId)}
-				<W.SketchCard>
-					<W.Fr class="text-[14px]">{line.targetScript}</W.Fr>
+				<W.Card>
+					<W.Fr class="text-sm">{line.targetScript}</W.Fr>
 					{#if line.transliteration}
-						<W.Muted class="text-[11px] italic">{line.transliteration}</W.Muted>
+						<W.Muted class="text-2xs italic">{line.transliteration}</W.Muted>
 					{/if}
-					<W.Muted class="text-[11px]">{line.naturalEnglish} · L{lesson?.index}</W.Muted>
-				</W.SketchCard>
+					<W.Muted class="text-2xs">{line.naturalEnglish} · L{lesson?.index}</W.Muted>
+				</W.Card>
 			{/each}
 		</div>
 
 		<W.Muted class="text-center">then say each full sentence aloud</W.Muted>
 		<W.MicButton />
-		<W.SketchButton class="mt-auto" href="/today">Done</W.SketchButton>
+		<W.Button class="mt-auto" href="/today">Done</W.Button>
 	{/if}
-</W.Phone>
+</W.Shell>

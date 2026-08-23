@@ -4,7 +4,7 @@
 	 * prompt. The machine check only detects an authored ordered token pattern;
 	 * it cannot establish grammatical, pragmatic, or native-quality transfer.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION, getConstruction } from '$lib/content/index.js';
 	import { evaluateTransferAttempt, type TransferEvaluation } from '$lib/answers.js';
 	import type { Lesson, TransferPrompt } from '$lib/schemas/content.js';
@@ -45,15 +45,15 @@
 </script>
 
 {#if prompt}
-	<W.SketchCard tone="parchment">
-		<div class="text-[13px]">{prompt.situation}</div>
+	<W.Card tone="parchment">
+		<div class="text-sm">{prompt.situation}</div>
 		<W.Muted>{prompt.prompt}</W.Muted>
-	</W.SketchCard>
+	</W.Card>
 
 	<W.Muted>Use a construction you already own:</W.Muted>
 	<W.Chip active class="self-start">{construction?.label ?? prompt.useConstruction}</W.Chip>
 	{#if construction}
-		<W.Muted class="text-[11.5px]">{construction.gloss}</W.Muted>
+		<W.Muted class="text-2xs">{construction.gloss}</W.Muted>
 	{/if}
 
 	<W.AnswerField
@@ -66,11 +66,14 @@
 	<W.MicButton />
 
 	{#if submitted}
-		<W.SketchCard tone={allConstructionsMatched && evaluation?.contextMatched ? 'good' : 'warn'}>
+		<W.Card
+			tone={allConstructionsMatched && evaluation?.contextMatched ? 'good' : 'warn'}
+			class="anim-uncover"
+		>
 			<div
-				class="text-[13px] {allConstructionsMatched && evaluation?.contextMatched
-					? 'text-good'
-					: 'text-note'}"
+				class="text-sm {allConstructionsMatched && evaluation?.contextMatched
+					? 'text-insight'
+					: 'text-caution'}"
 			>
 				{allConstructionsMatched && evaluation?.contextMatched
 					? '✓ Your answer matched the target construction and situation patterns.'
@@ -80,21 +83,21 @@
 							? '→ Some construction patterns matched; the unmatched ones need another look. Compare:'
 							: '→ The target construction pattern did not match. Compare:'}
 			</div>
-			<W.Fr class="text-[13.5px]">{prompt.exemplar}</W.Fr>
-			<W.Muted class="text-[11.5px]">
+			<W.Fr class="text-sm">{prompt.exemplar}</W.Fr>
+			<W.Muted class="text-2xs">
 				{anyConstructionMatched
 					? 'Matched constructions record recognition evidence only; situation matching is feedback, not progress.'
 					: 'No recognition progress was recorded. This incorrect attempt can guide later repair.'}
 				This is not a judgment of full grammar or native naturalness.
 			</W.Muted>
-		</W.SketchCard>
-		<W.SketchButton tone="primary" onclick={onDone}>Continue</W.SketchButton>
+		</W.Card>
+		<W.Button tone="primary" onclick={onDone}>Continue</W.Button>
 	{:else}
-		<W.SketchButton tone="primary" disabled={answer.trim() === ''} onclick={submit}>
+		<W.Button tone="primary" disabled={answer.trim() === ''} onclick={submit}>
 			Check
-		</W.SketchButton>
+		</W.Button>
 	{/if}
 {:else}
 	<W.Muted>No transfer prompt in this lesson.</W.Muted>
-	<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>Continue</W.SketchButton>
+	<W.Button tone="primary" class="mt-auto" onclick={onDone}>Continue</W.Button>
 {/if}

@@ -5,7 +5,7 @@
 	 */
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
 	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
 	import { planToday, POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
@@ -86,97 +86,146 @@
 
 <svelte:head><title>Today</title></svelte:head>
 
-<W.Phone>
-	<W.TitleBar left="☰" center={plan ? `Day ${plan.dayNumber}` : ''} right="⚙" />
-	<W.Heading>Today</W.Heading>
+<W.Shell brand title={plan ? `Day ${plan.dayNumber}` : ''} settingsLink nav>
+	{#snippet aside()}
+		<div class="flex flex-col gap-3 border-l border-line pl-6">
+			<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
+				Your plan
+			</div>
+			{#if profile.plan}
+				<W.Muted>
+					{profile.plan.dailyMinutes} minutes a day · goal: {profile.plan.goal}
+				</W.Muted>
+				<W.Muted>
+					{profile.completedLessons.length} of {course.lessons.length} lessons behind you.
+					Every 7th is a review day — built in, not extra.
+				</W.Muted>
+			{/if}
+			<p class="m-0 font-script text-lg leading-snug text-caution">
+				→ the scheduler chooses; you just sit down.
+			</p>
+		</div>
+	{/snippet}
+
+	<div class="anim-rise flex items-baseline justify-between gap-2 pt-2">
+		<W.Heading>Today</W.Heading>
+		{#if plan}
+			<span class="font-script text-xl text-text-soft">day {plan.dayNumber}</span>
+		{/if}
+	</div>
 
 	{#if !plan || (!assignment && !profile.activeSession)}
 		<W.Muted>Loading your plan…</W.Muted>
-		{:else if profile.activeSession && activeLesson}
-			<W.SketchCard thick tone="parchment">
-				<div class="flex items-center justify-between gap-2">
-					<div class="font-semibold">Resume · {activeLesson.title}</div>
-					<W.Pill active>{profile.activeSession.mode}</W.Pill>
+	{:else if profile.activeSession && activeLesson}
+		<W.Card thick tone="parchment" class="anim-rise anim-d1 gap-3 p-5">
+			<div class="flex items-center justify-between gap-2">
+				<div class="font-display text-xl leading-tight font-semibold">
+					Resume · {activeLesson.title}
 				</div>
-				<W.Muted>
-					Your unfinished session is saved at {profile.activeSession.currentStep}.
-				</W.Muted>
-				<W.SketchButton
-					tone="primary"
-					class="mt-[4px]"
-					onclick={() => profile.activeSessionHref && goto(profile.activeSessionHref)}
-				>
-					Resume lesson
-				</W.SketchButton>
-				<W.SketchButton onclick={() => profile.abandonSession()}>
-					Abandon session
-				</W.SketchButton>
-				<W.Muted>Your saved progress and evidence are kept. You can start this assignment again.</W.Muted>
-			</W.SketchCard>
-		{:else if plan.courseComplete && assignment && !assignment.newLessonId && !assignment.recallLessonId}
-		<W.SketchCard tone="good">
-			<div class="font-semibold text-good">Course complete</div>
+				<W.Pill active>{profile.activeSession.mode}</W.Pill>
+			</div>
+			<W.Muted>
+				Your unfinished session is saved at {profile.activeSession.currentStep}.
+			</W.Muted>
+			<W.Button
+				tone="primary"
+				class="mt-1.5"
+				onclick={() => profile.activeSessionHref && goto(profile.activeSessionHref)}
+			>
+				Resume lesson
+			</W.Button>
+			<W.Button onclick={() => profile.abandonSession()}>Abandon session</W.Button>
+			<W.Muted>
+				Your saved progress and evidence are kept. You can start this assignment again.
+			</W.Muted>
+		</W.Card>
+	{:else if plan.courseComplete && assignment && !assignment.newLessonId && !assignment.recallLessonId}
+		<W.Card tone="good" class="anim-rise anim-d1 p-5">
+			<div class="font-display text-xl font-semibold text-insight">Course complete</div>
 			<W.Muted>You've worked through and recalled every authored lesson in this course.</W.Muted>
-			<W.SketchButton class="mt-[4px]" onclick={() => goto('/progress')}>See what stuck</W.SketchButton>
-		</W.SketchCard>
-		{:else if assignmentComplete}
-			<W.SketchCard tone="good">
-				<div class="font-semibold text-good">Today's session complete</div>
-				<W.Muted>Your next two-wave assignment will be prepared tomorrow.</W.Muted>
-			</W.SketchCard>
-		{:else if plan.courseComplete && !assignedRecallLesson}
-		<W.SketchCard tone="good">
-			<div class="font-semibold text-good">Course complete</div>
+			<W.Button class="mt-1.5" onclick={() => goto('/progress')}>See what stuck</W.Button>
+		</W.Card>
+	{:else if assignmentComplete}
+		<W.Card tone="good" class="anim-rise anim-d1 p-5">
+			<div class="font-display text-xl font-semibold text-insight">Today's session complete</div>
+			<W.Muted>Your next two-wave assignment will be prepared tomorrow.</W.Muted>
+		</W.Card>
+	{:else if plan.courseComplete && !assignedRecallLesson}
+		<W.Card tone="good" class="anim-rise anim-d1 p-5">
+			<div class="font-display text-xl font-semibold text-insight">Course complete</div>
 			<W.Muted>
 				You've worked through all {course.lessons.length} lessons. Progress now lives in what
 				you can still retrieve — see Progress.
 			</W.Muted>
-			<W.SketchButton class="mt-[4px]" onclick={() => goto('/progress')}>
+			<W.Button class="mt-1.5" onclick={() => goto('/progress')}>
 				See what stuck
-			</W.SketchButton>
-		</W.SketchCard>
+			</W.Button>
+		</W.Card>
 	{:else}
 		{#if assignedNewLesson && !newDone}
-			<W.SketchCard thick>
-				<div class="flex items-center justify-between gap-2">
-					<div class="font-semibold">Lesson {assignedNewLesson.index} · {assignedNewLesson.title}</div>
-					<W.Pill>{assignedNewLesson.kind === 'synthesis' ? 'review' : 'new'}</W.Pill>
+			<W.Card thick class="anim-rise anim-d1 gap-3 p-5">
+				<div>
+					<div class="flex items-baseline justify-between gap-2">
+						<div class="text-2xs font-bold tracking-[0.14em] text-brand uppercase">
+							Lesson {assignedNewLesson.index} · {assignedNewLesson.kind === 'synthesis'
+								? 'review'
+								: 'new'}
+						</div>
+						<span class="text-xs text-text-faint">~{Math.round(minutes * 0.6)} min</span>
+					</div>
+					<div class="font-display text-xl leading-tight font-semibold">
+						{assignedNewLesson.title}
+					</div>
 				</div>
 				<W.Muted>
 					{assignedNewLesson.kind === 'synthesis'
 						? 'Nothing new — only reassembly'
-						: 'Passive procedure'} · ~{Math.round(minutes * 0.6)} min
+						: 'Passive procedure: listen, read, retrieve'}
 				</W.Muted>
-				<W.SketchButton
+				<W.Button
 					tone="primary"
-					class="mt-[4px]"
-						onclick={() => goto(profile.startSession('learn', assignedNewLesson.id, flowFor(assignedNewLesson.kind), day))}
+					class="mt-1.5"
+					onclick={() =>
+						goto(
+							profile.startSession(
+								'learn',
+								assignedNewLesson.id,
+								flowFor(assignedNewLesson.kind),
+								day
+							)
+						)}
 				>
 					Start
-				</W.SketchButton>
-			</W.SketchCard>
+				</W.Button>
+			</W.Card>
 		{/if}
 
 		{#if assignedRecallLesson && !recallDone}
-			<W.SketchCard>
-				<div class="flex items-center justify-between gap-2">
-					<div class="font-semibold">Lesson {assignedRecallLesson.index} · {assignedRecallLesson.title}</div>
-					<W.Pill active>recall</W.Pill>
+			<W.Card class="anim-rise anim-d2 gap-3 p-5">
+				<div>
+					<div class="flex items-baseline justify-between gap-2">
+						<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
+							Lesson {assignedRecallLesson.index} · recall
+						</div>
+						<span class="text-xs text-text-faint">~{Math.round(minutes * 0.4)} min</span>
+					</div>
+					<div class="font-display text-xl leading-tight font-semibold">
+						{assignedRecallLesson.title}
+					</div>
 				</div>
-				<W.Muted>
-					Active wave: say it from the English · ~{Math.round(minutes * 0.4)} min
-				</W.Muted>
-				<W.SketchButton
-					class="mt-[4px]"
-						onclick={() => goto(profile.startSession('recall', assignedRecallLesson.id, RECALL_FLOW, day))}
+				<W.Muted>Active wave: say it from the English — from memory.</W.Muted>
+				<W.Button
+					class="mt-1.5"
+					onclick={() =>
+						goto(profile.startSession('recall', assignedRecallLesson.id, RECALL_FLOW, day))}
 				>
 					Start recall
-				</W.SketchButton>
-			</W.SketchCard>
+				</W.Button>
+			</W.Card>
 		{/if}
 
-		<W.Muted class="text-center">Nothing else to choose. That's the point.</W.Muted>
+		<W.Muted class="anim-rise anim-d3 pt-2 text-center">
+			Nothing else to choose. That's the point.
+		</W.Muted>
 	{/if}
-
-	<W.TabBar />
-</W.Phone>
+</W.Shell>

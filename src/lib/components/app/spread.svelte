@@ -10,7 +10,7 @@
 	 * the two-finger / single-guide modes from settings. Multitouch is never
 	 * required to progress.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { coveredLabel, spreadSupport, type SpreadState } from '$lib/spread.js';
 	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
 	import type { LearnerSettings } from '$lib/schemas/learner.js';
@@ -183,7 +183,7 @@
 	tabindex="0"
 	aria-label="Parallel bilingual spread. Use up and down arrows to move between line pairs."
 	aria-activedescendant="pair-{displayIndex}"
-	class="flex flex-col gap-[2px] rounded-[6px] outline-none focus-visible:ring-2 focus-visible:ring-accent-blue"
+	class="flex flex-col gap-1 rounded-2xl border border-effort-edge/70 bg-page px-3 py-4 shadow-card outline-none focus-visible:ring-2 focus-visible:ring-brand sm:px-5"
 	class:touch-pan-y={true}
 	{onkeydown}
 	{onpointerdown}
@@ -192,8 +192,16 @@
 	{onpointercancel}
 	{onmouseleave}
 >
-	<div class="flex items-center justify-between text-[12px] text-ink-soft">
-		<span>{isTamil ? 'தமிழ்' : 'FRANÇAIS'}</span><span>ENGLISH</span>
+	<div
+		class="mb-2 flex items-baseline justify-between border-b border-line pb-2 {isTamil
+			? 'text-lang-ta'
+			: 'text-lang-fr'}"
+	>
+		<span
+			class={isTamil
+				? 'font-tamil text-sm font-bold'
+				: 'text-2xs font-bold tracking-[0.14em] uppercase'}>{isTamil ? 'தமிழ்' : 'Français'}</span
+		><span class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">English</span>
 	</div>
 
 	{#each lines as line, i (line.id)}
@@ -225,12 +233,11 @@
 				>
 					<W.Fr n={i + 1} class={current ? 'font-semibold' : ''}>
 						{line.targetScript}
-						{#if current && !line.audio.pending}
-							<span class="text-[11px]" aria-hidden="true">▶</span>
-						{/if}
+						{#if current && !line.audio.pending}<span class="text-2xs" aria-hidden="true">▶</span
+							>{/if}
 					</W.Fr>
 					{#if showTranslit && line.transliteration}
-						<div class="pl-[16px] text-[11.5px] text-ink-faint italic">
+						<div class="pl-[16px] text-2xs text-text-faint italic">
 							{line.transliteration}
 						</div>
 					{/if}
@@ -243,7 +250,7 @@
 				>
 					<W.En n={i + 1}>{line.naturalEnglish}</W.En>
 					{#if isTamil && line.literalEnglish && current}
-						<div class="pl-[16px] text-[11px] text-ink-faint">
+						<div class="pl-[16px] text-2xs text-text-faint">
 							lit. {line.literalEnglish}
 						</div>
 					{/if}
@@ -254,13 +261,13 @@
 						data-tracking-handle
 						data-side="target"
 						aria-hidden="true"
-						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-accent-blue bg-paper text-accent-blue"
+						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card"
 					>↕</span>
 					<span
 						data-tracking-handle
 						data-side="source"
 						aria-hidden="true"
-						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-accent-blue bg-paper text-accent-blue"
+						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card"
 					>↕</span>
 				{/if}
 			</W.PairRow>
@@ -271,11 +278,11 @@
 <W.Muted class="text-center">{support.instruction}</W.Muted>
 
 {#if settings.trackingMode === 'single-guide'}
-	<W.Muted class="text-center text-[11px]">
+	<W.Muted class="text-center text-2xs">
 		↑ ↓ moves one pair · tap either column to jump
 	</W.Muted>
 {:else}
-	<W.Muted class="text-center text-[11px]">
+	<W.Muted class="text-center text-2xs">
 		drag either side — both anchors move together
 	</W.Muted>
 {/if}

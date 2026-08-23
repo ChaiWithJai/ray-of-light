@@ -210,12 +210,12 @@ test('new-first completion keeps the paired recall stable across refresh', async
 	await onboard(page);
 	await seedDailyClosure(page, 'learn', true);
 	await finishSeededClosure(page);
-	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+	await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 1 ·/ }).filter({ hasText: 'Au café' })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Start recall' })).toBeVisible();
 	await expect(page.getByText(/Lesson 5 ·/)).toHaveCount(0);
 
 	await page.reload();
-	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+	await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 1 ·/ }).filter({ hasText: 'Au café' })).toBeVisible();
 	await seedDailyClosure(page, 'recall', false);
 	await finishSeededClosure(page);
 	await expect(page.getByText("Today's session complete")).toBeVisible();
@@ -343,7 +343,7 @@ test('abandon leaves evidence and the frozen assignment intact', async ({ page }
 	await page.getByRole('button', { name: 'Start', exact: true }).click();
 	await page.goto('/today');
 	await page.getByRole('button', { name: 'Abandon session' }).click();
-	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+	await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 1 ·/ }).filter({ hasText: 'Au café' })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
 	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
 	expect(stored.activeSession).toBeNull();
@@ -414,7 +414,7 @@ test('invalid current daily assignments recover without rewriting history', asyn
 		);
 		await page.reload();
 		await expect(page.getByText(/Lesson 4 ·/), corruption.name).toBeVisible();
-		await expect(page.getByText(/Lesson 1 · Au café/), corruption.name).toBeVisible();
+		await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 1 ·/ }).filter({ hasText: 'Au café' }), corruption.name).toBeVisible();
 		const assignments = await page.evaluate(
 			(key) => JSON.parse(localStorage.getItem(key)!).dailyAssignments.fr,
 			STORAGE_KEY
@@ -442,7 +442,7 @@ test('daily-assignment cleanup write failure still regenerates Today in memory',
 	});
 	await page.reload();
 	await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
-	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+	await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 1 ·/ }).filter({ hasText: 'Au café' })).toBeVisible();
 });
 
 test('Book Start creates an authorized session tied to the matching Today assignment', async ({ page }) => {
@@ -532,7 +532,7 @@ test('Today notices a local day change without a reload', async ({ page }) => {
 	await page.clock.setSystemTime(new Date('2026-08-24T10:00:00'));
 	await page.evaluate(() => window.dispatchEvent(new Event('focus')));
 	await expect(page.getByText('Day 2', { exact: true })).toBeVisible();
-	await expect(page.getByText(/Lesson 1 · Au café/)).toBeVisible();
+	await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 1 ·/ }).filter({ hasText: 'Au café' })).toBeVisible();
 	expect(page.url()).toBe(beforeUrl);
 });
 
@@ -660,7 +660,7 @@ test('inactive-language corrupt assignment is recovered before switching', async
 	await page.goto('/settings');
 	await page.getByRole('button', { name: 'Tamil' }).click();
 	await page.goto('/today');
-	await expect(page.getByText(/Lesson 2 · ஹோட்டலில்/)).toBeVisible();
+	await expect(page.locator('[data-slot="card"]').filter({ hasText: /Lesson 2 ·/ }).filter({ hasText: 'ஹோட்டலில்' })).toBeVisible();
 	const stored = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), STORAGE_KEY);
 	expect(stored.completedLessons.ta).toEqual(['ta-01']);
 	expect(stored.completedRecallLessons.ta).toEqual([]);

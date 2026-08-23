@@ -7,7 +7,7 @@
 	 * hinted retrieval is real information, but it is not `recalled`.
 	 */
 	import Spread from '$lib/components/app/spread.svelte';
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import {
 		evaluateRecallAttempt,
 		hasRecallAttempt,
@@ -103,9 +103,9 @@
 </W.Muted>
 
 {#if recallPrompt}
-	<W.SketchCard tone="parchment">
-		<div class="text-[13.5px]">{recallPrompt.prompt}</div>
-	</W.SketchCard>
+	<W.Card tone="parchment">
+		<div class="text-sm">{recallPrompt.prompt}</div>
+	</W.Card>
 {/if}
 
 <Spread
@@ -152,23 +152,23 @@
 </div>
 
 {#if hinted}
-	<W.SketchCard tone="warn">
-		<W.Muted class="text-[12px] text-note">
+	<W.Card tone="warn">
+		<W.Muted class="text-xs text-caution">
 			Hint used — this line won't count as recalled.
 		</W.Muted>
-		<W.Fr class="text-[13.5px]">
+		<W.Fr class="text-sm">
 			{showReveal
 				? (recallPrompt?.canonicalAnswer ?? line.targetScript)
 				: (recallPrompt?.hints[0] ?? `${line.targetScript.split(' ')[0]}…`)}
 		</W.Fr>
-	</W.SketchCard>
+	</W.Card>
 {/if}
 
-<W.SketchButton
+<W.Button
 	tone="primary"
 	class="mt-auto"
 	disabled={!hasAttempt || submitted}
 	onclick={produce}
 >
 	Compare with the canonical line →
-</W.SketchButton>
+</W.Button>

@@ -3,7 +3,7 @@
 	 * 1l · Completion exercise. Cue-supported retrieval — the missing element is
 	 * always the lesson's target construction, never an arbitrary word.
 	 */
-	import * as W from '$lib/components/wireframe/index.js';
+	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import type { CompletionPrompt, Lesson } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -32,11 +32,11 @@
 {#if prompt}
 	<W.Muted>{prompt.prompt}</W.Muted>
 
-	<W.SketchCard tone="accent">
-		<W.Fr class="text-[16px]">
+	<W.Card tone="accent">
+		<W.Fr class="text-lg">
 			{parts[0]}<W.Blank>{picked ?? '?'}</W.Blank>{parts[1] ?? ''}
 		</W.Fr>
-	</W.SketchCard>
+	</W.Card>
 
 	<div class="flex flex-wrap items-center justify-center gap-2">
 		{#each prompt.options as option (option)}
@@ -50,16 +50,16 @@
 	</div>
 
 	{#if picked !== null}
-		<W.SketchCard tone={correct ? 'good' : 'warn'}>
-			<div class="text-[13px] {correct ? 'text-good' : 'text-note'}">
+		<W.Card tone={correct ? 'good' : 'warn'} class="anim-uncover">
+			<div class="text-sm {correct ? 'text-insight' : 'text-caution'}">
 				{correct ? '✓ ' : `→ ${prompt.answer}. `}{prompt.rule}
 			</div>
-		</W.SketchCard>
-		<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>Continue</W.SketchButton>
+		</W.Card>
+		<W.Button tone="primary" class="mt-auto" onclick={onDone}>Continue</W.Button>
 	{:else}
-		<W.Muted class="text-center text-[11px]">Choose one — then you'll see why.</W.Muted>
+		<W.Muted class="text-center text-2xs">Choose one — then you'll see why.</W.Muted>
 	{/if}
 {:else}
 	<W.Muted>No completion exercise in this lesson.</W.Muted>
-	<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>Continue</W.SketchButton>
+	<W.Button tone="primary" class="mt-auto" onclick={onDone}>Continue</W.Button>
 {/if}
