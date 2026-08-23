@@ -11,9 +11,12 @@ import {
 	deriveAllStates,
 	emptyProfile,
 	LearnerProfile,
+	migrateLegacyTransferEvidence,
+	requiredAssessmentSource,
 	type ClosureRating,
 	type ConstructionState,
 	type DailyAssignment,
+	type EvidenceAssessmentSource,
 	type EvidenceEvent,
 	type EvidenceKind,
 	type ActiveSession,
@@ -170,7 +173,10 @@ function load(): LearnerProfile {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		if (!raw) return emptyProfile();
-		const parsed = LearnerProfile.safeParse(JSON.parse(raw));
+		const decoded = JSON.parse(raw);
+		const migrated = migrateLegacyTransferEvidence(decoded);
+		const legacyEvidenceMigrated = migrated !== decoded;
+		const parsed = LearnerProfile.safeParse(migrated);
 		// A profile that fails validation is a profile from an older/broken build.
 		// Starting clean loses progress, but silently running on malformed state
 		// would corrupt the evidence log, which is worse.
@@ -184,7 +190,12 @@ function load(): LearnerProfile {
 		const invalidAssignmentLanguages = (['fr', 'ta'] as const).filter(
 			(language) => !todaysAssignmentIsValid(sequenced, language, day)
 		);
-		if (sequenced !== parsed.data || invalidSession || invalidAssignmentLanguages.length > 0) {
+		if (
+			legacyEvidenceMigrated ||
+			sequenced !== parsed.data ||
+			invalidSession ||
+			invalidAssignmentLanguages.length > 0
+		) {
 			let dailyAssignments = sequenced.dailyAssignments;
 			for (const language of invalidAssignmentLanguages) {
 				const { [day]: _invalid, ...validAssignments } = dailyAssignments[language] ?? {};
@@ -330,24 +341,57 @@ class ProfileStore {
 		kind: EvidenceKind,
 		lessonId: string,
 		constructionIds: readonly string[],
-		options: { hinted?: boolean; contentVersion?: string } = {}
+		options: {
+			hinted?: boolean;
+			contentVersion?: string;
+			assessmentSource?: EvidenceAssessmentSource;
+		} = {}
 	) {
-		if (constructionIds.length === 0) return;
+		this.recordOutcomes(
+			[{ kind, constructionIds, assessmentSource: options.assessmentSource }],
+			lessonId,
+			options
+		);
+	}
+
+	/** Append differently classified construction outcomes in one persisted update. */
+	recordOutcomes(
+		outcomes: readonly {
+			kind: EvidenceKind;
+			constructionIds: readonly string[];
+			assessmentSource?: EvidenceAssessmentSource;
+		}[],
+		lessonId: string,
+		options: {
+			hinted?: boolean;
+			contentVersion?: string;
+		} = {}
+	) {
+		if (outcomes.every((outcome) => outcome.constructionIds.length === 0)) return;
+		const provenanceMatches = outcomes.every(
+			(outcome) => outcome.assessmentSource === requiredAssessmentSource(outcome.kind)
+		);
+		if (!provenanceMatches) {
+			throw new Error('evidence kind does not match its transfer assessment provenance');
+		}
 		const now = Date.now();
 		const day = toDayKey(new Date());
 		const language = this.#profile.activeLanguage;
 
-		const events: EvidenceEvent[] = constructionIds.map((constructionId, i) => ({
-			id: `${now}-${i}-${constructionId}`,
-			constructionId,
-			language,
-			kind,
-			lessonId,
-			at: now,
-			day,
-			hinted: options.hinted ?? false,
-			contentVersion: options.contentVersion
-		}));
+		const events: EvidenceEvent[] = outcomes.flatMap((outcome) =>
+			outcome.constructionIds.map((constructionId) => ({
+				id: `${now}-${outcome.kind}-${constructionId}`,
+				constructionId,
+				language,
+				kind: outcome.kind,
+				lessonId,
+				at: now,
+				day,
+				hinted: options.hinted ?? false,
+				contentVersion: options.contentVersion,
+				assessmentSource: outcome.assessmentSource
+			}))
+		);
 
 		this.#update((p) => ({ ...p, evidence: [...p.evidence, ...events] }));
 	}

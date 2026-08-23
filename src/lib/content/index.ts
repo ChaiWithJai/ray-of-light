@@ -16,7 +16,7 @@ import { FR_LESSONS, FR_PROFILE } from './fr.js';
 import { TA_LESSONS, TA_PROFILE } from './ta.js';
 
 /** Bumped whenever content changes, so evidence can cite what it was recorded against. */
-export const CONTENT_VERSION = '2026.08.23-poc.1';
+export const CONTENT_VERSION = '2026.08.23-poc.2';
 
 export type Course = {
 	language: LanguageCode;

@@ -49,6 +49,10 @@ export const EvidenceKind = z.enum([
 	'completion-correct',
 	/** Free production from an L1 cue after a delay (1m). */
 	'recall-correct',
+	/** Authored ordered whole-token pattern matched; not proof of valid transfer. */
+	'transfer-pattern-matched',
+	/** Preserved pre-migration heuristic event; deliberately grants no capability. */
+	'transfer-legacy-unverified',
 	/** Novel valid production in a new situation (1o, 1u). */
 	'transfer-correct',
 	/** Attempted and wrong — recorded, grants nothing, feeds error repair (1p). */
@@ -57,6 +61,22 @@ export const EvidenceKind = z.enum([
 	'hint-used'
 ]);
 export type EvidenceKind = z.infer<typeof EvidenceKind>;
+
+export const EvidenceAssessmentSource = z.enum([
+	'authored-pattern',
+	'expert-review',
+	'legacy-heuristic'
+]);
+export type EvidenceAssessmentSource = z.infer<typeof EvidenceAssessmentSource>;
+
+export function requiredAssessmentSource(
+	kind: EvidenceKind
+): EvidenceAssessmentSource | undefined {
+	if (kind === 'transfer-pattern-matched') return 'authored-pattern';
+	if (kind === 'transfer-legacy-unverified') return 'legacy-heuristic';
+	if (kind === 'transfer-correct') return 'expert-review';
+	return undefined;
+}
 
 /**
  * The strongest state each evidence kind can justify on its own.
@@ -68,6 +88,7 @@ const EVIDENCE_GRANTS: Partial<Record<EvidenceKind, ConstructionState>> = {
 	'comprehension-correct': 'recognized',
 	'completion-correct': 'recognized',
 	'recall-correct': 'recalled',
+	'transfer-pattern-matched': 'recognized',
 	'transfer-correct': 'transferable'
 };
 
@@ -88,7 +109,20 @@ export const EvidenceEvent = z.object({
 	/** True when a hint or peek was used; caps this attempt at no grant. */
 	hinted: z.boolean().default(false),
 	/** Which content version this was recorded against. */
-	contentVersion: z.string().min(1).optional()
+	contentVersion: z.string().min(1).optional(),
+	/** Provenance of automated or expert transfer assessment. */
+	assessmentSource: EvidenceAssessmentSource.optional()
+}).superRefine((event, ctx) => {
+	const expectedSource = requiredAssessmentSource(event.kind);
+	if (event.assessmentSource !== expectedSource) {
+		ctx.addIssue({
+			code: 'custom',
+			path: ['assessmentSource'],
+			message: expectedSource
+				? `${event.kind} requires ${expectedSource} provenance`
+				: `${event.kind} must not carry transfer assessment provenance`
+		});
+	}
 });
 export type EvidenceEvent = z.infer<typeof EvidenceEvent>;
 
@@ -116,10 +150,15 @@ export function deriveConstructionState(
 	for (const event of events) {
 		if (event.hinted) continue;
 
-		const granted = EVIDENCE_GRANTS[event.kind];
+		const transferProvenanceValid =
+			event.assessmentSource === requiredAssessmentSource(event.kind);
+		const granted = transferProvenanceValid ? EVIDENCE_GRANTS[event.kind] : undefined;
 		if (granted && stateRank(granted) > stateRank(best)) best = granted;
 
-		if (event.kind === 'recall-correct' || event.kind === 'transfer-correct') {
+		if (
+			event.kind === 'recall-correct' ||
+			(event.kind === 'transfer-correct' && event.assessmentSource === 'expert-review')
+		) {
 			retrievalDays.add(event.day);
 		}
 	}
@@ -290,6 +329,29 @@ export const LearnerProfile = z.object({
 	completedLessons: z.partialRecord(LanguageCode, z.array(z.string())).default({})
 });
 export type LearnerProfile = z.infer<typeof LearnerProfile>;
+
+/**
+ * Before authored pattern evidence existed, the browser transfer heuristic wrote
+ * `transfer-correct`. Preserve those events for audit, but quarantine their claim.
+ */
+export function migrateLegacyTransferEvidence(input: unknown): unknown {
+	if (!input || typeof input !== 'object') return input;
+	const profile = input as Record<string, unknown>;
+	if (!Array.isArray(profile.evidence)) return input;
+	let changed = false;
+	const evidence = profile.evidence.map((value) => {
+		if (!value || typeof value !== 'object') return value;
+		const event = value as Record<string, unknown>;
+		if (event.kind !== 'transfer-correct' || event.assessmentSource === 'expert-review') return value;
+		changed = true;
+		return {
+			...event,
+			kind: 'transfer-legacy-unverified',
+			assessmentSource: 'legacy-heuristic'
+		};
+	});
+	return changed ? { ...profile, evidence } : input;
+}
 
 /** A fresh profile, used before onboarding writes a real one. */
 export function emptyProfile(language: LanguageCode = 'fr'): LearnerProfile {
