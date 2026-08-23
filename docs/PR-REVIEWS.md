@@ -14,12 +14,23 @@ review comment on its PR.
 | --- | --- | --- |
 | **#5** Truthful recall evidence | ✅ Approve | **merged** (`5467d55`) |
 | **#4** Playwright portability | ✅ Approve | **merged** (`c066822`) |
-| **#3** Draft TTS audio | 🔶 Request changes — 4 items, all small | open |
+| **#3** Draft TTS audio | 🔶 Request changes — 4 items | **merged** (`a2d297f`, with follow-up) |
 | **#2** 28 POC lessons | ⛔ Needs a decision from you, not a merge | open (draft) |
 
-**#2 and #3 cannot both land as they stand.** See #2 for why.
+**#2 and #3 cannot both land as they stand — and #3 has now landed.** See #2.
 
-`main @ caff267` is green: `check` clean, 81 unit tests, e2e passing.
+`main @ a2d297f` verified green: `check` clean, **81 unit tests**, **14 e2e**
+(including the 33.7s P1 regression that plays fr-01 through twice for real).
+
+### Still outstanding on main after #3 merged
+
+| # | Item | Status |
+| --- | --- | --- |
+| 1 | `speakerId` still `fr_f_01` / `ta_f_01` for macOS `say` output | ⛔ **not addressed** |
+| 2 | Audio provenance recorded, but no **licence** field | 🔶 partial |
+| 3 | Synthetic audio not gated out of pronounce/shadow | ⛔ **not addressed** |
+| 4 | EOF P1 + disclosure | ✅ fixed by the follow-up |
+| 5 | `--autoplay-policy` flag | ✅ **turned out unnecessary** — see #4 |
 
 ---
 
@@ -119,15 +130,26 @@ the portability fix lands as". Without it, #3's audio e2e fails on a silent
 `play()` rejection.
 
 Since this PR owns `launchOptions`, it should have been added here. As merged it
-is **not** present — so it now needs to ride along with #3 instead, or #3's audio
-e2e will fail for a reason that has nothing to do with #3.
+is **not** present.
+
+**Correction, after testing:** it turns out not to be needed. I ran the full suite
+on `main @ a2d297f` with only `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` set, and all
+14 tests pass — including the P1 regression, which does two real 33-second
+playthroughs of `fr-01`. So the follow-up author's caveat did not reproduce here.
+Worth keeping in mind if audio e2e ever goes flaky on a different runner, but
+nothing needs changing now.
 
 ---
 
-## PR #3 — Audio: draft TTS for all 28 lessons + measured offsets 🔶
+## PR #3 — Audio: draft TTS for all 28 lessons + measured offsets 🔶 (merged)
 
 **Request changes** — four items, none large. The engineering here is good and I
 want it in.
+
+> Merged as `a2d297f`, follow-up included. Two of the four below **are still
+> live on main** and are worth a follow-up commit: `speakerId` and the
+> pronounce/shadow gating. The follow-up did land the EOF fix and a
+> `audio-provenance.json` disclosure record.
 
 ### What's clearly better than main
 
@@ -143,14 +165,18 @@ want it in.
 
 ### Blocking
 
-**1. `speakerId` still claims a human.** Lines carry `fr_f_01` / `ta_f_01`, but the
+**1. `speakerId` still claims a human.** ⛔ *Still true on `main`.* Lines carry `fr_f_01` / `ta_f_01`, but the
 audio is macOS `say` — Thomas (a *male* fr_FR voice) and Vani. The data now asserts
 a speaker identity that does not exist, and the `_f_` is wrong on top of that. In a
 corpus where every record carries `source` / `license` / `reviewStatus` precisely so
 nothing is implied, this is the one field that lies. Rename to something like
 `fr_tts_say_thomas`.
 
-**2. The 3.6MB of audio has no licence record.** This repo refuses a non-commercial
+**2. The 3.6MB of audio has no licence record.** 🔶 *Partly addressed:*
+`audio-provenance.json` now records `synthesized: true`, the engine and the voice
+names — good, and it is the right vehicle. What it still lacks is a **licence**
+field saying whether redistributing macOS `say` output in a public repo is
+permitted. Provenance answers "what is this"; it does not answer "may we ship it". This repo refuses a non-commercial
 morphology corpus and documents its share-alike boundaries in `data/reference/LICENSE.md`.
 Committing macOS TTS output to a public repo with no provenance field is
 inconsistent with that standard — and Apple's terms for redistributing `say` output
@@ -158,7 +184,8 @@ are not obviously permissive. Either add a licence/provenance record (the follow
 `audio-provenance.json` is the right vehicle — promote it into this PR) and confirm
 redistribution is allowed, or keep the `.mp3`s out of git and generate them locally.
 
-**3. Don't present synthesized audio as a model to imitate.** Using it in `preview`
+**3. Don't present synthesized audio as a model to imitate.** ⛔ *Still true on
+`main`* — no gating exists in `shadow.svelte` or the pronunciation overlay. Using it in `preview`
 and the spread is fine — there it is comprehension scaffolding. But `1g pronunciation`
 and `1j shadowing` ask the learner to *copy* what they hear. TTS prosody, unreviewed,
 in a course whose entire method is imitation, risks teaching wrong rhythm in the two
@@ -166,7 +193,8 @@ surfaces that matter most for it — and for Tamil that compounds with the spoke
 risk already tracked in `T-03`. Suggest gating: allow synthetic audio in preview/spread,
 and suppress or visibly mark it in pronounce/shadow until native recordings land.
 
-**4. Merge the follow-up with this, not after.** On its own this PR has a P1: once the
+**4. Merge the follow-up with this, not after.** ✅ *Done — it was included in
+the merge.* On its own this PR has a P1: once the
 first playthrough fires `ended`, the main Play button calls `resume()` at EOF, nothing
 plays, and the required second listen is unreachable except through the separate replay
 control. `claude-local/issue-1-pr3-followup` fixes it (`started` treats an ended
