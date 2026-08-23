@@ -41,6 +41,40 @@ lives in [`src/lib/flow.ts`](src/lib/flow.ts), not scattered through the route
 tree. Audio always comes first and a transfer prompt always comes last, because
 those are acceptance criteria rather than layout choices.
 
+## The 22 surfaces
+
+Every surface is a live screen driven by real data. `1f`, `1g` and `1h` are
+overlays on one mounted spread rather than separate screens — the layout must not
+change underneath them, which is the whole point of the spread.
+
+| | Surface | Where it lives |
+| --- | --- | --- |
+| 1a | Entry assessment | `/onboarding/assessment` |
+| 1b | Learning plan | `/onboarding/plan` |
+| 1c | Today | `/today` |
+| 1d | Audio preview | `/learn/[id]/preview` |
+| 1e | Parallel spread | `/learn/[id]/spread` |
+| 1f | Finger tracking | tracking layer inside `Spread` (pointer · keyboard · guide) |
+| 1g | Pronunciation | overlay on the spread |
+| 1h | Notes drawer | overlay on the spread, anchored to a word |
+| 1i | Comprehension check | `/learn/[id]/comprehension` |
+| 1j | Echo practice | `/learn/[id]/shadow` |
+| 1k | Translation exercise | `/learn/[id]/translate` |
+| 1l | Completion exercise | `/learn/[id]/completion` |
+| 1m | Active-wave spread | `/recall/[id]/recall` |
+| 1n | Answer comparison | `/recall/[id]/compare` |
+| 1o | Transfer challenge | `/learn/[id]/transfer` |
+| 1p | Error repair | `/repair` |
+| 1q | Lesson closure | `/learn/[id]/closure`, `/recall/[id]/closure` |
+| 1r | Weekly synthesis | `/learn/[id]/synthesis` (lessons 7 and 14) |
+| 1s | Progress map | `/progress` |
+| 1t | Phrase library | `/phrases` |
+| 1u | Conversation bridge | `/conversation` |
+| 1v | Settings | `/settings` |
+
+The original design artboards stay browsable at `/surfaces/[slug]` as a visual
+reference — they are fixtures, not the app.
+
 ## Layout
 
 | Path | What it holds |
