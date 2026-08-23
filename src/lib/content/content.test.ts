@@ -183,11 +183,18 @@ describe('honest provenance', () => {
 		}
 	});
 
-	it('flags audio as pending, since no recording exists yet', () => {
+	it('has a measured recording behind every line (draft TTS — see L1)', () => {
+		// Draft synthesized audio exists for every lesson, with real per-line
+		// offsets measured at generation time. Native recordings replace the
+		// files in place; this test only cares that offsets are real and sane.
 		for (const language of LANGUAGES) {
 			for (const lesson of COURSES[language].lessons) {
+				let prevEnd = -1;
 				for (const line of lesson.lines) {
-					expect(line.audio.pending, line.id).toBe(true);
+					expect(line.audio.pending, line.id).toBe(false);
+					expect(line.audio.endMs!, line.id).toBeGreaterThan(line.audio.startMs!);
+					expect(line.audio.startMs!, `${line.id} overlaps previous line`).toBeGreaterThan(prevEnd);
+					prevEnd = line.audio.endMs!;
 				}
 			}
 		}

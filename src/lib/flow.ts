@@ -62,8 +62,12 @@ export const PASSIVE_FLOW: StepId[] = [
 	'closure'
 ];
 
-/** Synthesis lessons reassemble old pieces; they introduce nothing new. */
-export const SYNTHESIS_FLOW: StepId[] = ['synthesis', 'transfer', 'closure'];
+/**
+ * Synthesis lessons reassemble old pieces; they introduce nothing new — but
+ * AC 2 applies to every session, so they still open with audio before any
+ * orthography.
+ */
+export const SYNTHESIS_FLOW: StepId[] = ['preview', 'synthesis', 'transfer', 'closure'];
 
 /** The active wave: produce from English, then diagnose the difference. */
 export const RECALL_FLOW: StepId[] = ['recall', 'compare', 'closure'];

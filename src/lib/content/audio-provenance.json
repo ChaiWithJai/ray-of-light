@@ -1,0 +1,9 @@
+{
+	"synthesized": true,
+	"engine": "macOS say",
+	"voices": {
+		"fr": "Thomas (fr_FR)",
+		"ta": "Vani (ta_IN)"
+	},
+	"note": "Draft placeholder pending native recordings — see docs/ISSUE-1-LIMITATIONS.md L1."
+}
