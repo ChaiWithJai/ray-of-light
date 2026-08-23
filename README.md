@@ -100,12 +100,13 @@ reference — they are fixtures, not the app.
 | `src/lib/schemas/` | Content, learner and scheduling schemas, runtime-validated with zod |
 | `src/lib/content/` | The 28 canonical lessons (14 French, 14 Tamil) and the course index |
 | `src/lib/components/app/` | `Spread` — the parallel bilingual spread, in all its states |
+| `src/lib/components/ui/` | The production design system: `Shell` and semantic primitives (see `docs/DESIGN-SYSTEM.md`) |
 | `src/lib/components/steps/` | One component per session step |
-| `src/lib/components/wireframe/` | The sketch design system |
+| `src/lib/components/wireframe/` | The sketch wireframe kit — reference-only, consumed solely by `/surfaces` |
 | `src/lib/stores/profile.svelte.ts` | Local-first learner profile and evidence log |
 | `data/reference/` | Sourced linguistic annotation, isolated by licence |
 | `design/` | The Claude Design source the interface was built from |
-| `docs/` | Architecture map, and the limitations log for issue #1 |
+| `docs/` | Architecture map, the product design system rationale, and the limitations log for issue #1 |
 | `issues/` | 48 issues: 7 foundation, 22 screens, 12 data layer, 7 sourcing tickets |
 
 ## Three decisions worth knowing
