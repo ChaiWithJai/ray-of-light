@@ -7,10 +7,12 @@
  * stall. Promotion out of `draft` is therefore gated on records, not prose:
  * see `review-gate.ts`.
  *
- * A record binds a named reviewer, an explicit scope, and the content version
- * the review was performed against. A review of v1 dialogue says nothing about
- * v2 dialogue, and a dialogue review says nothing about the transliteration —
- * both dimensions are part of the record's identity.
+ * A record binds a named reviewer, an explicit scope, and a hash of the exact
+ * text the review was performed against. A review of one version of a line
+ * says nothing about an edited version, and a dialogue review says nothing
+ * about the transliteration — both dimensions are part of the record's
+ * identity. The hash (`itemHash`) is the binding; `contentVersion` is kept as
+ * informational lineage only.
  */
 import { z } from 'zod';
 import { LanguageCode } from './content.js';
@@ -49,7 +51,22 @@ export const ReviewRecord = z.object({
 	reviewerQualification: z.string().min(1),
 	/** ISO date of the review. */
 	reviewedAt: z.string().min(1),
-	/** The CONTENT_VERSION the reviewed text belonged to. */
+	/**
+	 * FNV-1a hash of the reviewed item's exact text (see `reviewableHash` and
+	 * the `lineReviewableText`/`lessonReviewableText` definitions in
+	 * `src/lib/content/review-gate.ts`). This is what binds the record to the
+	 * content: the gate only counts a record while the current text still
+	 * hashes to this value. `reviewQueue(...)` hands reviewers the expected
+	 * hash alongside the text.
+	 */
+	itemHash: z
+		.string()
+		.regex(/^[0-9a-f]{8}$/, 'itemHash must be 8 lowercase hex digits (FNV-1a)'),
+	/**
+	 * The CONTENT_VERSION current when the review was recorded. Informational
+	 * lineage only — `itemHash` is what the gate matches, because unrelated
+	 * edits bump the version and a forgotten bump must not pass stale reviews.
+	 */
 	contentVersion: z.string().min(1),
 	notes: z.string().min(1).optional()
 });
