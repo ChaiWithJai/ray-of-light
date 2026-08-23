@@ -195,7 +195,7 @@ export type ComprehensionCheck = z.infer<typeof ComprehensionCheck>;
 export const RecallPrompt = ExerciseBase.extend({
 	kind: z.literal('recall'),
 	lineId: z.string().min(1).optional(),
-	/** Human-reviewed accepted forms. Never fuzzy matching alone. */
+	/** Authored accepted forms. Never fuzzy matching alone. */
 	acceptedAnswers: z.array(z.string().min(1)).min(1),
 	canonicalAnswer: z.string().min(1),
 	hints: z.array(z.string().min(1)).default([])
