@@ -5,10 +5,16 @@
 	 * self-rating instrumentally rational for the learner.
 	 */
 	import * as W from '$lib/components/wireframe/index.js';
+	import type { SessionMode, StepId } from '$lib/flow.js';
 	import type { Lesson } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
-	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
+	let {
+		lesson,
+		mode,
+		flow,
+		onDone
+	}: { lesson: Lesson; mode: SessionMode; flow: readonly StepId[]; onDone: () => void } = $props();
 
 	let understood = $state(80);
 	let couldProduce = $state(45);
@@ -17,15 +23,14 @@
 	const EFFORTS = ['easy', 'just-right', 'too-hard'] as const;
 
 	function finish() {
-		profile.recordClosure({
+		const finished = profile.finishSession(mode, lesson.id, flow, {
 			lessonId: lesson.id,
 			understood,
 			couldProduce,
 			effort,
 			at: Date.now()
 		});
-		profile.completeLesson(lesson.id);
-		onDone();
+		if (finished) onDone();
 	}
 </script>
 

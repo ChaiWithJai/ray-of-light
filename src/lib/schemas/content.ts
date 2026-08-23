@@ -195,7 +195,7 @@ export type ComprehensionCheck = z.infer<typeof ComprehensionCheck>;
 export const RecallPrompt = ExerciseBase.extend({
 	kind: z.literal('recall'),
 	lineId: z.string().min(1).optional(),
-	/** Human-reviewed accepted forms. Never fuzzy matching alone. */
+	/** Authored accepted forms. Never fuzzy matching alone. */
 	acceptedAnswers: z.array(z.string().min(1)).min(1),
 	canonicalAnswer: z.string().min(1),
 	hints: z.array(z.string().min(1)).default([])
@@ -214,11 +214,58 @@ export const CompletionPrompt = ExerciseBase.extend({
 export type CompletionPrompt = z.infer<typeof CompletionPrompt>;
 
 /** A new situation reusing an owned construction (1o). AC 7: one per lesson. */
+const TransferPatternAlternative = z.string().min(1).refine(
+	(value) =>
+		value
+			.normalize('NFD')
+			.replace(/[̀-ͯ]/g, '')
+			.split(/\s+/)
+			.some((token) => /[\p{L}\p{N}]/u.test(token)),
+	{ message: 'transfer pattern alternatives must contain a word or number' }
+);
+
+export const ConstructionTransferCriterion = z.object({
+	constructionId: z.string().min(1),
+	/**
+	 * Every group must match in authored order, while alternatives within a group
+	 * are interchangeable. These groups must describe only the named construction,
+	 * so its evidence can be classified independently of scenario vocabulary.
+	 */
+	orderedGroups: z.array(z.array(TransferPatternAlternative).min(1)).min(1)
+});
+
+export const TransferCriteria = z.object({
+	constructions: z.array(ConstructionTransferCriterion).min(1),
+	/** Scenario fidelity is feedback only; it never becomes construction evidence. */
+	contextGroups: z.array(z.array(TransferPatternAlternative).min(1)).default([])
+});
+export type TransferCriteria = z.infer<typeof TransferCriteria>;
+
 export const TransferPrompt = ExerciseBase.extend({
 	kind: z.literal('transfer'),
 	situation: z.string().min(1),
 	useConstruction: z.string().min(1),
-	exemplar: z.string().min(1)
+	exemplar: z.string().min(1),
+	criteria: TransferCriteria
+}).superRefine((prompt, ctx) => {
+	const expected = new Set([prompt.useConstruction, ...prompt.constructions]);
+	const authored = prompt.criteria.constructions.map((criterion) => criterion.constructionId);
+	if (new Set(authored).size !== authored.length || authored.some((id) => !expected.has(id))) {
+		ctx.addIssue({
+			code: 'custom',
+			path: ['criteria', 'constructions'],
+			message: 'transfer criteria must identify each construction exactly once'
+		});
+	}
+	for (const id of expected) {
+		if (!authored.includes(id)) {
+			ctx.addIssue({
+				code: 'custom',
+				path: ['criteria', 'constructions'],
+				message: `missing transfer criterion for ${id}`
+			});
+		}
+	}
 });
 export type TransferPrompt = z.infer<typeof TransferPrompt>;
 

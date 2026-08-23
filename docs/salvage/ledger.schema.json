@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ledger.schema.json",
+  "title": "PR #2 salvage ledger",
+  "description": "Machine-readable index of every PORT decision in the PR #2 salvage manifests (issue #7). One entry per PORT row across fr-lessons-01-07.md, fr-lessons-08-14.md, ta-lessons-01-07.md, ta-lessons-08-14.md. This ledger is the authoritative record of each ported fragment's lineage (source commit, file, lesson, license-at-source); the in-code profile stamp is a mechanical default only.",
+  "type": "object",
+  "required": ["sourceBranch", "sourceCommit", "manifests", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "sourceBranch": {
+      "type": "string",
+      "const": "claude-mac/issue-1-content"
+    },
+    "sourceCommit": {
+      "type": "string",
+      "const": "b5c7f45"
+    },
+    "manifests": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 128,
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "lane",
+        "language",
+        "kind",
+        "sourceCommit",
+        "sourceFile",
+        "sourceLesson",
+        "targetLesson",
+        "targetConstruction",
+        "licenseAtSource",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable slug, unique across the ledger.",
+          "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+        },
+        "lane": {
+          "type": "string",
+          "description": "Execution child issue for this port.",
+          "enum": ["#8", "#9", "#10", "#11"]
+        },
+        "language": {
+          "type": "string",
+          "enum": ["fr", "ta"]
+        },
+        "kind": {
+          "type": "string",
+          "description": "Dominant artifact of the ported fragment.",
+          "enum": ["note", "exercise", "accepted-variant", "line-pair", "construction", "tag"]
+        },
+        "sourceCommit": {
+          "type": "string",
+          "const": "b5c7f45",
+          "description": "Commit on claude-mac/issue-1-content where the fragment was authored and stamped CC-BY-4.0."
+        },
+        "sourceFile": {
+          "type": "string",
+          "pattern": "^src/lib/content/(fr|ta)/lesson-(0[1-9]|1[0-4])\\.ts$"
+        },
+        "sourceLesson": {
+          "type": "string",
+          "description": "PR #2 lesson id the fragment comes from.",
+          "pattern": "^(fr|ta)-(0[1-9]|1[0-4])$"
+        },
+        "targetLesson": {
+          "type": "string",
+          "description": "Main lesson (per language) the fragment lands in.",
+          "pattern": "^l([1-9]|1[0-4])$"
+        },
+        "targetConstruction": {
+          "description": "Canonical main-side construction id (existing or to be minted), or null when the fragment attaches to a line/scene without a construction id.",
+          "type": ["string", "null"],
+          "pattern": "^(fr|ta)\\.[a-z0-9-]+$"
+        },
+        "licenseAtSource": {
+          "type": "string",
+          "const": "CC-BY-4.0",
+          "description": "License stamped on the fragment at its source commit. Recorded lineage; never overwritten by the in-code profile stamp."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["planned", "ported"],
+          "description": "Port commits in lanes #8-#11 flip this to \"ported\" as each fragment lands."
+        }
+      }
+    }
+  }
+}

@@ -1,266 +1,241 @@
-# PR reviews — #2, #3, #4, #5
+# PR reviews
 
-Reviewed against `main @ eed909a`; re-checked against `caff267`, by which point
-**#4 and #5 had already been merged**. Each section is written to be pasted as a
+Reviewed against `main @ a1f9d50`. Each section is written to be pasted as a
 review comment on its PR.
 
-> These could not be posted directly: `api.github.com` returns 403 from the
+> These cannot be posted directly: `api.github.com` returns 403 from the
 > Anthropic egress proxy ("an org admin must connect the Claude GitHub App"),
 > even with `GITHUB_TOKEN` present. That is ticket `T-07`.
 
-## Recommended merge order
+## Seven open
 
-| PR | Verdict | State |
+| PR | Verdict | Verified |
 | --- | --- | --- |
-| **#5** Truthful recall evidence | ✅ Approve | **merged** (`5467d55`) |
-| **#4** Playwright portability | ✅ Approve | **merged** (`c066822`) |
-| **#3** Draft TTS audio | 🔶 Request changes — 4 items | **merged** (`a2d297f`, with follow-up) |
-| **#2** 28 POC lessons | ⛔ Needs a decision from you, not a merge | open (draft) |
+| **#16** Salvage manifest for #2 | ✅ **Approve — merge now** | docs only |
+| **#14** Construction invariants | ✅ Approve | check clean, 85 unit |
+| **#15** Native-review gate | ✅ Approve, one gap | check clean, 87 unit |
+| **#18** Attempt before reveal | ✅ Approve | check clean, 83 unit |
+| **#17** Truthful transfer evidence | ✅ Approve | check clean, 89 unit |
+| **#6** Persisted sessions | 🔶 Request changes — Book is broken | 87 unit, 20 e2e |
+| **#2** 28 POC lessons (draft) | ⛔ **Close in favour of #16** | conflicts, 17 behind |
 
-**#2 and #3 cannot both land as they stand — and #3 has now landed.** See #2.
+### Merge order — it matters here
 
-`main @ a2d297f` verified green: `check` clean, **81 unit tests**, **14 e2e**
-(including the 33.7s P1 regression that plays fr-01 through twice for real).
+```
+#16  →  #14  →  #15  →  #18 + #6  →  #17
+```
 
-### Still outstanding on main after #3 merged
+**#17 conflicts with two siblings.** Verified by test-merging every pair:
 
-| # | Item | Status |
-| --- | --- | --- |
-| 1 | `speakerId` still `fr_f_01` / `ta_f_01` for macOS `say` output | ⛔ **not addressed** |
-| 2 | Audio provenance recorded, but no **licence** field | 🔶 partial |
-| 3 | Synthetic audio not gated out of pronounce/shadow | ⛔ **not addressed** |
-| 4 | EOF P1 + disclosure | ✅ fixed by the follow-up |
-| 5 | `--autoplay-policy` flag | ✅ **turned out unnecessary** — see #4 |
+| Pair | Result |
+| --- | --- |
+| #18 + #6 | clean |
+| #14 + #17 | clean |
+| **#17 + #18** | conflict — `src/lib/answers.test.ts` |
+| **#17 + #6** | conflict — `e2e/flow.spec.ts` |
+
+Both are mechanical. `answers.test.ts` is an add/add of adjacent `describe`
+blocks — keep both. `flow.spec.ts` is #6 replacing direct `page.goto('/learn/…')`
+with a session-aware helper while #17 edits the same tests — #6's helper should
+win and #17's assertions move onto it. Landing #17 **last** means resolving both
+once, in one place.
+
+#14 and #15 are independent of everything else. #16 is docs-only.
 
 ---
 
-## PR #5 — Record truthful active-recall evidence ✅ (merged)
+## PR #16 — Salvage manifest for PR #2 (issue #7) ✅
 
-**Approve.** It fixes real data corruption, and the corrupted thing is the
-evidence log — the single source of truth behind AC 10.
+**Approve, merge now.** Docs only, zero risk, and it is the right answer to the
+question #2 has been blocked on. I recommended cherry-picking rather than merging;
+this is that, done properly.
 
-> Merged as `5467d55` while this review was being written. That commit is
-> **larger and better than the branch tip I first reviewed** (`561c7d7`): it
-> routes evaluation through `evaluateRecallAttempt`, and it also fixes
-> `compare.svelte` to diff against the *matched accepted answer* rather than
-> always the canonical line — another latent bug of mine, where a learner who
-> gave an authored accepted variant was shown spurious differences against a
-> canonical they were never asked for. Good call. My original note about
-> `promptAppliesToLine` is obsolete; the note below is rewritten against the
-> merged code.
+**232 candidates, 128 PORT / 104 REJECT**, each with a disposition, a target, and
+a reason, split across four child lanes (#8–#11). What makes it credible is that
+it gets the non-obvious parts right:
 
-The bug is mine. `recall-step.svelte` recorded `recall-correct` for *any*
-non-empty input:
+- **Map by communicative function, never lesson number.** Exactly the trap: main
+  `fr-01` is a café, PR `fr-01` is greetings. A number-aligned merge would have
+  silently mismatched every lesson.
+- **Architecture rejected wholesale, content kept.** Per-lesson `Lesson` literals,
+  hand-written ids, `CC-BY-4.0` stamps, `A0` levels and glob loading are refused
+  as architecture; ports land additively into main's `defineLesson` DSL. That
+  matches the "safe unit is a reviewed fragment, not a file" rule.
+- **Licence lineage is called out** — PR lines say `CC-BY-4.0`, main says `owned`,
+  and ported text must carry main's provenance. That was one of my #2 findings.
+- **Register rule for Tamil** — reject PR text more literary than main's, port
+  text more colloquial. That is the right asymmetry for a course whose whole
+  thesis is spoken register, and it is a subtler rule than I would have written.
+- **It sequences its own dependency:** "Issue #12's invariants (PR #14) must be in
+  place before any port lands." Correct — porting notes onto canonical ids is
+  exactly where same-meaning-two-ids drift would appear.
+
+**And it handles the audio trap.** My headline objection to #2 was that adopting
+its corpus invalidates every recording, because the merged `.mp3`s speak *main's*
+lines. The manifest addresses this per-candidate — `New dialogue line ⇒ audio
+re-addressing, never PR offsets` — rather than treating text and audio as
+separable. That is the detail I most expected to be missed.
+
+No blocking notes. The only thing I'd add: when the lanes execute, the first port
+that adds a dialogue line should regenerate offsets in the same commit, so the
+corpus and `audio-offsets.json` never disagree even briefly.
+
+---
+
+## PR #17 — Record truthful transfer-pattern evidence ✅
+
+**Approve.** This fixes a bug I wrote, and the replacement is better than a
+patched version of mine would have been.
+
+My check was a substring match on the construction label's stem:
 
 ```js
-if (attempt.trim() === '') return;
-profile.record('recall-correct', lesson.id, line.constructions, { hinted, … });
+const stem = construction.label.split(/[+/]/)[0].trim().split(/\s+/).filter((w) => w.length > 2);
+return stem.length === 0 || stem.some((w) => attempt.includes(normalise(w)));
 ```
 
-Typing `asdf` granted `recalled`. Doing it on two different days granted
-`stabilized` — the state deliberately designed to be unreachable within one
-session. Progress would have read "retrievable" for constructions the learner had
-never once produced, which is precisely the failure AC 10 exists to prevent.
+Two failures. It credited any sentence merely *containing* the word — "je ne
+voudrais pas" would pass as transfer. And `stem.length === 0 ||` is an
+unconditional pass: any construction label whose first segment is all short words
+would credit every non-empty answer, including nonsense.
 
-**The design is right.** Pulling the decision into a pure `recallEvidenceKind()`
-makes it impossible for the UI to grant recall as a side effect of navigating, and
-it is unit-testable without a DOM. Seeding the spread to the prompted line is a
-good catch too — previously it always opened on line 1 regardless of what the
-prompt asked for.
+**The replacement is authored, not inferred.** `criteria.orderedGroups` requires
+each group in order, with interchangeable alternatives inside a group, matched on
+**whole normalized tokens** rather than substrings. Making it a required schema
+field means every transfer prompt has to declare what it actually wants — the
+evaluation stops guessing from a label that was written for humans to read.
 
-**Verified locally:** merges clean into `main`, `npm run check` clean,
-79 unit tests and 11 e2e pass (including the two new ones).
+The Tamil criteria correctly accept script *or* transliteration
+(`[['எனக்கு', 'enakku'], …]`), which matters because a learner may type either and
+`normalise` already folds the diacritics.
 
-### One follow-up worth filing (not a blocker)
+**Verified:** merged onto `main`, check clean, **89 unit tests pass**.
 
-The merged code evaluates against:
+### Two notes, neither blocking
 
-```js
-const acceptedAnswers = prompt?.acceptedAnswers ?? [contextLine.targetScript];
-```
+**1. `['டீ', 'tea']` accepts an English token in a Tamil answer.** This is
+defensible — `enakku oru tea venum` is genuinely what people say, and code-switching
+is normal in spoken Tamil — but it should be a recorded decision rather than a
+convenience. If it is deliberate, say so in a comment, because the next person to
+read it will assume it's a leak.
 
-When an authored recall prompt exists this is exactly right. The fallback is the
-narrow case — **synthesis lessons**, which the schema exempts from having a recall
-exercise, so lessons 7 and 14 carry none.
-
-Those lessons *can* reach the recall flow: `planToday` computes
-`recallLessonIndex = nextIndex - lag`, which lands on 7 or 14 in the ordinary
-course of things. When it does, evaluation falls back to exact match, after
-normalisation, against a single string — the first line's `targetScript`. Free
-spoken production judged that way will record `attempt-incorrect` almost every
-time, even when the learner was right.
-
-That matters beyond under-crediting, because `attempt-incorrect` feeds the
-error-repair clustering in `/repair`: a learner who produced the line correctly
-gets drilled on a construction they already own.
-
-Suggested fix, either:
-- give synthesis lessons an authored recall prompt, or
-- record **nothing** when there is no reviewed answer set to judge against —
-  silence is more honest than a false negative.
+**2. The criteria also require the situation's noun** (`[['je voudrais'], ['croissant']]`).
+That slightly widens what "transfer" means: the exercise now tests *used the
+construction* **and** *followed the scenario*. Fair, since the prompt says "you
+want a croissant" — but a learner answering `Je voudrais un pain au chocolat` is
+demonstrating exactly the transfer being taught and is marked wrong. Consider
+whether the noun group should carry alternatives, or be dropped where the
+construction alone is the thing under test.
 
 ---
 
-## PR #4 — Make Playwright browser resolution portable ✅ (merged)
+## PR #18 — Require an active-recall attempt before reveal ✅
 
-**Approve.** Merged as `c066822`. This fixes a portability problem I introduced — I hardcoded
-`/opt/pw-browsers/chromium-1194/chrome-linux/chrome` into the committed config,
-which is a path that exists on exactly one machine.
+**Approve.** Small and correct. AC 6 says the learner must attempt before the
+canonical response is revealed, and the recall step let you click **reveal** with
+an empty box — so the strongest surface in the product could be skipped entirely.
 
-Env-var opt-in with managed resolution as the default is the right shape, and the
-README section is complete and accurate.
+Gating on `hasRecallAttempt` in a pure helper (rather than inline) keeps it
+testable, and `showReveal = revealed && hasAttempt` is a good defensive touch:
+clearing the box re-hides the answer instead of leaving it stranded on screen.
 
-**Verified locally:**
-- With `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` set → 11/11 e2e pass.
-- Unset in this sandbox → fails with `Executable doesn't exist … chromium_headless_shell-1234`,
-  which is *correct* behaviour: the managed build genuinely isn't installed here.
-  Any constrained runner needs the variable, which is exactly what the README says.
+**Verified:** check clean, **83 unit tests pass**. Merges cleanly with #6.
 
-### One addition before merge
+### Two notes
 
-The follow-up branch for #3 (`claude-local/issue-1-pr3-followup`) reports that
-headless audio playback also needs:
+**1. The "hint: first word" chip is still available with no attempt** — only
+`reveal` is gated. I think that is right and worth stating so it doesn't look like
+an oversight: a first-word hint is not the canonical response, and it already
+caps the attempt's evidence via `hinted`. Scaffolding before attempting is
+legitimate; revealing the answer is not. Consider a one-line comment saying so.
 
-```
---autoplay-policy=no-user-gesture-required
-```
-
-in `launchOptions.args`, and explicitly says that flag "belongs in whatever shape
-the portability fix lands as". Without it, #3's audio e2e fails on a silent
-`play()` rejection.
-
-Since this PR owns `launchOptions`, it should have been added here. As merged it
-is **not** present.
-
-**Correction, after testing:** it turns out not to be needed. I ran the full suite
-on `main @ a2d297f` with only `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` set, and all
-14 tests pass — including the P1 regression, which does two real 33-second
-playthroughs of `fr-01`. So the follow-up author's caveat did not reproduce here.
-Worth keeping in mind if audio e2e ever goes flaky on a different runner, but
-nothing needs changing now.
+**2. Minor:** the `{#if hasAttempt} … {:else}<W.Chip disabled>` branch duplicates
+the chip and remounts the node. Since `disabled` is now a real Chip prop, a single
+`<W.Chip disabled={!hasAttempt} …>` does the same thing with half the markup.
 
 ---
 
-## PR #3 — Audio: draft TTS for all 28 lessons + measured offsets 🔶 (merged)
+## PR #14 — Reject construction metadata conflicts and phantom declarations ✅
 
-**Request changes** — four items, none large. The engineering here is good and I
-want it in.
+*Unchanged since my last review (`d17e25e`); the review stands.*
 
-> Merged as `a2d297f`, follow-up included. Two of the four below **are still
-> live on main** and are worth a follow-up commit: `speakerId` and the
-> pronounce/shadow gating. The follow-up did land the EOF fix and a
-> `audio-provenance.json` disclosure record.
+**Approve.** Two invariants protecting the progress model. One id, one meaning —
+re-declaration is fine, but only verbatim, so a later lesson cannot silently
+redefine what the progress map claims the learner knows. And phantom detection is
+the better half: a declared construction nothing references can never earn
+evidence, so it would sit on the map forever as permanently unearnable state.
 
-### What's clearly better than main
+Both throw at import time, so I checked the real corpus satisfies them rather than
+assuming: check clean, **85 unit tests**. Had either been violated, the app would
+fail to boot rather than fail a test.
 
-- **Measured offsets replace my fake 4-second grid.** Mine were invented; these
-  come from `ffprobe` at generation time. Strictly better.
-- **Chunks now split the line's actual duration** instead of assuming 900ms each.
-- **`pending: measured === undefined`** is exactly the right derivation — the flag
-  now means "no recording exists" rather than being hardcoded.
-- **`SYNTHESIS_FLOW` gains `preview`.** This is a real bug fix of mine: AC 2 says
-  *a session* begins with audio before orthography, and my synthesis flow skipped
-  audio entirely. Good catch.
-- The generator's header comment is honest about what it is.
-
-### Blocking
-
-**1. `speakerId` still claims a human.** ⛔ *Still true on `main`.* Lines carry `fr_f_01` / `ta_f_01`, but the
-audio is macOS `say` — Thomas (a *male* fr_FR voice) and Vani. The data now asserts
-a speaker identity that does not exist, and the `_f_` is wrong on top of that. In a
-corpus where every record carries `source` / `license` / `reviewStatus` precisely so
-nothing is implied, this is the one field that lies. Rename to something like
-`fr_tts_say_thomas`.
-
-**2. The 3.6MB of audio has no licence record.** 🔶 *Partly addressed:*
-`audio-provenance.json` now records `synthesized: true`, the engine and the voice
-names — good, and it is the right vehicle. What it still lacks is a **licence**
-field saying whether redistributing macOS `say` output in a public repo is
-permitted. Provenance answers "what is this"; it does not answer "may we ship it". This repo refuses a non-commercial
-morphology corpus and documents its share-alike boundaries in `data/reference/LICENSE.md`.
-Committing macOS TTS output to a public repo with no provenance field is
-inconsistent with that standard — and Apple's terms for redistributing `say` output
-are not obviously permissive. Either add a licence/provenance record (the follow-up's
-`audio-provenance.json` is the right vehicle — promote it into this PR) and confirm
-redistribution is allowed, or keep the `.mp3`s out of git and generate them locally.
-
-**3. Don't present synthesized audio as a model to imitate.** ⛔ *Still true on
-`main`* — no gating exists in `shadow.svelte` or the pronunciation overlay. Using it in `preview`
-and the spread is fine — there it is comprehension scaffolding. But `1g pronunciation`
-and `1j shadowing` ask the learner to *copy* what they hear. TTS prosody, unreviewed,
-in a course whose entire method is imitation, risks teaching wrong rhythm in the two
-surfaces that matter most for it — and for Tamil that compounds with the spoken-register
-risk already tracked in `T-03`. Suggest gating: allow synthetic audio in preview/spread,
-and suppress or visibly mark it in pronounce/shadow until native recordings land.
-
-**4. Merge the follow-up with this, not after.** ✅ *Done — it was included in
-the merge.* On its own this PR has a P1: once the
-first playthrough fires `ended`, the main Play button calls `resume()` at EOF, nothing
-plays, and the required second listen is unreachable except through the separate replay
-control. `claude-local/issue-1-pr3-followup` fixes it (`started` treats an ended
-recording as not-started), adds the disclosure UI, and ships a regression test. Fold it
-in before merging.
+**#16 depends on this landing first.**
 
 ---
 
-## PR #2 — Content: all 28 POC lessons (14 FR + 14 TA) ⛔
+## PR #15 — Native-review queue and promotion gate ✅
 
-**This needs a decision from you before it needs a review.** Holding as Draft is
-right.
+*Unchanged since my last review (`a761d3b`); the review stands.*
 
-**The problem is not quality.** In several respects this content is better than
-what is on `main`:
+**Approve.** Version-strict promotion is the right call — editing reviewed text
+demotes the claim automatically, so review is re-done rather than inherited. And
+treating Tamil's `transliteration` and `literal-gloss` as separate review scopes
+puts the gate where the actual risk is.
 
-- **Interlinear glosses** — `"well are-you(polite)-QUESTION?"` — reveal Tamil
-  structure far better than my prose glosses (`"To-me one coffee is-wanted."`).
-  This is the single best idea in the PR.
-- Named speakers (Priya, Arun) read as real dialogue.
-- `level: 'A0'` for lesson 1 is more accurate than my `A1`.
-- One file per lesson scales; my two large files will not at 100+ lessons.
+**One gap:** `validateReviewGate` *is* enforced (its own test runs it against the
+real corpus, so a false promotion fails `npm test`), but **`reviewQueue()` is
+never called anywhere** — nothing can tell a human what is pending. That is the
+half a reviewer would actually use. A `npm run review:queue` script would close it.
 
-### Why it can't merge as-is
+Avoid wiring the gate into `content/index.ts`: `review-gate.ts` imports `COURSES`
+from there, so that would be circular. It already takes courses as a parameter —
+keep calling it from a test or a standalone script.
 
-**1. It is a parallel corpus for lessons that already landed.** `main` has had 28
-lessons since `a8dbb02`; this branch forked from `50d5c5f`, one commit earlier.
-It conflicts on `content.test.ts` and `index.ts`, and the corpora are *entirely
-different content* — `ta-01` on main is a coffee shop (8 lines); here it is a
-housewarming introduction (10 lines). This is a choice between two corpora, not a
-merge of one.
+---
 
-**2. It is mutually incompatible with PR #3.** #3's `.mp3`s and
-`audio-offsets.json` were generated by speaking **main's** lines. If this corpus
-replaces main's, every recording narrates the wrong text and every offset points
-at a line that no longer exists. Whichever corpus wins, audio must be regenerated
-after — and only one of these two PRs can land in its current form.
+## PR #6 — Persist and guard in-progress lesson sessions 🔶
 
-**3. It silently claims audio exists.** This was written against `50d5c5f`, where
-`AudioClip` had no `pending` field at all. Merged into main, `pending` defaults to
-`false`, so:
+*Unchanged since my last review (`f19d343`); the review stands.*
 
-- `audioPending()` returns false,
-- the "audio pending native recording" notices disappear across the whole app,
-- the player renders for `.mp3` files that were never generated,
-- and the offsets (`0–2800`, `2800–6400`, …) are hand-written, never measured.
+**Request changes.** Strong implementation — 87 unit, 20 e2e, and refusing
+`compare`/`closure` in a recall session with no recorded attempt directly protects
+AC 6 even against forged localStorage.
 
-That is exactly the honesty property `AC 11` and limitation `L1` exist to protect,
-and it would break silently rather than loudly. If this corpus lands, every line
-needs `pending: true` until real audio exists.
+**⛔ Blocking: Book's Start/Review buttons all bounce to Today.**
+`src/routes/book/+page.svelte` is not in this PR's diff and still links directly
+to `/learn/{id}/{firstStep}`, which creates no session — so the guard redirects.
+Verified empirically on the branch:
 
-**4. Metadata drift.** `license: 'CC-BY-4.0'` vs main's `owned` — that is a real
-licensing decision and it should be deliberate and uniform across the corpus, not
-divergent per branch. Also `dialect: 'chennai'` vs `chennai_general` (main's test
-asserts the latter) and `speakerId: 'ta-speaker-1'` vs `ta_f_01`.
+```
+LANDED ON: /today        (expected /learn/…)
+```
 
-### Recommendation
+All 14 lessons, both actions. Book is one of four permanent destinations. CI is
+green because nothing tests Book — worth adding a test with the fix.
 
-Decide the corpus question first, then land accordingly:
+Best fix: let a lesson's **first** step create the session on demand. That also
+makes any deep link to a lesson start work, which is what "Review" should do.
 
-- **If this content wins:** land it as an explicit *replacement* — delete
-  `fr.ts` / `ta.ts`, port main's conformance tests onto it, set `pending: true`
-  throughout, reconcile the licence field, and regenerate audio afterwards.
-- **If main's wins:** close this and cherry-pick the good ideas — interlinear
-  glosses first, then the A0 start, per-lesson files, and named speakers.
+**Non-blocking:** `startSession` silently returns the existing session's href when
+one is active. Unreachable from Today, which hides the other cards — but it
+becomes a lying button the moment Book calls it. Return `null` and let the caller
+say "finish your current lesson first".
 
-Either way it is worth saying out loud: both corpora are `reviewStatus: 'draft'`
-and neither has been read by a native Tamil speaker. Picking between them on
-quality is guesswork until `T-03` happens.
+---
+
+## PR #2 — Content: all 28 POC lessons ⛔
+
+**Close this in favour of #16.**
+
+Still at `b5c7f45`, now **17 commits behind** and conflicting on
+`content.test.ts` and `index.ts`. Beyond that it is incompatible with merged
+audio: `main`'s `.mp3`s and offsets were generated from main's lines, and this
+corpus replaces `ta-01` (coffee shop, 8 lines) with a housewarming at 10.
+
+#16 supersedes it properly — 232 candidates dispositioned, the good content routed
+into main's DSL through lanes #8–#11, and the architecture, licence stamps and
+audio implications each handled explicitly. Keeping #2 open now only risks someone
+merging it.
+
+Its best ideas are already captured for porting: the interlinear glosses, the
+register contrasts, and the constructions main lacks.

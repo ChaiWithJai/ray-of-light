@@ -20,6 +20,7 @@ export class LessonPlayer {
 	/** Index into lesson.lines currently sounding, -1 when none. */
 	activeLine = $state(-1);
 	rate = $state(1);
+	error = $state<string | null>(null);
 
 	#lesson: Lesson;
 	#audio: HTMLAudioElement | null = null;
@@ -54,11 +55,28 @@ export class LessonPlayer {
 			a.addEventListener('timeupdate', () => this.#tick(a));
 			a.addEventListener('ended', () => this.#finish());
 			a.addEventListener('pause', () => (this.playing = false));
-			a.addEventListener('play', () => (this.playing = true));
+			a.addEventListener('play', () => {
+				this.error = null;
+				this.playing = true;
+			});
+			a.addEventListener('error', () => this.#reportError());
 			this.#audio = a;
 		}
 		this.#audio.playbackRate = this.rate;
 		return this.#audio;
+	}
+
+	#reportError() {
+		this.playing = false;
+		this.activeLine = -1;
+		this.error = 'Audio could not play. Try the line again.';
+	}
+
+	#play(a: HTMLAudioElement) {
+		this.error = null;
+		void a.play().catch(() => {
+			if (this.#audio === a) this.#reportError();
+		});
 	}
 
 	#tick(a: HTMLAudioElement) {
@@ -93,7 +111,7 @@ export class LessonPlayer {
 		this.#stopAtMs = null;
 		this.#onEnded = onEnded ?? null;
 		a.currentTime = 0;
-		void a.play();
+		this.#play(a);
 	}
 
 	/** Play a single line's slice (AC 3: audio can follow the active line). */
@@ -104,7 +122,7 @@ export class LessonPlayer {
 		this.#stopAtMs = line.audio.endMs;
 		this.#onEnded = onEnded ?? null;
 		a.currentTime = line.audio.startMs / 1000;
-		void a.play();
+		this.#play(a);
 	}
 
 	pause() {
@@ -112,7 +130,7 @@ export class LessonPlayer {
 	}
 
 	resume() {
-		void this.#audio?.play();
+		if (this.#audio) this.#play(this.#audio);
 	}
 
 	/** Play/pause from one button: pause if sounding, resume if mid-way, else start over. */

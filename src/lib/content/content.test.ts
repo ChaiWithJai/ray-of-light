@@ -72,6 +72,23 @@ describe.each(LANGUAGES)('course: %s', (language) => {
 		}
 	});
 
+	it('authors explicit machine-checkable criteria for every transfer prompt', () => {
+		for (const lesson of course.lessons) {
+			for (const exercise of lesson.exercises) {
+				if (exercise.kind !== 'transfer') continue;
+				const expected = new Set([exercise.useConstruction, ...exercise.constructions]);
+				const authored = exercise.criteria.constructions.map((criterion) => criterion.constructionId);
+				expect(new Set(authored), exercise.id).toEqual(expected);
+				for (const criterion of exercise.criteria.constructions) {
+					expect(criterion.orderedGroups.length, exercise.id).toBeGreaterThan(0);
+					for (const alternatives of criterion.orderedGroups) {
+						expect(alternatives.length, exercise.id).toBeGreaterThan(0);
+					}
+				}
+			}
+		}
+	});
+
 	it('resolves every referenced construction somewhere in the course', () => {
 		for (const lesson of course.lessons) {
 			const referenced = [
@@ -269,6 +286,58 @@ describe('construction identity invariants (issue #12)', () => {
 		});
 		expect(() => validateCourse('fr', lessons)).toThrowError(
 			/declares constructions no line or exercise references/
+		);
+	});
+
+	it('rejects a construction whose introducing lesson never references it', () => {
+		const lessons = mutated();
+		// Find a construction that later lessons reuse, then strip it from its
+		// introducing lesson only: it stays referenced course-wide (so the
+		// dangling/phantom checks stay quiet) but is no longer taught where its
+		// introducedIn claims.
+		const intro = lessons[0];
+		const reused = intro.constructions.find(
+			(c) =>
+				// Not pinned by an intro transfer exercise, whose useConstruction we
+				// cannot strip without deleting the exercise.
+				intro.exercises.every((e) => e.kind !== 'transfer' || e.useConstruction !== c.id) &&
+				lessons.some(
+				(l) =>
+					l.id !== intro.id &&
+					(l.lines.some((line) => line.constructions.includes(c.id)) ||
+						l.exercises.some(
+							(e) =>
+								e.constructions.includes(c.id) ||
+								(e.kind === 'transfer' && e.useConstruction === c.id)
+						))
+				)
+		);
+		expect(reused).toBeDefined();
+		const id = reused!.id;
+		for (const line of intro.lines) {
+			line.constructions = line.constructions.filter((c) => c !== id);
+		}
+		for (const exercise of intro.exercises) {
+			exercise.constructions = exercise.constructions.filter((c) => c !== id);
+		}
+		expect(() => validateCourse('fr', lessons)).toThrowError(
+			new RegExp(`${id}: introducedIn "${intro.id}", but no line or exercise in that lesson`)
+		);
+	});
+
+	it('rejects a construction whose introducedIn names no lesson in the course', () => {
+		const lessons = mutated();
+		lessons[0].constructions.push({
+			id: 'fr.orphaned-construction',
+			language: 'fr',
+			label: 'orphan + noun',
+			gloss: 'introduced in a lesson that does not exist',
+			introducedIn: 'fr.no-such-lesson'
+		});
+		// Reference it from a real line so only the introducedIn claim is wrong.
+		lessons[0].lines[0].constructions.push('fr.orphaned-construction');
+		expect(() => validateCourse('fr', lessons)).toThrowError(
+			/fr\.orphaned-construction: introducedIn "fr\.no-such-lesson" is not a lesson in this course/
 		);
 	});
 });

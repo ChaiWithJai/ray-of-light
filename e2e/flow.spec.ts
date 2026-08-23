@@ -16,6 +16,50 @@ async function onboard(page: Page, language: 'French' | 'Tamil' = 'French') {
 	await expect(page.getByText('How much, daily?')).toBeVisible();
 	await page.getByRole('button', { name: 'Set my plan' }).click();
 	await expect(page).toHaveURL(/\/today/);
+	await expect(page.getByRole('button', { name: 'Start', exact: true })).toBeVisible();
+}
+
+async function authorizeLearnStep(
+	page: Page,
+	lessonId: string,
+	step: string,
+	completedSteps: string[],
+	language: 'fr' | 'ta' = 'fr'
+) {
+	await page.evaluate(
+		({ lessonId, step, completedSteps, language }) => {
+			const key = 'ray-of-light.profile.v1';
+			const stored = JSON.parse(localStorage.getItem(key)!);
+			const assignmentDay = Object.keys(stored.dailyAssignments[language])[0];
+			stored.activeSession = {
+				id: `test-learn-${lessonId}`,
+				mode: 'learn',
+				language,
+				lessonId,
+				flow: ['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion', 'transfer', 'closure'],
+				currentStep: step,
+				completedSteps,
+				origin: 'today',
+				assignmentDay,
+				startedAt: Date.now(),
+				updatedAt: Date.now()
+			};
+			localStorage.setItem(key, JSON.stringify(stored));
+		},
+		{ lessonId, step, completedSteps, language }
+	);
+	await page.goto(`/learn/${lessonId}/${step}`);
+}
+
+async function evidenceFor(page: Page, constructionId: string) {
+	return page.evaluate((id) => {
+		const raw = localStorage.getItem('ray-of-light.profile.v1');
+		if (!raw) return [];
+		const profile = JSON.parse(raw) as {
+			evidence: { id: string; constructionId: string; kind: string }[];
+		};
+		return profile.evidence.filter((event) => event.constructionId === id);
+	}, constructionId);
 }
 
 test('AC1: a learner can pick a language and reach Today', async ({ page }) => {
@@ -68,12 +112,12 @@ test('AC1 + AC2 + AC7: a full daily session, audio first and transfer last', asy
 	await expect(page).toHaveURL(/\/closure/);
 	await page.getByRole('button', { name: 'Done for today' }).click();
 	await expect(page).toHaveURL(/\/today/);
-	await expect(page.getByText('Lesson 2 ·')).toBeVisible();
+	await expect(page.getByText("Today's session complete")).toBeVisible();
 });
 
 test('AC3: the spread is trackable by keyboard alone', async ({ page }) => {
 	await onboard(page);
-	await page.goto('/learn/fr-01/spread');
+	await authorizeLearnStep(page, 'fr-01', 'spread', ['preview']);
 
 	const spread = page.getByRole('listbox');
 	await spread.focus();
@@ -88,7 +132,7 @@ test('AC3: the spread is trackable by keyboard alone', async ({ page }) => {
 
 test('AC4: covering a column does not change the layout', async ({ page }) => {
 	await onboard(page);
-	await page.goto('/learn/fr-01/spread');
+	await authorizeLearnStep(page, 'fr-01', 'spread', ['preview']);
 
 	const firstPair = page.getByRole('option').first();
 	const before = await firstPair.boundingBox();
@@ -103,7 +147,12 @@ test('AC4: covering a column does not change the layout', async ({ page }) => {
 
 test('AC6: the canonical answer stays hidden until an attempt is made', async ({ page }) => {
 	await onboard(page);
-	await page.goto('/learn/fr-01/translate');
+	await authorizeLearnStep(page, 'fr-01', 'translate', [
+		'preview',
+		'spread',
+		'comprehension',
+		'shadow'
+	]);
 
 	// Nothing revealed, and Check is unavailable with an empty answer.
 	await expect(page.getByTestId('reveal')).toHaveCount(0);
@@ -116,7 +165,7 @@ test('AC6: the canonical answer stays hidden until an attempt is made', async ({
 
 test('AC9: Tamil shows script, transliteration and both glosses', async ({ page }) => {
 	await onboard(page, 'Tamil');
-	await page.goto('/learn/ta-01/spread');
+	await authorizeLearnStep(page, 'ta-01', 'spread', ['preview'], 'ta');
 
 	await expect(page.getByText('எனக்கு ஒரு காபி வேணும்.')).toBeVisible();
 	await expect(page.getByText('enakku oru kaapi vēṇum.')).toBeVisible();
@@ -132,7 +181,7 @@ test('AC10: progress reflects capability, and persists across a reload', async (
 	await expect(page.getByText('Nothing yet.')).toBeVisible();
 
 	// Reading a pair is what `exposed` means. Line 3 carries `je voudrais`.
-	await page.goto('/learn/fr-01/spread');
+	await authorizeLearnStep(page, 'fr-01', 'spread', ['preview']);
 	await page.getByRole('option', { name: /Je voudrais un caf/ }).click();
 
 	await page.goto('/progress');
@@ -147,8 +196,7 @@ test('AC10: progress reflects capability, and persists across a reload', async (
 test('AC12: the core flow works at a mobile width', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await onboard(page);
-
-	await page.goto('/learn/fr-01/spread');
+	await authorizeLearnStep(page, 'fr-01', 'spread', ['preview']);
 	await expect(page.getByText('Bonjour, monsieur.')).toBeVisible();
 
 	// The page itself must not scroll sideways at phone width.
@@ -156,6 +204,108 @@ test('AC12: the core flow works at a mobile width', async ({ page }) => {
 		() => document.documentElement.scrollWidth - document.documentElement.clientWidth
 	);
 	expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('AC7 + AC10: a French pattern match records non-transferable evidence', async ({ page }) => {
+	await onboard(page);
+	await authorizeLearnStep(page, 'fr-01', 'transfer', [
+		'preview',
+		'spread',
+		'comprehension',
+		'shadow',
+		'translate',
+		'completion'
+	]);
+	await page.getByLabel('Your new sentence').fill("Je voudrais un croissant, s'il vous plaît.");
+	await page.getByRole('button', { name: 'Check' }).click();
+	await expect(
+		page.getByText('Your answer matched the target construction and situation patterns.')
+	).toBeVisible();
+	await expect(page.getByText(/Matched constructions record recognition evidence only/)).toBeVisible();
+
+	const evidence = await evidenceFor(page, 'fr.je-voudrais');
+	expect(evidence).toHaveLength(1);
+	expect(evidence.at(-1)?.kind).toBe('transfer-pattern-matched');
+	expect(evidence.at(-1)?.id).toMatch(/-transfer-pattern-matched-fr\.je-voudrais$/);
+});
+
+test('AC10: scenario mismatch does not become incorrect construction evidence', async ({ page }) => {
+	await onboard(page);
+	await authorizeLearnStep(page, 'fr-01', 'transfer', [
+		'preview',
+		'spread',
+		'comprehension',
+		'shadow',
+		'translate',
+		'completion'
+	]);
+	await page.getByLabel('Your new sentence').fill('Je voudrais du pain.');
+	await page.getByRole('button', { name: 'Check' }).click();
+	await expect(
+		page.getByText('The construction matched, but some situation details did not. Compare:')
+	).toBeVisible();
+
+	const evidence = await evidenceFor(page, 'fr.je-voudrais');
+	expect(evidence.map((event) => event.kind)).toEqual(['transfer-pattern-matched']);
+});
+
+test('AC7 + AC10: Tamil transfer criteria support script and remain truthful', async ({ page }) => {
+	await onboard(page, 'Tamil');
+	await authorizeLearnStep(
+		page,
+		'ta-01',
+		'transfer',
+		['preview', 'spread', 'comprehension', 'shadow', 'translate', 'completion'],
+		'ta'
+	);
+	await page.getByLabel('Your new sentence').fill('எனக்கு ஒரு டீ வேணும்.');
+	await page.getByRole('button', { name: 'Check' }).click();
+	await expect(
+		page.getByText('Your answer matched the target construction and situation patterns.')
+	).toBeVisible();
+
+	let evidence = await evidenceFor(page, 'ta.enakku-venum');
+	expect(evidence).toHaveLength(1);
+	expect(evidence.at(-1)?.kind).toBe('transfer-pattern-matched');
+	expect(evidence.at(-1)?.id).toMatch(/-transfer-pattern-matched-ta\.enakku-venum$/);
+
+	await page.reload();
+	await page.getByLabel('Your new sentence').fill('இது சரியில்லை.');
+	await page.getByRole('button', { name: 'Check' }).click();
+	await expect(page.getByText('The target construction pattern did not match. Compare:')).toBeVisible();
+	await expect(page.getByText(/No recognition progress was recorded/)).toBeVisible();
+	evidence = await evidenceFor(page, 'ta.enakku-venum');
+	expect(evidence.at(-1)?.kind).toBe('attempt-incorrect');
+});
+
+test('AC10: legacy heuristic transfer evidence is quarantined on hydration', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate(() => {
+		const key = 'ray-of-light.profile.v1';
+		const stored = JSON.parse(localStorage.getItem(key)!);
+		stored.evidence.push({
+			id: 'legacy-transfer-event',
+			constructionId: 'fr.je-voudrais',
+			language: 'fr',
+			kind: 'transfer-correct',
+			lessonId: 'fr-01',
+			at: 1,
+			day: '2026-08-22',
+			hinted: false,
+			contentVersion: '2026.08.23-poc.1'
+		});
+		localStorage.setItem(key, JSON.stringify(stored));
+	});
+	await page.reload();
+	await page.goto('/progress');
+	await expect(page.getByText('0 of')).toBeVisible();
+
+	const migrated = await evidenceFor(page, 'fr.je-voudrais');
+	expect(migrated).toHaveLength(1);
+	expect(migrated[0]).toMatchObject({
+		id: 'legacy-transfer-event',
+		kind: 'transfer-legacy-unverified'
+	});
 });
 
 test('no lesson-level completion badge is presented as progress', async ({ page }) => {
