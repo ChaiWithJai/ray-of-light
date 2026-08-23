@@ -11,12 +11,20 @@
 	import { evaluateRecallAttempt, normalise, type RecallAttempt } from '$lib/answers.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import type { Lesson, RecallPrompt } from '$lib/schemas/content.js';
+	import type { RecallSessionDraft } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	let {
 		lesson,
+		initialDraft,
+		onDraftChange,
 		onDone
-	}: { lesson: Lesson; onDone: (attempt: RecallAttempt) => void } = $props();
+	}: {
+		lesson: Lesson;
+		initialDraft?: RecallSessionDraft;
+		onDraftChange?: (draft: RecallSessionDraft) => void;
+		onDone: (attempt: RecallAttempt) => void;
+	} = $props();
 
 	const recallPrompt = $derived(
 		lesson.exercises.find((exercise): exercise is RecallPrompt => exercise.kind === 'recall')
@@ -37,22 +45,35 @@
 		})()
 	);
 
-	let index = $state(0);
-	let initializedLessonId = $state<string | null>(null);
-	let hinted = $state(false);
-	let revealed = $state(false);
-	let attempt = $state('');
+	const initial = (() => {
+		const restoredLineIndex = initialDraft
+			? lesson.lines.findIndex((candidate) => candidate.id === initialDraft.lineId)
+			: -1;
+		return {
+			index: restoredLineIndex >= 0 ? restoredLineIndex : promptedLineIndex,
+			hinted: initialDraft?.hinted ?? false,
+			revealed: initialDraft?.revealed ?? false,
+			attempt: initialDraft?.text ?? ''
+		};
+	})();
+	let index = $state(initial.index);
+	let hinted = $state(initial.hinted);
+	let revealed = $state(initial.revealed);
+	let attempt = $state(initial.attempt);
 
 	const line = $derived(lesson.lines[index]);
 	const daysAgo = $derived(lesson.index);
 
+	function persistDraft() {
+		if (!line) return;
+		onDraftChange?.({ lineId: line.id, text: attempt, hinted, revealed });
+	}
+
 	$effect(() => {
-		if (initializedLessonId === lesson.id) return;
-		index = promptedLineIndex;
-		hinted = false;
-		revealed = false;
-		attempt = '';
-		initializedLessonId = lesson.id;
+		index;
+		hinted;
+		revealed;
+		persistDraft();
 	});
 
 	function produce() {
@@ -82,30 +103,39 @@
 	</W.SketchCard>
 {/if}
 
-<Spread {lesson} state="active-retrieval" bind:index settings={profile.settings} />
+	<Spread
+		{lesson}
+		state="active-retrieval"
+		bind:index
+		settings={profile.settings}
+		onlineactivate={persistDraft}
+	/>
 
 <W.AnswerField
 	bind:value={attempt}
 	placeholder="say or type the line…"
 	minHeight={56}
-	aria-label="Your production"
+		aria-label="Your production"
+		oninput={persistDraft}
 />
 <W.MicButton />
 
 <div class="flex flex-wrap items-center justify-center gap-2">
 	<W.Chip
 		active={hinted}
-		onclick={() => {
-			hinted = true;
+			onclick={() => {
+				hinted = true;
+				persistDraft();
 		}}
 	>
 		hint: first word
 	</W.Chip>
 	<W.Chip
 		active={revealed}
-		onclick={() => {
-			hinted = true;
-			revealed = true;
+			onclick={() => {
+				hinted = true;
+				revealed = true;
+				persistDraft();
 		}}
 	>
 		reveal

@@ -187,6 +187,57 @@ export const ClosureRating = z.object({
 });
 export type ClosureRating = z.infer<typeof ClosureRating>;
 
+/* -------------------------------------------------------------------------- */
+/* In-progress session                                                         */
+/* -------------------------------------------------------------------------- */
+
+export const SessionMode = z.enum(['learn', 'recall']);
+export type SessionMode = z.infer<typeof SessionMode>;
+
+export const SessionStep = z.enum([
+	'preview',
+	'spread',
+	'comprehension',
+	'shadow',
+	'translate',
+	'completion',
+	'transfer',
+	'closure',
+	'recall',
+	'compare',
+	'synthesis'
+]);
+export type SessionStep = z.infer<typeof SessionStep>;
+
+/** Draft needed to resume recall and preserve attempt-before-reveal on refresh. */
+export const RecallSessionDraft = z.object({
+	lineId: z.string().min(1),
+	text: z.string(),
+	hinted: z.boolean().default(false),
+	revealed: z.boolean().default(false),
+	canonicalAnswer: z.string().min(1).optional(),
+	matchedAcceptedAnswer: z.string().min(1).optional()
+});
+export type RecallSessionDraft = z.infer<typeof RecallSessionDraft>;
+
+/**
+ * The single resumable session. `currentStep` is the only step allowed to make
+ * progress; `completedSteps` may be revisited read-only through browser history.
+ */
+export const ActiveSession = z.object({
+	id: z.string().min(1),
+	mode: SessionMode,
+	language: LanguageCode,
+	lessonId: z.string().min(1),
+	flow: z.array(SessionStep).min(1),
+	currentStep: SessionStep,
+	completedSteps: z.array(SessionStep).default([]),
+	recallDraft: RecallSessionDraft.optional(),
+	startedAt: z.number().int().nonnegative(),
+	updatedAt: z.number().int().nonnegative()
+});
+export type ActiveSession = z.infer<typeof ActiveSession>;
+
 /** Accessibility and load-reduction settings (1v). Nothing here teaches. */
 export const LearnerSettings = z.object({
 	audioSpeed: z.union([z.literal(0.75), z.literal(1)]).default(1),
@@ -216,6 +267,7 @@ export const LearnerProfile = z.object({
 	settings: LearnerSettings.default(LearnerSettings.parse({})),
 	evidence: z.array(EvidenceEvent).default([]),
 	closures: z.array(ClosureRating).default([]),
+	activeSession: ActiveSession.nullable().default(null),
 	/** Lesson ids fully worked through, per language. Sequencing only — not progress. */
 	completedLessons: z.partialRecord(LanguageCode, z.array(z.string())).default({})
 });
@@ -230,6 +282,7 @@ export function emptyProfile(language: LanguageCode = 'fr'): LearnerProfile {
 		settings: {},
 		evidence: [],
 		closures: [],
+		activeSession: null,
 		completedLessons: {}
 	});
 }

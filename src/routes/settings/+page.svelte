@@ -28,15 +28,22 @@
 		<div class="text-[13.5px]">Language</div>
 		<div class="flex items-center gap-2">
 			{#each ['fr', 'ta'] as const as code (code)}
-				<W.Chip
-					active={profile.language === code}
-					onclick={() => profile.setLanguage(code as LanguageCode)}
+					<W.Chip
+						active={profile.language === code}
+						aria-disabled={Boolean(profile.activeSession) && profile.language !== code}
+						class={profile.activeSession && profile.language !== code ? 'opacity-45' : ''}
+						onclick={profile.activeSession && profile.language !== code
+							? undefined
+							: () => profile.setLanguage(code as LanguageCode)}
 				>
 					{LANGUAGE_LABELS[code]}
 				</W.Chip>
 			{/each}
 		</div>
-		<W.Muted>Progress is kept separately per language.</W.Muted>
+			<W.Muted>Progress is kept separately per language.</W.Muted>
+			{#if profile.activeSession}
+				<W.Muted>Finish or resume the active session before switching languages.</W.Muted>
+			{/if}
 	</W.SketchCard>
 
 	<W.SketchCard>

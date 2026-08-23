@@ -7,6 +7,31 @@ async function onboard(page: Page) {
 	await page.getByRole('button', { name: 'Set my plan' }).click();
 }
 
+async function startRecall(page: Page, lessonId: string, language: 'fr' | 'ta' = 'fr') {
+	await page.evaluate(
+		({ lessonId, language }) => {
+			const key = 'ray-of-light.profile.v1';
+			const current = JSON.parse(localStorage.getItem(key)!);
+			const now = Date.now();
+			current.activeLanguage = language;
+			current.activeSession = {
+				id: `test-recall-${lessonId}`,
+				mode: 'recall',
+				language,
+				lessonId,
+				flow: ['recall', 'compare', 'closure'],
+				currentStep: 'recall',
+				completedSteps: [],
+				startedAt: now,
+				updatedAt: now
+			};
+			localStorage.setItem(key, JSON.stringify(current));
+		},
+		{ lessonId, language }
+	);
+	await page.goto(`/recall/${lessonId}/recall`);
+}
+
 async function persistedEvidence(page: Page) {
 	return page.evaluate(() => {
 		const raw = localStorage.getItem('ray-of-light.profile.v1');
@@ -22,7 +47,7 @@ async function persistedEvidence(page: Page) {
 
 test('a correct active-recall attempt persists recall-correct evidence', async ({ page }) => {
 	await onboard(page);
-	await page.goto('/recall/fr-02/recall');
+	await startRecall(page, 'fr-02');
 	await expect(page.getByText(/I would like to book a room for two nights/)).toBeVisible();
 	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
 	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
@@ -45,7 +70,7 @@ test('a correct active-recall attempt persists recall-correct evidence', async (
 
 test('a nonblank wrong active-recall attempt persists incorrect evidence', async ({ page }) => {
 	await onboard(page);
-	await page.goto('/recall/fr-02/recall');
+	await startRecall(page, 'fr-02');
 	await page.getByLabel('Your production').fill('Bonjour, monsieur.');
 	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
 
@@ -69,7 +94,7 @@ test('a nonblank wrong active-recall attempt persists incorrect evidence', async
 
 test('a hinted accepted answer is recorded but grants no unhinted recall', async ({ page }) => {
 	await onboard(page);
-	await page.goto('/recall/fr-02/recall');
+	await startRecall(page, 'fr-02');
 	await page.getByRole('button', { name: 'hint: first word' }).click();
 	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
 	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
@@ -84,13 +109,7 @@ test('a hinted accepted answer is recorded but grants no unhinted recall', async
 
 test('an authored Tamil transliteration is accepted and compared as accepted', async ({ page }) => {
 	await onboard(page);
-	await page.evaluate(() => {
-		const key = 'ray-of-light.profile.v1';
-		const current = JSON.parse(localStorage.getItem(key)!);
-		current.activeLanguage = 'ta';
-		localStorage.setItem(key, JSON.stringify(current));
-	});
-	await page.goto('/recall/ta-02/recall');
+	await startRecall(page, 'ta-02', 'ta');
 	await expect(page.getByText('Say it in Tamil: "Do you have a room?"', { exact: true })).toBeVisible();
 	await page.getByLabel('Your production').fill('room irukkā');
 	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();

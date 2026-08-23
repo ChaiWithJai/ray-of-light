@@ -15,11 +15,24 @@ import {
 	type ConstructionState,
 	type EvidenceEvent,
 	type EvidenceKind,
+	type ActiveSession,
 	type LearnerSettings,
-	type LearningPlan
+	type LearningPlan,
+	type RecallSessionDraft,
+	type SessionMode
 } from '$lib/schemas/learner.js';
 import { toDayKey } from '$lib/schemas/schedule.js';
 import type { LanguageCode } from '$lib/schemas/content.js';
+import type { StepId } from '$lib/flow.js';
+import {
+	accessFor,
+	advanceSession as advanceSessionState,
+	canFinishSession,
+	createSession,
+	currentSessionIsValid,
+	resumeHref,
+	type SessionAccess
+} from '$lib/session.js';
 
 const STORAGE_KEY = 'ray-of-light.profile.v1';
 
@@ -32,7 +45,13 @@ function load(): LearnerProfile {
 		// A profile that fails validation is a profile from an older/broken build.
 		// Starting clean loses progress, but silently running on malformed state
 		// would corrupt the evidence log, which is worse.
-		return parsed.success ? parsed.data : emptyProfile();
+		if (!parsed.success) return emptyProfile();
+		if (parsed.data.activeSession && !currentSessionIsValid(parsed.data.activeSession)) {
+			const recovered = { ...parsed.data, activeSession: null };
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(recovered));
+			return recovered;
+		}
+		return parsed.data;
 	} catch {
 		return emptyProfile();
 	}
@@ -78,6 +97,16 @@ class ProfileStore {
 		return this.#profile.completedLessons[this.#profile.activeLanguage] ?? [];
 	}
 
+	get activeSession(): ActiveSession | null {
+		return this.#profile.activeSession;
+	}
+
+	get activeSessionHref(): string | null {
+		return this.activeSession && currentSessionIsValid(this.activeSession)
+			? resumeHref(this.activeSession)
+			: null;
+	}
+
 	/** Construction id → state, derived from the whole evidence log. */
 	get states(): Map<string, ConstructionState> {
 		const language = this.#profile.activeLanguage;
@@ -108,6 +137,7 @@ class ProfileStore {
 	/* ---------------------------------------------------------------- */
 
 	setLanguage(language: LanguageCode) {
+		if (this.activeSession && language !== this.activeSession.language) return;
 		this.#update((p) => ({ ...p, activeLanguage: language }));
 	}
 
@@ -158,6 +188,106 @@ class ProfileStore {
 
 	recordClosure(rating: ClosureRating) {
 		this.#update((p) => ({ ...p, closures: [...p.closures, rating] }));
+	}
+
+	/* ---------------------------------------------------------------- */
+	/* Resumable session                                                 */
+	/* ---------------------------------------------------------------- */
+
+	startSession(mode: SessionMode, lessonId: string, flow: readonly StepId[]): string {
+		if (this.activeSession) return this.activeSessionHref ?? '/today';
+		const session = createSession(mode, this.#profile.activeLanguage, lessonId, flow);
+		this.#update((p) => ({ ...p, activeSession: session }));
+		return resumeHref(session);
+	}
+
+	sessionAccess(
+		mode: SessionMode,
+		lessonId: string,
+		step: StepId,
+		flow: readonly StepId[]
+	): SessionAccess {
+		return accessFor(
+			this.activeSession,
+			mode,
+			this.#profile.activeLanguage,
+			lessonId,
+			step,
+			flow
+		);
+	}
+
+	saveRecallDraft(lessonId: string, draft: RecallSessionDraft) {
+		this.#update((p) => {
+			const session = p.activeSession;
+			if (!session || session.mode !== 'recall' || session.lessonId !== lessonId) return p;
+			if (session.currentStep !== 'recall') return p;
+			if (
+				session.recallDraft?.lineId === draft.lineId &&
+				session.recallDraft.text === draft.text &&
+				session.recallDraft.hinted === draft.hinted &&
+				session.recallDraft.revealed === draft.revealed
+			) return p;
+			return {
+				...p,
+				activeSession: { ...session, recallDraft: draft, updatedAt: Date.now() }
+			};
+		});
+	}
+
+	advanceSession(
+		mode: SessionMode,
+		lessonId: string,
+		step: StepId,
+		flow: readonly StepId[],
+		recallDraft?: RecallSessionDraft
+	): string | null {
+		let destination: string | null = this.activeSessionHref;
+		this.#update((p) => {
+			const session = p.activeSession;
+			if (!session || accessFor(session, mode, p.activeLanguage, lessonId, step, flow) !== 'current') {
+				return p;
+			}
+			const advanced = advanceSessionState(session, step, flow, Date.now(), recallDraft);
+			if (!advanced) return p;
+			destination = resumeHref(advanced);
+			return { ...p, activeSession: advanced };
+		});
+		return destination;
+	}
+
+	/** Closure, sequencing completion and session clearing are one persisted write. */
+	finishSession(
+		mode: SessionMode,
+		lessonId: string,
+		flow: readonly StepId[],
+		rating: ClosureRating
+	): boolean {
+		let finished = false;
+		this.#update((p) => {
+			const session = p.activeSession;
+			if (
+				!session ||
+				session.mode !== mode ||
+				session.language !== p.activeLanguage ||
+				session.lessonId !== lessonId ||
+				!canFinishSession(session, flow)
+			) return p;
+
+			const completed = p.completedLessons[p.activeLanguage] ?? [];
+			const completedLessons =
+				mode === 'learn' && !completed.includes(lessonId)
+					? { ...p.completedLessons, [p.activeLanguage]: [...completed, lessonId] }
+					: p.completedLessons;
+			finished = true;
+			return {
+				...p,
+				closures: [...p.closures, rating],
+				completedLessons,
+				activeSession: null
+			};
+		});
+		return finished;
 	}
 
 	/**

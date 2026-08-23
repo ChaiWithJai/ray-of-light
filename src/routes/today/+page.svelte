@@ -5,8 +5,8 @@
 	 */
 	import { goto } from '$app/navigation';
 	import * as W from '$lib/components/wireframe/index.js';
-	import { COURSES, getLessonByIndex } from '$lib/content/index.js';
-	import { flowFor } from '$lib/flow.js';
+	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
+	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
 	import { planToday, toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -15,6 +15,9 @@
 	});
 
 	const course = $derived(COURSES[profile.language]);
+	const activeLesson = $derived(
+		profile.activeSession ? getLesson(profile.language, profile.activeSession.lessonId) : undefined
+	);
 
 	const plan = $derived(
 		profile.plan
@@ -48,7 +51,24 @@
 
 	{#if !plan}
 		<W.Muted>Loading your plan…</W.Muted>
-	{:else if plan.courseComplete}
+		{:else if profile.activeSession && activeLesson}
+			<W.SketchCard thick tone="parchment">
+				<div class="flex items-center justify-between gap-2">
+					<div class="font-semibold">Resume · {activeLesson.title}</div>
+					<W.Pill active>{profile.activeSession.mode}</W.Pill>
+				</div>
+				<W.Muted>
+					Your unfinished session is saved at {profile.activeSession.currentStep}.
+				</W.Muted>
+				<W.SketchButton
+					tone="primary"
+					class="mt-[4px]"
+					onclick={() => profile.activeSessionHref && goto(profile.activeSessionHref)}
+				>
+					Resume lesson
+				</W.SketchButton>
+			</W.SketchCard>
+		{:else if plan.courseComplete}
 		<W.SketchCard tone="good">
 			<div class="font-semibold text-good">Course complete</div>
 			<W.Muted>
@@ -74,7 +94,7 @@
 				<W.SketchButton
 					tone="primary"
 					class="mt-[4px]"
-					onclick={() => goto(`/learn/${newLesson.id}/${flowFor(newLesson.kind)[0]}`)}
+						onclick={() => goto(profile.startSession('learn', newLesson.id, flowFor(newLesson.kind)))}
 				>
 					Start
 				</W.SketchButton>
@@ -92,7 +112,7 @@
 				</W.Muted>
 				<W.SketchButton
 					class="mt-[4px]"
-					onclick={() => goto(`/recall/${recallLesson.id}/recall`)}
+						onclick={() => goto(profile.startSession('recall', recallLesson.id, RECALL_FLOW))}
 				>
 					Start recall
 				</W.SketchButton>
