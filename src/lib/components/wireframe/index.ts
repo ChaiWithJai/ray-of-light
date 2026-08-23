@@ -1,6 +1,7 @@
 import AnswerField from './answer-field.svelte';
 import Blank from './blank.svelte';
 import Chip from './chip.svelte';
+import Cover from './cover.svelte';
 import CoveredCell from './covered-cell.svelte';
 import Diff from './diff.svelte';
 import En from './en.svelte';
@@ -29,6 +30,7 @@ export {
 	AnswerField,
 	Blank,
 	Chip,
+	Cover,
 	CoveredCell,
 	Diff,
 	En,

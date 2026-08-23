@@ -2,10 +2,13 @@
 	import { cn } from '$lib/utils.js';
 	import type { Snippet } from 'svelte';
 
-	/** `.h1` — the one large in-frame headline. */
+	/**
+	 * `.h1` — the one large in-frame headline. A real `<h1>`: the wireframe drew
+	 * it as a styled div, but screen readers need the landmark (AC 12).
+	 */
 	let { class: className, children }: { class?: string; children?: Snippet } = $props();
 </script>
 
-<div data-slot="heading" class={cn('text-[19px] leading-[1.15]', className)}>
+<h1 data-slot="heading" class={cn('m-0 text-[19px] leading-[1.15] font-normal', className)}>
 	{@render children?.()}
-</div>
+</h1>

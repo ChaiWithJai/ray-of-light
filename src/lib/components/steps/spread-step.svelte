@@ -1,0 +1,103 @@
+<script lang="ts">
+	/**
+	 * 1e · Parallel spread, with the 1f tracking layer, the 1g pronunciation
+	 * overlay and the 1h notes drawer. These are overlays on one mounted spread,
+	 * not separate screens — the layout never changes underneath them.
+	 */
+	import Spread from '$lib/components/app/spread.svelte';
+	import * as W from '$lib/components/wireframe/index.js';
+	import { CONTENT_VERSION } from '$lib/content/index.js';
+	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
+	import { profile } from '$lib/stores/profile.svelte.js';
+
+	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
+
+	let index = $state(0);
+	let overlay = $state<'none' | 'notes' | 'pronounce'>('none');
+	let coverSource = $state(false);
+	let coverTarget = $state(false);
+	const line = $derived(lesson.lines[index]);
+	const read = new Set<string>();
+
+	// NB: must not be called `state` — declaring that identifier makes Svelte parse
+	// `$state` as store-subscription syntax and every rune in this file breaks.
+	const spreadState = $derived(
+		coverTarget ? 'active-retrieval' : coverSource ? 'target-reading' : 'parallel-reading'
+	);
+
+	// Reading a pair in the parallel state is what `exposed` means (D3).
+	$effect(() => {
+		if (spreadState !== 'parallel-reading' || !line || read.has(line.id)) return;
+		read.add(line.id);
+		profile.record('parallel-read', lesson.id, line.constructions, {
+			contentVersion: CONTENT_VERSION
+		});
+	});
+
+	function onlineactivate(l: LessonLine) {
+		if (l.notes.length > 0) overlay = 'notes';
+	}
+</script>
+
+<Spread {lesson} state={spreadState} bind:index settings={profile.settings} {onlineactivate} />
+
+<div class="flex flex-wrap items-center justify-center gap-2">
+	<W.Chip active={coverSource} onclick={() => ((coverSource = !coverSource), (coverTarget = false))}>
+		cover EN
+	</W.Chip>
+	<W.Chip active={coverTarget} onclick={() => ((coverTarget = !coverTarget), (coverSource = false))}>
+		cover {lesson.language === 'ta' ? 'TA' : 'FR'}
+	</W.Chip>
+	<W.Chip
+		active={overlay === 'notes'}
+		onclick={() => (overlay = overlay === 'notes' ? 'none' : 'notes')}
+	>
+		notes
+	</W.Chip>
+	<W.Chip
+		active={overlay === 'pronounce'}
+		onclick={() => (overlay = overlay === 'pronounce' ? 'none' : 'pronounce')}
+	>
+		pronounce
+	</W.Chip>
+</div>
+
+{#if overlay === 'notes'}
+	<!-- 1h · anchored to the exact word, opened only on demand -->
+	<W.SketchCard thick class="rounded-t-[14px]">
+		<div class="flex items-center justify-between gap-2">
+			<div class="text-[14px] font-semibold">
+				📎 {line?.notes[0]?.anchor ?? `Line ${index + 1}`}
+			</div>
+			<button class="text-ink-soft" onclick={() => (overlay = 'none')} aria-label="Close notes">
+				✕
+			</button>
+		</div>
+		{#if line?.notes.length}
+			{#each line.notes as note (note.text)}
+				<div class="text-[13px] leading-[1.35]">
+					<W.Pill class="mr-1">{note.type}</W.Pill>
+					{note.text}
+				</div>
+			{/each}
+		{:else}
+			<W.Muted>No note on this line. Notes appear only where they earn their place.</W.Muted>
+		{/if}
+	</W.SketchCard>
+{:else if overlay === 'pronounce'}
+	<!-- 1g · imitation over evaluation: no score, no red marks -->
+	<W.SketchCard tone="accent">
+		<W.Fr class="text-[16px]">{line?.targetScript}</W.Fr>
+		{#if line?.transliteration}<W.Muted>{line.transliteration}</W.Muted>{/if}
+		<W.Muted class="text-[12px]">native</W.Muted>
+		<W.Waveform bars={[{ h: 10 }, { h: 24 }, { h: 30 }, { h: 14 }, { h: 26 }, { h: 8 }]} />
+		<W.Muted class="text-[12px]">you</W.Muted>
+		<W.Waveform tone="blue" bars={[{ h: 8 }, { h: 20 }, { h: 31 }, { h: 10 }, { h: 28 }, { h: 6 }]} />
+		<W.MicButton />
+		<W.Muted class="text-center">compare by ear — no scores, no red marks</W.Muted>
+	</W.SketchCard>
+{/if}
+
+<W.SketchButton tone="primary" class="mt-auto" onclick={onDone}>
+	I've read the spread →
+</W.SketchButton>

@@ -1,6 +1,13 @@
 import { redirect } from '@sveltejs/kit';
 
-/** Onboarding gating lands here once the learner profile exists; Today for now. */
+/**
+ * The entry gate. Onboarding state lives in localStorage, so the real decision
+ * has to happen on the client — this just sends everyone to the start of the
+ * funnel, and `/onboarding/language` forwards an already-onboarded learner on
+ * to Today.
+ */
+export const ssr = false;
+
 export function load() {
-	redirect(307, '/today');
+	redirect(307, '/onboarding/language');
 }
