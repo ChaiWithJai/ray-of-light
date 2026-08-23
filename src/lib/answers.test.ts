@@ -39,14 +39,14 @@ describe('authored recall prompt conformance', () => {
 			)
 		);
 
-		expect(cases).toHaveLength(27);
+		expect(cases).toHaveLength(31);
 		const promptsWithoutExactLine = cases.filter(
 			({ lesson, prompt }) =>
 				!lesson.lines.some(
 					(line) => normalise(line.targetScript) === normalise(prompt.canonicalAnswer)
 				)
 		);
-		expect(promptsWithoutExactLine).toHaveLength(12);
+		expect(promptsWithoutExactLine).toHaveLength(16);
 
 		for (const { lesson, prompt } of cases) {
 			const result = evaluateRecallAttempt(prompt.canonicalAnswer, prompt, lesson.lines[0]);
