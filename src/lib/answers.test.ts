@@ -58,14 +58,14 @@ describe('authored recall prompt conformance', () => {
 			)
 		);
 
-		expect(cases).toHaveLength(24);
+		expect(cases).toHaveLength(40);
 		const promptsWithoutExactLine = cases.filter(
 			({ lesson, prompt }) =>
 				!lesson.lines.some(
 					(line) => normalise(line.targetScript) === normalise(prompt.canonicalAnswer)
 				)
 		);
-		expect(promptsWithoutExactLine).toHaveLength(9);
+		expect(promptsWithoutExactLine).toHaveLength(22);
 
 		for (const { lesson, prompt } of cases) {
 			const result = evaluateRecallAttempt(prompt.canonicalAnswer, prompt, lesson.lines[0]);
@@ -96,8 +96,8 @@ describe('transfer evaluation', () => {
 		)
 	);
 
-	it('accepts all 28 authored exemplars using explicit criteria', () => {
-		expect(transfers).toHaveLength(28);
+	it('accepts all 39 authored exemplars using explicit criteria', () => {
+		expect(transfers).toHaveLength(39);
 		for (const prompt of transfers) {
 			expect(
 				matchesTransferCriteria(prompt.exemplar, prompt.criteria),
