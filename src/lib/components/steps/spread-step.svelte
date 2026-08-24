@@ -75,19 +75,36 @@
 		anchorWord ? describe(lesson.language, anchorWord) : null
 	);
 
+	/**
+	 * Audio-led auto driver (mobile-method spike, Model D): the default,
+	 * no-gesture driver of the same anchor — while `following`, the current
+	 * pair tracks the recording. An explicit user commit (rail, swipe, tap,
+	 * keys) OWNS the anchor: it disengages following before re-slicing audio
+	 * to the chosen line, so a stale `timeupdate` from the dialogue playback
+	 * can never yank the anchor back after a user action. "Listen" re-engages
+	 * following, resuming the karaoke from the pair the user is on.
+	 */
+	let following = $state(false);
+
 	function onlineactivate(l: LessonLine) {
+		following = false;
 		const lineIndex = lesson.lines.findIndex((candidate) => candidate.id === l.id);
 		if (lineIndex >= 0) player.playLine(lineIndex);
 		if (l.notes.length > 0) overlay = 'notes';
 	}
 
-	// Audio-led auto driver (mobile-method spike, Model D): the default,
-	// no-gesture driver of the same anchor — while the dialogue plays, the
-	// current pair follows the recording. Grabbing the rail (or any manual
-	// activation) takes control by re-slicing playback to the chosen line, so
-	// the two drivers can never fight over the anchor.
+	function togglefollow() {
+		if (player.playing) {
+			following = false;
+			player.pause();
+		} else {
+			following = true;
+			player.playFrom(index, () => (following = false));
+		}
+	}
+
 	$effect(() => {
-		if (layout !== 'stack' || !player.playing) return;
+		if (layout !== 'stack' || !following || !player.playing) return;
 		const sounding = player.activeLine;
 		if (sounding >= 0 && sounding !== index) index = sounding;
 	});
@@ -100,7 +117,7 @@
 {#if layout === 'stack'}
 	<!-- The zero-gesture way through the spread: listen, and the pair follows. -->
 	<div class="flex justify-center">
-		<W.Chip active={player.playing} onclick={() => player.toggle()}>
+		<W.Chip active={player.playing} onclick={togglefollow}>
 			{player.playing ? '❚❚ pause' : '▶ listen — the pair follows the audio'}
 		</W.Chip>
 	</div>
