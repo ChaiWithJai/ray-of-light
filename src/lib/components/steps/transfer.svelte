@@ -47,9 +47,12 @@
 {#if prompt}
 	<W.ConceptIntro technique="transfer" />
 
-	<W.Card tone="parchment">
-		<div class="text-sm">{prompt.situation}</div>
-		<W.Muted>{prompt.prompt}</W.Muted>
+	<!-- #34: the new situation is the star — this is the lesson's payoff moment. -->
+	<W.Card tone="parchment" thick class="anim-rise gap-2 p-5 sm:p-6">
+		<div class="font-display text-base leading-snug font-semibold sm:text-lg">
+			{prompt.situation}
+		</div>
+		<W.Muted class="text-sm">{prompt.prompt}</W.Muted>
 	</W.Card>
 
 	<W.Muted>Build your sentence around this pattern you already know:</W.Muted>

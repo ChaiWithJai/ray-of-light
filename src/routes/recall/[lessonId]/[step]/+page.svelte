@@ -92,7 +92,7 @@
 </svelte:head>
 
 {#if !profile.loaded}
-	<W.Shell title="Recall" back="/today" backKind="close">
+	<W.Shell session title="Recall" back="/today" backKind="close">
 		<W.Muted>Restoring your recall session…</W.Muted>
 	</W.Shell>
 {:else if !lesson || !step}
@@ -101,11 +101,11 @@
 		<W.Button href="/today">Back to Today</W.Button>
 	</W.Shell>
 {:else if access === 'forbidden'}
-	<W.Shell title="Recall · {lesson.title}" back="/today" backKind="close">
+	<W.Shell session title="Recall · {lesson.title}" back="/today" backKind="close">
 		<W.Muted>Returning to your authorized session step…</W.Muted>
 	</W.Shell>
 {:else if access === 'completed'}
-	<W.Shell title="Completed step" back="/today" backKind="close">
+	<W.Shell session title="Completed step" back="/today" backKind="close">
 		<!-- Kept on one line: the e2e guard asserts this copy with a regex, and regex
 		     text matching does not normalize source-formatting whitespace. -->
 		<W.Muted>
@@ -121,6 +121,7 @@
 	</W.Shell>
 {:else}
 	<W.Shell
+		session
 		title="Recall · {lesson.title}"
 		back="/today"
 		backKind="close"

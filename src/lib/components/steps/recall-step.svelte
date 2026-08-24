@@ -106,20 +106,26 @@
 
 <W.ConceptIntro technique="recall-wave" />
 
-<W.Muted class="text-center">
+<W.Muted class="text-center text-xs">
 	You met this line in lesson {daysAgo}. Now say it in
 	{lesson.language === 'ta' ? 'Tamil' : 'French'}, using the English as your cue.
 </W.Muted>
 
+<!-- #39: one item at a time — the cue, the covered line and your answer sit
+     together as one chunk, nothing detached at the bottom of the page. -->
 {#if recallPrompt}
-	<W.Card tone="parchment">
-		<div class="text-sm">{recallPrompt.prompt}</div>
+	<W.Card tone="parchment" thick class="anim-rise gap-2 p-5 sm:p-6">
+		<div class="font-display text-base leading-snug font-semibold sm:text-lg">
+			{recallPrompt.prompt}
+		</div>
 	</W.Card>
 {/if}
 
 <Spread
 	{lesson}
 	state="active-retrieval"
+	layout="stack"
+	pinned
 	bind:index
 	settings={profile.settings}
 	onlineactivate={persistDraft}
@@ -132,7 +138,6 @@
 	aria-label="Your production"
 	oninput={persistDraft}
 />
-<W.MicButton />
 
 <div class="flex flex-wrap items-center justify-center gap-2">
 	<W.Chip
@@ -161,7 +166,7 @@
 </div>
 
 {#if hinted}
-	<W.Card tone="warn">
+	<W.Card tone="warn" class="anim-uncover">
 		<W.Muted class="text-xs text-caution">
 			You used a hint, so this attempt counts as practice rather than recall.
 		</W.Muted>
@@ -172,6 +177,8 @@
 		</W.Fr>
 	</W.Card>
 {/if}
+
+<W.MicButton />
 
 <W.Button
 	tone="primary"

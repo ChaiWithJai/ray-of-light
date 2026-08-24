@@ -75,6 +75,23 @@
 		{/each}
 	</div>
 
+	<!-- #42: the commitment answers back — the session shape rebuilds from the
+	     minutes the moment they change. -->
+	{#key minutes}
+		<W.Muted class="anim-uncover text-xs">
+			A {minutes}-minute day splits into about {Math.round(minutes * 0.6)} minutes with the new
+			lesson and {Math.round(minutes * 0.4)} minutes of recall once the second wave opens.
+		</W.Muted>
+	{/key}
+
+	<W.JourneyArc
+		language={profile.language}
+		current={entryLessonIndex}
+		caption={entryLessonIndex > 1
+			? `Your assessment placed the ring at lesson ${entryLessonIndex}; the plan you set here walks the rest of the path.`
+			: 'Your plan walks this whole path, one lesson a day.'}
+	/>
+
 	<W.Card>
 		<div class="text-sm font-semibold">Your projected path</div>
 		<div class="mt-1.5 flex items-center gap-2">
@@ -120,5 +137,20 @@
 
 	<W.Muted>Every 7th lesson is a review day, already built into the plan.</W.Muted>
 
-	<W.Button tone="primary" onclick={commit}>Set my plan</W.Button>
+	<!-- #42: the plan the learner is shaping, assembled live from every choice
+	     above, so each tap visibly becomes part of the commitment. -->
+	<W.Card tone="parchment" thick class="gap-1 p-4">
+		<div class="text-2xs font-bold tracking-[0.14em] text-brand uppercase">Your plan</div>
+		{#key `${minutes}-${goal}`}
+			<div class="anim-uncover font-display text-lg leading-tight font-semibold">
+				{minutes} minutes a day, for {GOALS.find((g) => g.id === goal)?.label.toLowerCase()}
+			</div>
+		{/key}
+		<W.Muted class="text-xs">
+			{total} lessons, one real situation each, starting at lesson {entryLessonIndex}. Recall
+			joins from lesson {activeWaveAt}.
+		</W.Muted>
+	</W.Card>
+
+	<W.Button tone="primary" class="py-3.5 text-lg" onclick={commit}>Set my plan</W.Button>
 </W.Shell>

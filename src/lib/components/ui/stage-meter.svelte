@@ -8,8 +8,9 @@
 	let {
 		filled,
 		total = 5,
+		segmentClass = '',
 		class: className
-	}: { filled: number; total?: number; class?: string } = $props();
+	}: { filled: number; total?: number; segmentClass?: string; class?: string } = $props();
 </script>
 
 <div data-slot="stage-meter" class={cn('flex gap-1', className)}>
@@ -17,7 +18,8 @@
 		<div
 			class={cn(
 				'h-2 w-3.5 rounded-xs transition-colors',
-				i < filled ? 'bg-brand' : 'border border-line-strong bg-transparent'
+				i < filled ? 'bg-brand' : 'border border-line-strong bg-transparent',
+				segmentClass
 			)}
 		></div>
 	{/each}

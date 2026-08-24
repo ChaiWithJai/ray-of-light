@@ -35,3 +35,11 @@ vite.config.ts.timestamp-*
 *.voice-ref.*
 scripts/audio/.venv/
 scripts/audio/uv.lock
+
+# Design-review tooling (tools/design-review): generated locally per round.
+/tools/design-review/shots/
+/tools/design-review/samples.json
+/tools/design-review/annotations.json
+/tools/design-review/patterns.json
+/tools/design-review/suggestions.json
+/tools/design-review/capture/test-results/

@@ -92,6 +92,13 @@ for (const [lane, expected] of Object.entries(expectedLaneCounts)) {
   if (got !== expected) errors.push(`lane ${lane}: expected ${expected} entries, got ${got}`);
 }
 
+const plannedEntries = (ledger.entries ?? []).filter((entry) => entry.status === "planned");
+if (plannedEntries.length) {
+  errors.push(
+    `ledger completion: expected every accepted fragment to be ported, found ${plannedEntries.length} planned entr${plannedEntries.length === 1 ? "y" : "ies"}`,
+  );
+}
+
 console.log("Per-lane entry counts:");
 for (const lane of ["#8", "#9", "#10", "#11"]) console.log(`  ${lane}: ${laneCounts[lane] ?? 0}`);
 console.log(`  total: ${ledger.entries?.length ?? 0}`);

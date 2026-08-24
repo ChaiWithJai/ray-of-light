@@ -140,7 +140,8 @@ test('AC4: covering a column does not change the layout', async ({ page }) => {
 	const firstPair = page.getByRole('option').first();
 	const before = await firstPair.boundingBox();
 
-	await page.getByRole('button', { name: 'cover EN' }).click();
+	// #34: the free "cover EN" toggle became the ladder's "Hide English" rung.
+	await page.getByRole('button', { name: 'Hide English' }).click();
 	await expect(page.getByText('covered').first()).toBeVisible();
 
 	const after = await firstPair.boundingBox();
