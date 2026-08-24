@@ -189,7 +189,8 @@
 		</W.Card>
 	{:else}
 		{#if assignedNewLesson && !newDone}
-			<W.Card thick class="anim-rise anim-d1 gap-3 p-5">
+			<!-- #34: the day's Start card is the day's main event. -->
+			<W.Card thick tone="accent" class="anim-rise anim-d1 gap-3 p-6 sm:p-7">
 				<div>
 					<div class="flex items-baseline justify-between gap-2">
 						<div class="text-2xs font-bold tracking-[0.14em] text-brand uppercase">
@@ -199,7 +200,7 @@
 						</div>
 						<span class="text-xs text-text-faint">~{Math.round(minutes * 0.6)} min</span>
 					</div>
-					<div class="font-display text-xl leading-tight font-semibold">
+					<div class="font-display text-2xl leading-tight font-semibold sm:text-3xl">
 						{assignedNewLesson.title}
 					</div>
 				</div>
@@ -210,7 +211,7 @@
 				</W.Muted>
 				<W.Button
 					tone="primary"
-					class="mt-1.5"
+					class="mt-1.5 py-3.5 text-lg"
 					onclick={() =>
 						goto(
 							profile.startSession(
@@ -227,10 +228,12 @@
 		{/if}
 
 		{#if assignedRecallLesson && !recallDone}
-			<W.Card class="anim-rise anim-d2 gap-3 p-5">
+			<!-- #34: recall is the method's other half — a solid equal citizen,
+			     never ghost chrome. -->
+			<W.Card thick class="anim-rise anim-d2 gap-3 p-5 sm:p-6">
 				<div>
 					<div class="flex items-baseline justify-between gap-2">
-						<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
+						<div class="text-2xs font-bold tracking-[0.14em] text-brand uppercase">
 							Lesson {assignedRecallLesson.index} · recall
 						</div>
 						<span class="text-xs text-text-faint">~{Math.round(minutes * 0.4)} min</span>

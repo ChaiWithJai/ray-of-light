@@ -92,14 +92,29 @@
 			</W.Muted>
 		</W.Card>
 	{:else}
-		<div class="flex flex-col gap-2">
-			{#each seen as row (row.construction.id)}
-				<W.Card class="p-3">
-					<div class="flex items-center justify-between gap-2">
-						<W.Fr class="text-sm">{row.construction.label}</W.Fr>
-						<W.StageMeter filled={stateRank(row.state) + 1} />
+		<!-- #34: the capability pips grown into the screen's actual story — each
+		     construction shows where it stands on the ladder, by name, with what
+		     that state means in the learner's own terms. -->
+		<div class="flex flex-col gap-2.5">
+			{#each seen as row, i (row.construction.id)}
+				{@const reached = row.state ?? 'exposed'}
+				{@const rank = stateRank(row.state)}
+				<W.Card class="anim-rise gap-2 p-4 {i < 4 ? `anim-d${i + 1}` : ''}">
+					<div class="flex items-start justify-between gap-3">
+						<div class="min-w-0">
+							<W.Fr class="text-base">{row.construction.label}</W.Fr>
+							<W.Muted class="mt-0.5 text-2xs">{row.construction.gloss}</W.Muted>
+						</div>
+						<div class="flex shrink-0 flex-col items-end gap-1.5 pt-0.5">
+							<span class="text-2xs font-bold tracking-[0.14em] text-brand-deep uppercase">
+								{reached}
+							</span>
+							<W.StageMeter filled={rank + 1} segmentClass="h-2.5 w-5" class="gap-1.5" />
+						</div>
 					</div>
-					<W.Muted class="text-2xs">{row.construction.gloss}</W.Muted>
+					<W.Muted class="border-t border-line/70 pt-1.5 text-2xs">
+						{STATE_MEANINGS[reached]}
+					</W.Muted>
 				</W.Card>
 			{/each}
 		</div>

@@ -30,10 +30,14 @@
 </script>
 
 {#if prompt}
-	<W.Muted>{prompt.prompt}</W.Muted>
+	<!-- #34: the sentence with its gap is the screen's centre; the choices sit
+	     right beneath it. -->
+	<p class="anim-rise m-0 text-center font-display text-base leading-snug font-semibold sm:text-lg">
+		{prompt.prompt}
+	</p>
 
-	<W.Card tone="accent">
-		<W.Fr class="text-lg">
+	<W.Card tone="accent" thick class="anim-rise anim-d1 items-center gap-2 p-5 text-center sm:p-6">
+		<W.Fr class="text-xl sm:text-2xl">
 			{parts[0]}<W.Blank>{picked ?? '?'}</W.Blank>{parts[1] ?? ''}
 		</W.Fr>
 	</W.Card>

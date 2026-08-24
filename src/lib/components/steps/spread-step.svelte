@@ -15,10 +15,12 @@
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
 
+	import type { SpreadState } from '$lib/spread.js';
+
 	let index = $state(0);
 	let overlay = $state<'none' | 'notes' | 'pronounce'>('none');
-	let coverSource = $state(false);
-	let coverTarget = $state(false);
+	/** The rung of the support-removal ladder the learner is on (#34). */
+	let ladderStage = $state<SpreadState>('parallel-reading');
 	const line = $derived(lesson.lines[index]);
 	const read = new SvelteSet<string>();
 	const player = $derived(new LessonPlayer(lesson));
@@ -34,9 +36,7 @@
 
 	// NB: must not be called `state` — declaring that identifier makes Svelte parse
 	// `$state` as store-subscription syntax and every rune in this file breaks.
-	const spreadState = $derived(
-		coverTarget ? 'active-retrieval' : coverSource ? 'target-reading' : 'parallel-reading'
-	);
+	const spreadState = $derived(ladderStage);
 
 	// Reading a pair in the parallel state is what `exposed` means (D3).
 	$effect(() => {
@@ -70,13 +70,13 @@
 
 <W.ConceptIntro technique="cover-ladder" />
 
+<W.CoverLadder
+	stage={ladderStage}
+	targetName={lesson.language === 'ta' ? 'Tamil' : 'French'}
+	onstage={(next) => (ladderStage = next)}
+/>
+
 <div class="flex flex-wrap items-center justify-center gap-2">
-	<W.Chip active={coverSource} onclick={() => ((coverSource = !coverSource), (coverTarget = false))}>
-		cover EN
-	</W.Chip>
-	<W.Chip active={coverTarget} onclick={() => ((coverTarget = !coverTarget), (coverSource = false))}>
-		cover {lesson.language === 'ta' ? 'TA' : 'FR'}
-	</W.Chip>
 	<W.Chip
 		active={overlay === 'notes'}
 		onclick={() => (overlay = overlay === 'notes' ? 'none' : 'notes')}

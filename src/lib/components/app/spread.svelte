@@ -178,6 +178,11 @@
 	}
 </script>
 
+<!-- The step's ask, stated over the spread rather than whispered under it (#34). -->
+<p class="anim-rise m-0 text-center font-display text-base leading-snug font-semibold sm:text-lg">
+	{support.instruction}
+</p>
+
 <div
 	role="listbox"
 	tabindex="0"
@@ -224,7 +229,10 @@
 				if (activePointers.size === 0) previewIndex = i;
 			}}
 		>
-			<W.PairRow highlight={current} class="relative {current ? '' : 'opacity-90'}">
+			<W.PairRow
+				highlight={current}
+				class="relative {current ? 'shadow-card ring-1 ring-brand/30' : 'opacity-90'}"
+			>
 				<!-- Target column -->
 				<W.Cover
 					covered={!support.targetVisible}
@@ -257,25 +265,41 @@
 				</W.Cover>
 
 				{#if settings.trackingMode === 'two-finger'}
+					<!-- The handles are the invitation: both fingers hold their place
+					     while the eyes and ears do the mapping. The current pair's
+					     handles carry a soft halo so the ritual reads at a glance. -->
 					<span
 						data-tracking-handle
 						data-side="target"
 						aria-hidden="true"
-						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card"
+						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card {current
+							? 'ring-4 ring-brand/15'
+							: ''}"
 					>↕</span>
 					<span
 						data-tracking-handle
 						data-side="source"
 						aria-hidden="true"
-						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card"
+						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card {current
+							? 'ring-4 ring-brand/15'
+							: ''}"
 					>↕</span>
+				{:else if current}
+					<!-- Single-guide mode: display-only anchor marks on the tracked
+					     pair — the same two held places, drawn rather than touched. -->
+					<span
+						aria-hidden="true"
+						class="anim-breathe pointer-events-none absolute top-1/2 left-[calc(50%-12px)] size-1.5 -translate-y-1/2 rounded-full bg-brand/40"
+					></span>
+					<span
+						aria-hidden="true"
+						class="anim-breathe pointer-events-none absolute top-1/2 right-2 size-1.5 -translate-y-1/2 rounded-full bg-brand/40"
+					></span>
 				{/if}
 			</W.PairRow>
 		</div>
 	{/each}
 </div>
-
-<W.Hint>{support.instruction}</W.Hint>
 
 {#if settings.trackingMode === 'single-guide'}
 	<W.Hint>

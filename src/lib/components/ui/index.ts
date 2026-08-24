@@ -5,6 +5,7 @@ import Card from './card.svelte';
 import Chip from './chip.svelte';
 import ConceptIntro from './concept-intro.svelte';
 import Cover from './cover.svelte';
+import CoverLadder from './cover-ladder.svelte';
 import Diff from './diff.svelte';
 import En from './en.svelte';
 import Fr from './fr.svelte';
@@ -32,6 +33,7 @@ export {
 	Chip,
 	ConceptIntro,
 	Cover,
+	CoverLadder,
 	Diff,
 	En,
 	Fr,

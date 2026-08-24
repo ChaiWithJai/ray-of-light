@@ -166,7 +166,8 @@ test('keyboard movement activates aligned pairs and sentence audio', async ({ pa
 test('covered support stays covered in the accessible name', async ({ page }) => {
 	await onboard(page);
 	await authorizeLearnSpread(page);
-	await page.getByRole('button', { name: 'cover EN' }).click();
+	// #34: the free "cover EN" toggle became the ladder's "Hide English" rung.
+	await page.getByRole('button', { name: 'Hide English' }).click();
 	const readingLabel = await page.getByRole('option').first().getAttribute('aria-label');
 	expect(readingLabel).toContain('Bonjour');
 	expect(readingLabel).toContain('English covered');
