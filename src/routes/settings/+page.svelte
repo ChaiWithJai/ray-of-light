@@ -3,6 +3,7 @@
 	 * 1v · Settings. Everything here reduces irrelevant load; nothing here teaches.
 	 */
 	import * as W from '$lib/components/ui/index.js';
+	import audioProvenance from '$lib/content/audio-provenance.json';
 	import { LANGUAGE_LABELS } from '$lib/content/index.js';
 	import type { LanguageCode } from '$lib/schemas/content.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -100,6 +101,26 @@
 		</W.Chip>
 		<W.Muted>
 			accessibility: one linked reading guide instead. Arrow keys always work either way.
+		</W.Muted>
+	</W.Card>
+
+	{#if audioProvenance.synthesized}
+		<W.Card>
+			<div class="text-sm">About the audio</div>
+			<W.Muted>
+				Lesson audio is a draft synthesized voice ({audioProvenance.voices[profile.language]},
+				{audioProvenance.engine}) — native recordings are pending. Pronunciation is a scaffold
+				here, not a model.
+			</W.Muted>
+		</W.Card>
+	{/if}
+
+	<W.Card>
+		<div class="text-sm">About your evidence</div>
+		<W.Muted>
+			Matched constructions record recognition evidence only; situation matching is feedback,
+			not progress. Incorrect attempts are kept to guide later repair. No check in this app
+			judges full grammar or native naturalness.
 		</W.Muted>
 	</W.Card>
 

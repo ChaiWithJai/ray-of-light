@@ -6,7 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import * as W from '$lib/components/ui/index.js';
-	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
+	import { COURSES, getConstruction, getLesson, getLessonByIndex } from '$lib/content/index.js';
 	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
 	import { planToday, POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -94,6 +94,13 @@
 		resurfaceLesson
 			? dueResurface.filter((item) => item.lessonId === resurfaceLesson.id).length
 			: 0
+	);
+	// Name what is actually due: the first due construction's label and gloss,
+	// not just "a line you stumbled on".
+	const resurfaceConstruction = $derived(
+		dueResurface.length > 0
+			? getConstruction(profile.language, dueResurface[0].constructionId)
+			: undefined
 	);
 </script>
 
@@ -255,6 +262,12 @@
 					{resurfaceLesson.title}
 				</div>
 			</div>
+			{#if resurfaceConstruction}
+				<div class="flex flex-wrap items-baseline gap-2">
+					<W.Chip active>{resurfaceConstruction.label}</W.Chip>
+					<W.Muted class="text-2xs">{resurfaceConstruction.gloss}</W.Muted>
+				</div>
+			{/if}
 			<W.Muted>
 				{resurfaceCount === 1 ? 'A line' : `${resurfaceCount} lines`} you stumbled on {resurfaceCount ===
 				1

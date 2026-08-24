@@ -10,7 +10,6 @@
 	 */
 	import { LessonPlayer } from '$lib/audio/lesson-player.svelte.js';
 	import * as W from '$lib/components/ui/index.js';
-	import audioProvenance from '$lib/content/audio-provenance.json';
 	import type { Lesson } from '$lib/schemas/content.js';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
@@ -100,13 +99,6 @@
 			</div>
 		</div>
 	</W.Card>
-
-	{#if player.available && audioProvenance.synthesized}
-		<W.Muted class="text-center text-2xs text-caution">
-			draft synthesized voice ({audioProvenance.voices[lesson.language]}) — native
-			recording pending
-		</W.Muted>
-	{/if}
 
 	{#if !player.available}
 		<W.Card tone="warn">

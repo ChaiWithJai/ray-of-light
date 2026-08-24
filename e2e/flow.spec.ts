@@ -209,6 +209,18 @@ test('AC12: the core flow works at a mobile width', async ({ page }) => {
 	expect(overflow).toBeLessThanOrEqual(1);
 });
 
+test('#19 disclosure: Settings carries the synthesized-audio provenance and evidence honesty', async ({ page }) => {
+	// Design R1 #41 relocated both disclosures out of the learner flow; the
+	// obligation itself stands, so it is asserted here at its new altitude.
+	await onboard(page);
+	await page.goto('/settings');
+	await expect(page.getByText('About the audio')).toBeVisible();
+	await expect(page.getByText(/draft synthesized voice/)).toBeVisible();
+	await expect(
+		page.getByText(/Matched constructions record recognition evidence only/)
+	).toBeVisible();
+});
+
 test('AC7 + AC10: a French pattern match records non-transferable evidence', async ({ page }) => {
 	await onboard(page);
 	await authorizeLearnStep(page, 'fr-01', 'transfer', [
@@ -224,7 +236,11 @@ test('AC7 + AC10: a French pattern match records non-transferable evidence', asy
 	await expect(
 		page.getByText('Your answer matched the target construction and situation patterns.')
 	).toBeVisible();
-	await expect(page.getByText(/Matched constructions record recognition evidence only/)).toBeVisible();
+	// Design R1 #41: the evidence-honesty caveat lives in Settings now, not on
+	// the graded result card — the card stays clean.
+	await expect(
+		page.getByText(/Matched constructions record recognition evidence only/)
+	).not.toBeVisible();
 
 	const evidence = await evidenceFor(page, 'fr.je-voudrais');
 	expect(evidence).toHaveLength(1);
@@ -276,7 +292,9 @@ test('AC7 + AC10: Tamil transfer criteria support script and remain truthful', a
 	await page.getByLabel('Your new sentence').fill('இது சரியில்லை.');
 	await page.getByRole('button', { name: 'Check' }).click();
 	await expect(page.getByText('The target construction pattern did not match. Compare:')).toBeVisible();
-	await expect(page.getByText(/No recognition progress was recorded/)).toBeVisible();
+	// Design R1 #41: no evidence-honesty small print on the result card; the
+	// evidence log below proves nothing was recorded as recognition progress.
+	await expect(page.getByText(/No recognition progress was recorded/)).not.toBeVisible();
 	evidence = await evidenceFor(page, 'ta.enakku-venum');
 	expect(evidence.at(-1)?.kind).toBe('attempt-incorrect');
 });
