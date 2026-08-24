@@ -84,8 +84,10 @@ Each entry records: stable `id`, execution `lane` (#8–#11), `language`, `kind`
 (note / exercise / accepted-variant / line-pair / construction / tag),
 `sourceCommit` (`b5c7f45`), `sourceFile`, `sourceLesson`, `targetLesson`,
 `targetConstruction` (canonical main-side id, or null), `licenseAtSource`
-(`CC-BY-4.0`), and `status`. All entries start as `"planned"`; **port commits
-in lanes #8–#11 flip each landed entry's `status` to `"ported"` as they land.**
+(`CC-BY-4.0`), and `status`. Entries begin as `"planned"`; **port commits in
+lanes #8–#11 flip each landed entry's `status` to `"ported"` as they land.** All
+128 accepted fragments have now landed, so the checked-in ledger contains no
+planned entries.
 
 Validate with:
 
