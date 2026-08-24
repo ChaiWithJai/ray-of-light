@@ -22,6 +22,7 @@ import Rail from './rail.svelte';
 import SearchField from './search-field.svelte';
 import Shell from './shell.svelte';
 import Slider from './slider.svelte';
+import Sprite from './sprite.svelte';
 import StageMeter from './stage-meter.svelte';
 import Stuck from './stuck.svelte';
 import Term from './term.svelte';
@@ -53,6 +54,7 @@ export {
 	SearchField,
 	Shell,
 	Slider,
+	Sprite,
 	StageMeter,
 	Stuck,
 	Term,

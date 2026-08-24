@@ -107,9 +107,15 @@
 				{@const rank = stateRank(row.state)}
 				<W.Card class="anim-rise gap-2 p-4 {i < 4 ? `anim-d${i + 1}` : ''}">
 					<div class="flex items-start justify-between gap-3">
-						<div class="min-w-0">
-							<W.Fr class="text-base">{row.construction.label}</W.Fr>
-							<W.Muted class="mt-0.5 text-2xs">{row.construction.gloss}</W.Muted>
+						<div class="flex min-w-0 items-center gap-2.5">
+							<!-- #46 phase S0: the construction's character, at the stage the
+							     evidence derivation says — the same `row.state` the meter and
+							     the state word render. Marginalia, not a mascot. -->
+							<W.Sprite constructionId={row.construction.id} state={row.state} size={44} />
+							<div class="min-w-0">
+								<W.Fr class="text-base">{row.construction.label}</W.Fr>
+								<W.Muted class="mt-0.5 text-2xs">{row.construction.gloss}</W.Muted>
+							</div>
 						</div>
 						<div class="flex shrink-0 flex-col items-end gap-1.5 pt-0.5">
 							<span class="text-2xs font-bold tracking-[0.14em] text-brand-deep uppercase">
