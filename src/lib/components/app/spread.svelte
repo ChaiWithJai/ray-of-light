@@ -5,10 +5,11 @@
 	 * One layout, seven states. Covering a column swaps a cell's *contents*; the
 	 * cell keeps its box, so nothing reflows when support is removed (AC 4).
 	 *
-	 * Tracking (AC 3) is handled by one current-pair cursor with three drivers:
-	 * pointer (tap/drag either column), keyboard (↑/↓ move one aligned pair), and
-	 * the two-finger / single-guide modes from settings. Multitouch is never
-	 * required to progress.
+	 * Tracking (AC 3) is handled by one current-pair cursor with four drivers:
+	 * pointer (tap/drag either column), keyboard (↑/↓ move one aligned pair),
+	 * the two-finger / single-guide modes from settings, and — in the stack
+	 * projection — the thumb rail (press-hold-slide pair stepping; mobile-method
+	 * spike, Model A). Multitouch is never required to progress.
 	 */
 	import * as W from '$lib/components/ui/index.js';
 	import { coveredLabel, spreadSupport, type SpreadState } from '$lib/spread.js';
@@ -205,6 +206,72 @@
 		swipeStart = null;
 		if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.5) move(dx < 0 ? 1 : -1);
 	}
+
+	/* Thumb-rail driver (mobile-method spike, Model A): a fourth ReadingAnchor
+	 * driver beside pointer/keyboard/guide. Press-and-hold engages tracking,
+	 * sliding steps pair → pair, release stays put. Every step is a commit —
+	 * activate() re-anchors line audio synchronously (D4; well under the spike's
+	 * 150 ms causality budget). The rail lives below the text, never over it. */
+	let railEngaged = $state(false);
+	let railEl = $state<HTMLElement | null>(null);
+	/** Horizontal padding inside the rail; the knob travels between the insets. */
+	const RAIL_INSET = 12;
+
+	function railIndexFrom(clientX: number): number {
+		if (!railEl || lines.length < 2) return index;
+		const rect = railEl.getBoundingClientRect();
+		const fraction = (clientX - rect.left - RAIL_INSET) / Math.max(1, rect.width - RAIL_INSET * 2);
+		return Math.min(lines.length - 1, Math.max(0, Math.round(fraction * (lines.length - 1))));
+	}
+
+	function railStep(clientX: number) {
+		const next = railIndexFrom(clientX);
+		if (next !== index) activate(next);
+	}
+
+	function onrailpointerdown(event: PointerEvent) {
+		if (event.pointerType === 'mouse' && event.button !== 0) return;
+		railEngaged = true;
+		railEl?.setPointerCapture?.(event.pointerId);
+		railStep(event.clientX);
+	}
+
+	function onrailpointermove(event: PointerEvent) {
+		if (!railEngaged) return;
+		railStep(event.clientX);
+	}
+
+	function onrailpointerend(event: PointerEvent) {
+		if (!railEngaged) return;
+		railEngaged = false;
+		if (railEl?.hasPointerCapture?.(event.pointerId)) railEl.releasePointerCapture(event.pointerId);
+	}
+
+	function onrailkeydown(event: KeyboardEvent) {
+		const delta =
+			event.key === 'ArrowRight' || event.key === 'ArrowUp'
+				? 1
+				: event.key === 'ArrowLeft' || event.key === 'ArrowDown'
+					? -1
+					: null;
+		if (delta !== null) {
+			event.preventDefault();
+			event.stopPropagation();
+			move(delta);
+		} else if (event.key === 'Home') {
+			event.preventDefault();
+			event.stopPropagation();
+			activate(0);
+		} else if (event.key === 'End') {
+			event.preventDefault();
+			event.stopPropagation();
+			activate(lines.length - 1);
+		}
+	}
+
+	const railKnobLeft = $derived(
+		lines.length > 1 ? (displayIndex / (lines.length - 1)) * 100 : 50
+	);
 </script>
 
 {#if !pinned}
@@ -416,7 +483,7 @@
 					onclick={() => move(-1)}
 				>‹</button>
 				<span class="font-mono text-2xs text-text-faint">
-					pair {displayIndex + 1} of {lines.length} · swipe to step
+					pair {displayIndex + 1} of {lines.length}
 				</span>
 				<button
 					type="button"
@@ -428,4 +495,58 @@
 			</div>
 		{/if}
 	</div>
+
+	{#if !pinned}
+		<!-- The thumb rail: the held place. It sits in the thumb zone below the
+		     text — never over it (C5) — and does on mobile what two fingers did
+		     on the desktop columns: hold the place so the eyes and ears are free
+		     for the mapping. Press engages, sliding steps pair → pair, release
+		     stays put. Sibling of the listbox: a slider may not live inside one. -->
+		<div
+			bind:this={railEl}
+			data-thumb-rail
+			role="slider"
+			tabindex="0"
+			aria-label="Pair position"
+			aria-orientation="horizontal"
+			aria-valuemin={1}
+			aria-valuemax={lines.length}
+			aria-valuenow={displayIndex + 1}
+			aria-valuetext="pair {displayIndex + 1} of {lines.length}"
+			class="relative mt-1 h-11 touch-none cursor-ew-resize rounded-full border bg-surface-raised shadow-card transition-colors duration-(--duration-quick) outline-none select-none focus-visible:ring-2 focus-visible:ring-brand {railEngaged
+				? 'border-brand/70 ring-4 ring-brand/15'
+				: 'border-line-strong'}"
+			onpointerdown={onrailpointerdown}
+			onpointermove={onrailpointermove}
+			onpointerup={onrailpointerend}
+			onpointercancel={onrailpointerend}
+			onkeydown={onrailkeydown}
+		>
+			<span
+				aria-hidden="true"
+				class="absolute top-1/2 right-3 left-3 h-px -translate-y-1/2 bg-line"
+			></span>
+			{#each lines as tick, i (tick.id)}
+				<span
+					aria-hidden="true"
+					class="absolute top-1/2 size-1 -translate-x-1/2 -translate-y-1/2 rounded-full {i <=
+					displayIndex
+						? 'bg-brand/50'
+						: 'bg-line-strong'}"
+					style="left: calc(12px + (100% - 24px) * {lines.length > 1
+						? i / (lines.length - 1)
+						: 0.5})"
+				></span>
+			{/each}
+			<span
+				aria-hidden="true"
+				data-thumb-rail-knob
+				class="absolute top-1/2 flex size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-brand font-mono text-2xs font-bold shadow-card transition-[left,scale] duration-(--duration-quick) {railEngaged
+					? 'scale-125 bg-brand text-page ring-4 ring-brand/20'
+					: 'bg-surface-raised text-brand'}"
+				style="left: calc(12px + (100% - 24px) * {railKnobLeft / 100})"
+			>{displayIndex + 1}</span>
+		</div>
+		<W.Hint>hold the rail and slide — the pair and its audio follow</W.Hint>
+	{/if}
 {/if}

@@ -183,105 +183,220 @@ test('covered support stays covered in the accessible name', async ({ page }) =>
 	expect(retrievalLabel).not.toContain('Je voudrais');
 });
 
-test('a one-finger page scroll does not play audio or record a new line', async ({ page }) => {
-	await installAudioProbe(page);
-	await page.setViewportSize({ width: 390, height: 360 });
+/*
+ * Phone-width contracts (issue #55, mobile-method spike). At phone widths the
+ * learn spread renders the stack projection of the same state machine: one
+ * pair per viewport, stepped by swipe, thumb rail, keys or audio. These tests
+ * re-encode the method contracts the removed two-finger/scroll tests carried,
+ * in the stack's interaction grammar:
+ *  - linked pair activation: stepping activates both languages of one pair
+ *  - anchor→audio coupling: every step re-anchors the line's audio slice (D4)
+ *  - stray vertical single-finger motion is inert (no audio, no evidence)
+ *  - cover states hold, without reflow, while stepping (C3)
+ *  - keyboard driver still works (D5)
+ *  - one pointer + assistive tech completes the step (AC 5, issue #1)
+ */
+
+const PHONE = { width: 390, height: 844 };
+
+async function railGeometry(page: Page) {
+	const rail = page.getByRole('slider', { name: 'Pair position' });
+	const box = await rail.boundingBox();
+	expect(box).toBeTruthy();
+	// Mirrors the rail's 12px end insets: index i sits at inset + track · i/(n-1).
+	const xFor = (i: number) => box!.x + 12 + ((box!.width - 24) * i) / 10;
+	const y = box!.y + box!.height / 2;
+	return { rail, box: box!, xFor, y };
+}
+
+test('phone width renders the stack projection: one linked pair, rail below the text', async ({
+	page
+}) => {
+	await page.setViewportSize(PHONE);
 	await onboard(page);
-	const cdp = await enableTouch(page);
 	await authorizeLearnSpread(page);
 
-	const spread = page.getByRole('listbox');
-	await expect(spread).toHaveCSS('touch-action', 'pan-y');
-	const option = await page.getByRole('option').nth(3).boundingBox();
-	expect(option).toBeTruthy();
-	if (!option) return;
+	// One pair per viewport — the compressed two-column grid never renders.
+	const options = page.getByRole('option');
+	await expect(options).toHaveCount(1);
+	await expect(page.getByRole('listbox')).toHaveAccessibleName(/pair stack/i);
 
-	const callsBefore = (await playCalls(page)).length;
-	const evidenceBefore = await evidenceCount(page);
-	const startX = option.x + option.width / 2;
-	const startY = option.y + option.height / 2;
-	await dispatchTouches(cdp, 'touchStart', [touch(startX, startY, 1)]);
-	await dispatchTouches(cdp, 'touchMove', [touch(startX, startY - 160, 1)]);
-	await dispatchTouches(cdp, 'touchEnd', []);
-	await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-	expect((await playCalls(page)).length).toBe(callsBefore);
-	expect(await evidenceCount(page)).toBe(evidenceBefore);
+	// Linked pair activation: the single active pair carries both languages.
+	const label = await options.first().getAttribute('aria-label');
+	expect(label).toContain('Bonjour');
+	expect(label).toContain('Good morning');
+
+	// The rail is present, in the thumb zone below the text — never over it.
+	const { rail, box } = await railGeometry(page);
+	await expect(rail).toHaveCSS('touch-action', 'none');
+	const pair = await options.first().boundingBox();
+	expect(pair).toBeTruthy();
+	expect(box.y).toBeGreaterThanOrEqual(pair!.y + pair!.height);
+
+	// The audio-led auto driver stays the default, zero-gesture path.
+	await expect(page.getByRole('button', { name: /listen/ })).toBeVisible();
 });
 
-test('two real touch contacts preview, then commit from dedicated handles', async ({ page }) => {
+test('thumb rail press-hold-slide steps pair to pair and re-anchors audio', async ({ page }) => {
 	await installAudioProbe(page);
-	await page.setViewportSize({ width: 390, height: 844 });
+	await page.setViewportSize(PHONE);
 	await onboard(page);
-	await page.evaluate(() => {
-		const key = 'ray-of-light.profile.v1';
-		const stored = JSON.parse(localStorage.getItem(key)!);
-		stored.settings.trackingMode = 'two-finger';
-		localStorage.setItem(key, JSON.stringify(stored));
-	});
 	const cdp = await enableTouch(page);
 	await authorizeLearnSpread(page);
 
-	const spread = page.getByRole('listbox');
-	await expect(page.getByText(/drag either side/)).toBeVisible();
-	await expect(spread).toHaveCSS('touch-action', 'pan-y');
-	const targetHandle = page.locator('[data-tracking-handle][data-side="target"]').first();
-	const sourceHandle = page.locator('[data-tracking-handle][data-side="source"]').nth(1);
-	await expect(targetHandle).toHaveCSS('touch-action', 'none');
-	await expect(sourceHandle).toHaveCSS('touch-action', 'none');
-
-	const options = page.getByRole('option');
-	const firstHandle = await targetHandle.boundingBox();
-	const secondHandle = await sourceHandle.boundingBox();
-	const third = await options.nth(2).boundingBox();
-	const fourth = await options.nth(3).boundingBox();
-	expect(firstHandle && secondHandle && third && fourth).toBeTruthy();
-	if (!firstHandle || !secondHandle || !third || !fourth) return;
-
-	const first = touch(
-		firstHandle.x + firstHandle.width / 2,
-		firstHandle.y + firstHandle.height / 2,
-		11
-	);
-	const second = touch(
-		secondHandle.x + secondHandle.width / 2,
-		secondHandle.y + secondHandle.height / 2,
-		22
-	);
+	const { xFor, y } = await railGeometry(page);
 	const callsBefore = (await playCalls(page)).length;
 	const evidenceBefore = await evidenceCount(page);
-	await dispatchTouches(cdp, 'touchStart', [first, second]);
+
+	// Press-and-hold on the current position engages without replaying.
+	await dispatchTouches(cdp, 'touchStart', [touch(xFor(0), y, 1)]);
+	await expect(page.getByRole('option', { selected: true })).toContainText('Bonjour');
+	expect((await playCalls(page)).length).toBe(callsBefore);
+
+	// Each slide step is a commit: the pair and its audio slice move together
+	// (anchor→audio coupling is synchronous — well inside the 150 ms budget).
+	await dispatchTouches(cdp, 'touchMove', [touch(xFor(1), y, 1)]);
 	await expect(page.getByRole('option', { selected: true })).toContainText('Vous désirez');
+	let calls = await playCalls(page);
+	expect(calls.length).toBe(callsBefore + 1);
+	expect(calls.at(-1)?.currentTime).toBeCloseTo(audioOffsets['fr-01'][1].startMs / 1000, 2);
 
-	const movedFirst = touch(third.x + third.width * 0.25, third.y + third.height / 2, 11);
-	await dispatchTouches(cdp, 'touchMove', [movedFirst, second]);
+	await dispatchTouches(cdp, 'touchMove', [touch(xFor(2), y, 1)]);
 	await expect(page.getByRole('option', { selected: true })).toContainText('Je voudrais un café');
-
-	const movedSecond = touch(fourth.x + fourth.width * 0.75, fourth.y + fourth.height / 2, 22);
-	await dispatchTouches(cdp, 'touchMove', [movedFirst, movedSecond]);
+	await dispatchTouches(cdp, 'touchMove', [touch(xFor(3), y, 1)]);
 	await expect(page.getByRole('option', { selected: true })).toContainText('Un café. Et avec ceci');
+	calls = await playCalls(page);
+	expect(calls.length).toBe(callsBefore + 3);
+	expect(calls.at(-1)?.currentTime).toBeCloseTo(audioOffsets['fr-01'][3].startMs / 1000, 2);
+
+	// Release stays put: no extra activation, no extra audio.
+	await dispatchTouches(cdp, 'touchEnd', []);
+	await expect(page.getByRole('option', { selected: true })).toContainText('Un café. Et avec ceci');
+	expect((await playCalls(page)).length).toBe(callsBefore + 3);
+
+	// Every rail step is a commit, so `parallel-read` exposure is recorded per
+	// completed pair (spike §4): exactly one new event — `je voudrais` from the
+	// stepped-through line 3; the construction-free lines append none.
+	expect(await evidenceCount(page)).toBe(evidenceBefore + 1);
+});
+
+test('a one-finger vertical drag on the stack neither steps, plays, nor records', async ({
+	page
+}) => {
+	await installAudioProbe(page);
+	await page.setViewportSize(PHONE);
+	await onboard(page);
+	const cdp = await enableTouch(page);
+	await authorizeLearnSpread(page);
+
+	const pair = await page.getByRole('option').first().boundingBox();
+	expect(pair).toBeTruthy();
+	if (!pair) return;
+	const x = pair.x + pair.width / 2;
+	const yMid = pair.y + pair.height / 2;
+
+	const callsBefore = (await playCalls(page)).length;
+	const evidenceBefore = await evidenceCount(page);
+
+	// Vertical motion is reserved for the page — it must not read as tracking.
+	await dispatchTouches(cdp, 'touchStart', [touch(x, yMid, 1)]);
+	await dispatchTouches(cdp, 'touchMove', [touch(x, yMid - 160, 1)]);
+	await dispatchTouches(cdp, 'touchEnd', []);
+	await expect(page.getByRole('option', { selected: true })).toContainText('Bonjour');
 	expect((await playCalls(page)).length).toBe(callsBefore);
 	expect(await evidenceCount(page)).toBe(evidenceBefore);
 
+	// A horizontal swipe is the sequential step: next pair, audio follows.
+	// (The vertical drag scrolled the page — settle back and re-measure.)
+	await page.evaluate(() => window.scrollTo(0, 0));
+	const settled = await page.getByRole('option').first().boundingBox();
+	expect(settled).toBeTruthy();
+	if (!settled) return;
+	const sx = settled.x + settled.width / 2;
+	const sy = settled.y + settled.height / 2;
+	await dispatchTouches(cdp, 'touchStart', [touch(sx + 100, sy, 1)]);
+	await dispatchTouches(cdp, 'touchMove', [touch(sx - 100, sy, 1)]);
 	await dispatchTouches(cdp, 'touchEnd', []);
+	await expect(page.getByRole('option', { selected: true })).toContainText('Vous désirez');
 	await expect.poll(async () => (await playCalls(page)).length).toBe(callsBefore + 1);
-	// The final row has no construction. If the intermediate row were committed,
-	// it would append evidence for `je voudrais`; a gesture-level commit appends none.
-	await expect.poll(() => evidenceCount(page)).toBe(evidenceBefore);
-	const committedCalls = await playCalls(page);
-	const expectedStart = audioOffsets['fr-01'][3].startMs / 1000;
-	expect(committedCalls.at(-1)?.currentTime).toBeCloseTo(expectedStart, 2);
+});
 
-	// Staggered lifts are still one linked gesture: the first released contact
-	// must not commit an intermediate row while the second remains down.
-	const callsAfterFirstGesture = committedCalls.length;
-	await dispatchTouches(cdp, 'touchStart', [first, second]);
-	await dispatchTouches(cdp, 'touchMove', [movedFirst, second]);
-	await dispatchTouches(cdp, 'touchMove', [movedFirst, movedSecond]);
-	await dispatchTouches(cdp, 'touchEnd', [movedSecond]);
-	expect((await playCalls(page)).length).toBe(callsAfterFirstGesture);
-	await dispatchTouches(cdp, 'touchEnd', []);
-	await expect.poll(async () => (await playCalls(page)).length).toBe(callsAfterFirstGesture + 1);
-	expect(await evidenceCount(page)).toBe(evidenceBefore);
+test('cover states hold while stepping the stack', async ({ page }) => {
+	await page.setViewportSize(PHONE);
+	await onboard(page);
+	await authorizeLearnSpread(page);
+
+	// #34: the ladder's "Hide English" rung, unchanged in the stack projection.
+	await page.getByRole('button', { name: 'Hide English' }).click();
+	const option = page.getByRole('option');
+	let label = await option.first().getAttribute('aria-label');
+	expect(label).toContain('Bonjour');
+	expect(label).toContain('English covered');
+	expect(label).not.toContain('Good morning');
+
+	// Stepping must not reset the rung: the cover travels with the anchor (C3).
+	await page.getByRole('button', { name: 'Next pair' }).click();
+	label = await option.first().getAttribute('aria-label');
+	expect(label).toContain('Vous désirez');
+	expect(label).toContain('English covered');
+	expect(label).not.toContain('What would you like');
+
+	await page.getByRole('button', { name: 'Previous pair' }).click();
+	label = await option.first().getAttribute('aria-label');
+	expect(label).toContain('Bonjour');
+	expect(label).toContain('English covered');
+});
+
+test('keyboard drives the stack: listbox arrows and the rail slider', async ({ page }) => {
+	await installAudioProbe(page);
+	await page.setViewportSize(PHONE);
+	await onboard(page);
+	await authorizeLearnSpread(page);
+
+	// The keyboard driver survives the projection switch (D5).
+	await page.getByRole('listbox').focus();
+	await page.keyboard.press('ArrowDown');
+	await expect(page.getByRole('option', { selected: true })).toContainText('Vous désirez');
+	let calls = await playCalls(page);
+	expect(calls).toHaveLength(1);
+	expect(calls[0].currentTime).toBeCloseTo(audioOffsets['fr-01'][1].startMs / 1000, 2);
+
+	// The rail itself is an accessible slider — the thumb gesture has a
+	// first-class assistive-tech equivalent, not just a pointer path.
+	const rail = page.getByRole('slider', { name: 'Pair position' });
+	await expect(rail).toHaveAttribute('aria-valuetext', 'pair 2 of 11');
+	await rail.focus();
+	await page.keyboard.press('ArrowRight');
+	await expect(page.getByRole('option', { selected: true })).toContainText('Je voudrais un café');
+	await expect(rail).toHaveAttribute('aria-valuetext', 'pair 3 of 11');
+	await page.keyboard.press('ArrowLeft');
+	await expect(page.getByRole('option', { selected: true })).toContainText('Vous désirez');
+	calls = await playCalls(page);
+	expect(calls).toHaveLength(3);
+});
+
+test('the whole spread step completes with one pointer', async ({ page }) => {
+	await installAudioProbe(page);
+	await page.setViewportSize(PHONE);
+	await onboard(page);
+	await authorizeLearnSpread(page);
+
+	// AC 5 (issue #1): one pointer, no multitouch, end to end — step through
+	// every pair, replay a line, and advance to the next lesson step.
+	const next = page.getByRole('button', { name: 'Next pair' });
+	for (let i = 1; i < 11; i += 1) {
+		await next.click();
+	}
+	await expect(page.getByRole('option', { selected: true })).toContainText("C'est très bon");
+	await expect(next).toBeDisabled();
+
+	// Tap the pair to replay its line (C6: audio belongs to the target line).
+	const callsBefore = (await playCalls(page)).length;
+	await page.getByRole('option').first().click();
+	await expect.poll(async () => (await playCalls(page)).length).toBe(callsBefore + 1);
+
+	await page.getByRole('button', { name: /I've read the spread/ }).click();
+	await expect(page).toHaveURL(/\/learn\/fr-01\/comprehension/);
 });
 
 test('an outside mouse release aborts the drag without audio or evidence', async ({ page }) => {

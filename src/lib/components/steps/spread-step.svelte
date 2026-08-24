@@ -20,6 +20,17 @@
 
 	let index = $state(0);
 	let overlay = $state<'none' | 'notes' | 'pronounce'>('none');
+	/**
+	 * Phone widths get the stack projection of the same spread state machine
+	 * (mobile-method spike): one pair per viewport, stepped by swipe, rail,
+	 * keys or audio — the compressed two-column grid never renders on a phone.
+	 * Breakpoint matches Tailwind's `sm`. SSR renders columns; the first client
+	 * measurement corrects it before interaction.
+	 */
+	let viewportWidth = $state<number | undefined>(undefined);
+	const layout = $derived(
+		viewportWidth !== undefined && viewportWidth < 640 ? ('stack' as const) : ('columns' as const)
+	);
 	/** The rung of the support-removal ladder the learner is on (#34). */
 	let ladderStage = $state<SpreadState>('parallel-reading');
 	const line = $derived(lesson.lines[index]);
@@ -69,9 +80,31 @@
 		if (lineIndex >= 0) player.playLine(lineIndex);
 		if (l.notes.length > 0) overlay = 'notes';
 	}
+
+	// Audio-led auto driver (mobile-method spike, Model D): the default,
+	// no-gesture driver of the same anchor — while the dialogue plays, the
+	// current pair follows the recording. Grabbing the rail (or any manual
+	// activation) takes control by re-slicing playback to the chosen line, so
+	// the two drivers can never fight over the anchor.
+	$effect(() => {
+		if (layout !== 'stack' || !player.playing) return;
+		const sounding = player.activeLine;
+		if (sounding >= 0 && sounding !== index) index = sounding;
+	});
 </script>
 
-<Spread {lesson} state={spreadState} bind:index settings={profile.settings} {onlineactivate} />
+<svelte:window bind:innerWidth={viewportWidth} />
+
+<Spread {lesson} state={spreadState} bind:index settings={profile.settings} {layout} {onlineactivate} />
+
+{#if layout === 'stack'}
+	<!-- The zero-gesture way through the spread: listen, and the pair follows. -->
+	<div class="flex justify-center">
+		<W.Chip active={player.playing} onclick={() => player.toggle()}>
+			{player.playing ? '❚❚ pause' : '▶ listen — the pair follows the audio'}
+		</W.Chip>
+	</div>
+{/if}
 
 {#if player.error}
 	<W.Muted role="alert" class="text-center text-caution">{player.error}</W.Muted>
