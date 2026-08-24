@@ -292,6 +292,8 @@ export const ActiveSession = z.object({
 	recallDraft: RecallSessionDraft.optional(),
 	/** Where authorization came from; legacy sessions infer this from assignmentDay. */
 	origin: z.enum(['today', 'book', 'resurface']).optional(),
+	/** Construction whose authored recall prompt a resurface session must use. */
+	resurfaceConstructionId: z.string().min(1).optional(),
 	/** Local day whose frozen Today assignment this session belongs to. */
 	assignmentDay: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 	startedAt: z.number().int().nonnegative(),

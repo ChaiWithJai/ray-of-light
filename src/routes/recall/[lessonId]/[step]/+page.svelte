@@ -26,6 +26,11 @@
 		lesson && step ? profile.sessionAccess('recall', lesson.id, step, RECALL_FLOW) : 'forbidden'
 	);
 	const draft = $derived(profile.activeSession?.recallDraft);
+	const focusConstructionId = $derived(
+		profile.activeSession?.origin === 'resurface'
+			? profile.activeSession.resurfaceConstructionId
+			: undefined
+	);
 	const attempt = $derived.by((): RecallAttempt | null => {
 		if (!draft?.canonicalAnswer) return null;
 		return {
@@ -164,9 +169,10 @@
 		{#key step}
 			<div class="anim-rise flex min-h-[70vh] flex-1 flex-col gap-4">
 		{#if step === 'recall'}
-			{#key lesson.id}
+			{#key `${lesson.id}:${focusConstructionId ?? 'default'}`}
 				<RecallStep
 					{lesson}
+					{focusConstructionId}
 					initialDraft={draft}
 					onDraftChange={saveDraft}
 					onDone={submitRecall}

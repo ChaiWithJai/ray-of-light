@@ -86,15 +86,11 @@
 	});
 
 	// Missed constructions due for another retrieval — derived from evidence,
-	// never a persisted deck. At most one lesson is offered at a time.
+	// never a persisted deck. At most one construction is offered at a time.
 	const dueResurface = $derived(profile.loaded ? profile.dueResurfaceItems(day) : []);
+	const resurfaceItem = $derived(dueResurface[0]);
 	const resurfaceLesson = $derived(
-		dueResurface.length > 0 ? getLesson(profile.language, dueResurface[0].lessonId) : undefined
-	);
-	const resurfaceCount = $derived(
-		resurfaceLesson
-			? dueResurface.filter((item) => item.lessonId === resurfaceLesson.id).length
-			: 0
+		resurfaceItem ? getLesson(profile.language, resurfaceItem.lessonId) : undefined
 	);
 	// Name what is actually due: the first due construction's label and gloss,
 	// not just "a line you stumbled on".
@@ -275,14 +271,19 @@
 				</div>
 			{/if}
 			<W.Muted>
-				{resurfaceCount === 1 ? 'A line' : `${resurfaceCount} lines`} you stumbled on {resurfaceCount ===
-				1
-					? 'is'
-					: 'are'} ready for another try. Say it from memory; a rough attempt still counts.
+				This construction is ready for another try. Say it from memory; a rough attempt
+				still counts.
 			</W.Muted>
 			<W.Button
 				class="mt-1.5"
-				onclick={() => goto(profile.startResurfaceSession(resurfaceLesson.id))}
+				onclick={() =>
+					resurfaceItem &&
+					goto(
+						profile.startResurfaceSession(
+							resurfaceLesson.id,
+							resurfaceItem.constructionId
+						)
+					)}
 			>
 				Retrieve it again
 			</W.Button>
