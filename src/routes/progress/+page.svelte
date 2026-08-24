@@ -82,6 +82,12 @@
 					</div>
 				{/each}
 			</dl>
+			<a
+				href="/wiki/capability"
+				class="self-start text-2xs font-bold text-brand-deep underline decoration-dotted underline-offset-2 outline-none hover:text-brand focus-visible:ring-2 focus-visible:ring-brand"
+			>
+				The full capability ladder
+			</a>
 		</W.Card>
 	{/if}
 

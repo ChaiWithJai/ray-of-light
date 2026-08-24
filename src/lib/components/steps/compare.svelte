@@ -4,6 +4,7 @@
 	 * told what it was — error discrimination, not red X's. No score is shown.
 	 */
 	import * as W from '$lib/components/ui/index.js';
+	import { RESURFACE_LADDER_TEXT } from '$lib/content/wiki/index.js';
 	import { diffWords, normalise, type RecallAttempt } from '$lib/answers.js';
 	import type { Lesson } from '$lib/schemas/content.js';
 
@@ -78,7 +79,7 @@
 
 	<W.Button tone="primary" onclick={onDone}>Say the corrected line 🎙</W.Button>
 	<W.Hint>
-		Tricky lines come back in 1 · 3 · 7 days.
+		Tricky lines <W.Term id="resurface">come back</W.Term> in {RESURFACE_LADDER_TEXT} days.
 	</W.Hint>
 {:else}
 	<W.Card>

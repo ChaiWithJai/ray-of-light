@@ -7,13 +7,20 @@ import { defineConfig, devices } from '@playwright/test';
  */
 const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?.trim();
 
+/**
+ * `reuseExistingServer` means whatever already listens on the port wins, so
+ * parallel checkouts (worktrees, agents) silently test each other's stale
+ * builds when they share 4173. Overriding the port isolates a run.
+ */
+const port = Number(process.env.PLAYWRIGHT_PORT ?? 4173);
+
 export default defineConfig({
 	testDir: 'e2e',
 	timeout: 30_000,
 	fullyParallel: true,
 	reporter: process.env.CI ? 'line' : 'list',
 	use: {
-		baseURL: 'http://localhost:4173'
+		baseURL: `http://localhost:${port}`
 	},
 	projects: [
 		{
@@ -27,8 +34,8 @@ export default defineConfig({
 		}
 	],
 	webServer: {
-		command: 'npm run build && npm run preview -- --port 4173',
-		port: 4173,
+		command: `npm run build && npm run preview -- --port ${port} --strictPort`,
+		port,
 		reuseExistingServer: !process.env.CI,
 		timeout: 120_000
 	}

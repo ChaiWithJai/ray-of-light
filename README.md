@@ -52,7 +52,10 @@ Playwright can select the browser version matching `@playwright/test`.
 
 Finishing the last step of a flow returns to Today. The four persistent
 destinations are **Today · Book · Phrases · Progress**; `/settings`,
-`/conversation` and `/repair` live off to the side.
+`/conversation`, `/repair` and the method wiki at `/wiki` live off to the
+side. The wiki (issue #47) is reached contextually — glossary popovers on
+marked terms, the "stuck?" overlay in session steps, "learn more" on concept
+intros, and Settings — never from the tab bar.
 
 Steps are routes, so back, refresh and deep links all work — but the *order*
 lives in [`src/lib/flow.ts`](src/lib/flow.ts), not scattered through the route
@@ -99,6 +102,7 @@ reference — they are fixtures, not the app.
 | --- | --- |
 | `src/lib/schemas/` | Content, learner and scheduling schemas, runtime-validated with zod |
 | `src/lib/content/` | The 28 canonical lessons (14 French, 14 Tamil) and the course index |
+| `src/lib/content/wiki/` | The method wiki: typed, zod-validated pages and glossary, numbers interpolated from the schemas (#47) |
 | `src/lib/components/app/` | `Spread` — the parallel bilingual spread, in all its states |
 | `src/lib/components/ui/` | The production design system: `Shell` and semantic primitives (see `docs/DESIGN-SYSTEM.md`) |
 | `src/lib/components/steps/` | One component per session step |

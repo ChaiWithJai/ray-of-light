@@ -132,6 +132,9 @@
 
 		{#key step}
 			<div class="anim-rise flex min-h-[70vh] flex-1 flex-col gap-4">
+			<!-- #47 job 1: the quiet unblocking affordance. Opens the technique's
+			     unstuck lines as an overlay; the session route never changes. -->
+			<W.Stuck {step} class="-mb-2" />
 			{#if step === 'preview'}
 				<Preview {lesson} onDone={advance} />
 			{:else if step === 'spread'}

@@ -1,6 +1,11 @@
 # Method wiki — learner-facing reference for the taxonomy and methodology
 
-**Status:** spec (Design R1 · Phase 0). Refs #47, #36 (first-run intros), #37 (orientation), #1.
+**Status:** spec (Design R1 · Phase 0); W0–W1 implemented, plus W2's full page
+set (content module `src/lib/content/wiki/`, all seven technique pages, /method,
+/capability, glossary, `/wiki` routes, glossary popover, stuck panel, intro
+"learn more" overlays, conformance tests). Remaining: route prerendering, the
+app-wide term sweep, and W3 (/constructions, Bonsai harness wiring). Refs #47,
+#36 (first-run intros), #37 (orientation), #1.
 
 ---
 
