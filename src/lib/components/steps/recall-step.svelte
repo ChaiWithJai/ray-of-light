@@ -21,19 +21,25 @@
 
 	let {
 		lesson,
+		focusConstructionId,
 		initialDraft,
 		onDraftChange,
 		onDone
 	}: {
 		lesson: Lesson;
+		focusConstructionId?: string;
 		initialDraft?: RecallSessionDraft;
 		onDraftChange?: (draft: RecallSessionDraft) => void;
 		onDone: (attempt: RecallAttempt, evaluation: RecallEvaluation, hinted: boolean) => void;
 	} = $props();
 
-	const recallPrompt = $derived(
-		lesson.exercises.find((exercise): exercise is RecallPrompt => exercise.kind === 'recall')
-	);
+	const recallPrompt = $derived.by(() => {
+		const prompts = lesson.exercises.filter(
+			(exercise): exercise is RecallPrompt => exercise.kind === 'recall'
+		);
+		if (!focusConstructionId) return prompts[0];
+		return prompts.find((prompt) => prompt.constructions.includes(focusConstructionId));
+	});
 	const promptedLineIndex = $derived(
 		(() => {
 			const exact = lesson.lines.findIndex(

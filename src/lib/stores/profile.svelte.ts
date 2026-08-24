@@ -73,14 +73,23 @@ function sessionMatchesCourse(
 		: null;
 	if (!currentSessionMatchesExpected(session, activeLanguage, expectedFlow)) return false;
 	const origin = session.origin ?? (session.assignmentDay ? 'today' : 'book');
+	if (origin !== 'resurface' && session.resurfaceConstructionId) return false;
 	if (origin === 'resurface') {
 		// A resurface retrieval revisits a worked lesson outside the daily
-		// assignment; it never belongs to a frozen Today assignment.
+		// assignment; it never belongs to a frozen Today assignment. It is
+		// authorized only when the lesson has an authored recall prompt that
+		// actually exercises the construction named by the session.
 		return Boolean(
 			!session.assignmentDay &&
 				profile &&
 				session.mode === 'recall' &&
-				(profile.completedLessons[activeLanguage] ?? []).includes(session.lessonId)
+				session.resurfaceConstructionId &&
+				(profile.completedLessons[activeLanguage] ?? []).includes(session.lessonId) &&
+				lesson?.exercises.some(
+					(exercise) =>
+						exercise.kind === 'recall' &&
+						exercise.constructions.includes(session.resurfaceConstructionId!)
+				)
 		);
 	}
 	if (origin === 'book') {
@@ -483,7 +492,8 @@ class ProfileStore {
 		lessonId: string,
 		flow: readonly StepId[],
 		assignmentDay?: string,
-		origin?: 'today' | 'book' | 'resurface'
+		origin?: 'today' | 'book' | 'resurface',
+		resurfaceConstructionId?: string
 	): string {
 		if (this.activeSession) {
 			const href = this.activeSessionHref;
@@ -497,7 +507,8 @@ class ProfileStore {
 			flow,
 			Date.now(),
 			assignmentDay,
-			origin ?? (assignmentDay ? 'today' : 'book')
+			origin ?? (assignmentDay ? 'today' : 'book'),
+			resurfaceConstructionId
 		);
 		this.#update((p) => ({ ...p, activeSession: session }));
 		return resumeHref(session);
@@ -508,8 +519,15 @@ class ProfileStore {
 	 * outcome lands in the evidence log like any recall; finishing never touches
 	 * the recall wave's sequencing.
 	 */
-	startResurfaceSession(lessonId: string): string {
-		return this.startSession('recall', lessonId, RECALL_FLOW, undefined, 'resurface');
+	startResurfaceSession(lessonId: string, constructionId: string): string {
+		return this.startSession(
+			'recall',
+			lessonId,
+			RECALL_FLOW,
+			undefined,
+			'resurface',
+			constructionId
+		);
 	}
 
 	/** Missed constructions due for another retrieval, derived from evidence. */
@@ -522,7 +540,12 @@ class ProfileStore {
 		return dueResurfaces(queue, day).filter((item) => {
 			if (!completed.includes(item.lessonId)) return false;
 			const lesson = getLesson(language, item.lessonId);
-			return Boolean(lesson?.exercises.some((exercise) => exercise.kind === 'recall'));
+			return Boolean(
+				lesson?.exercises.some(
+					(exercise) =>
+						exercise.kind === 'recall' && exercise.constructions.includes(item.constructionId)
+				)
+			);
 		});
 	}
 

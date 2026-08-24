@@ -145,3 +145,43 @@ test('a failed recall becomes a due resurface item that Today surfaces into retr
 	// The successful retrieval climbed the ladder: the item is no longer due.
 	await expect(page.getByText('Worth another look')).not.toBeVisible();
 });
+
+test('resurfacing opens the authored prompt for the construction that is due', async ({ page }) => {
+	await onboard(page);
+	await page.evaluate((key) => {
+		const current = JSON.parse(localStorage.getItem(key)!);
+		const missedAt = Date.now() - 86_400_000;
+		const missedDate = new Date(missedAt);
+		const missedDay = `${missedDate.getFullYear()}-${String(missedDate.getMonth() + 1).padStart(2, '0')}-${String(missedDate.getDate()).padStart(2, '0')}`;
+		current.completedLessons.fr = ['fr-01', 'fr-02'];
+		current.evidence.push({
+			id: 'missed-je-mappelle',
+			constructionId: 'fr.je-mappelle',
+			language: 'fr',
+			lessonId: 'fr-02',
+			kind: 'attempt-incorrect',
+			at: missedAt,
+			day: missedDay,
+			hinted: false
+		});
+		localStorage.setItem(key, JSON.stringify(current));
+	}, STORAGE_KEY);
+	await page.reload();
+
+	await expect(page.getByText('Worth another look')).toBeVisible();
+	await page.getByRole('button', { name: 'Retrieve it again' }).click();
+	await expect(page).toHaveURL(/\/recall\/fr-02\/recall/);
+	await expect(page.getByText('Introduce yourself: say "My name is Marie."')).toBeVisible();
+	await expect(
+		page.getByText('Say it in French: "I would like to book a room for two nights."')
+	).not.toBeVisible();
+
+	const active = (await readProfile(page)).activeSession as {
+		origin: string;
+		resurfaceConstructionId: string;
+	};
+	expect(active).toMatchObject({
+		origin: 'resurface',
+		resurfaceConstructionId: 'fr.je-mappelle'
+	});
+});
