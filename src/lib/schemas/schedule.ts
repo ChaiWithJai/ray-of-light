@@ -114,6 +114,15 @@ export type TodayInput = {
 	 * so those lessons never enter the recall wave or grant construction state.
 	 */
 	entryLessonIndex?: number;
+	/**
+	 * YYYY-MM-DD keys of the learner's daily assignments. When this history is
+	 * longer than the calendar span since `startedOn`, the history wins: a
+	 * learner with three assignment days behind them is on at least day 3, no
+	 * matter what `startedOn` claims. This keeps a synthetic or restored
+	 * profile (where assignment keys were shifted but `startedOn` was not)
+	 * from ever showing "Day 1" next to days of recorded work.
+	 */
+	assignmentDays?: readonly string[];
 	config?: WaveConfig;
 };
 
@@ -124,9 +133,16 @@ export function planToday({
 	lessonCount,
 	completedCount,
 	entryLessonIndex = 1,
+	assignmentDays = [],
 	config = POC_WAVE_CONFIG
 }: TodayInput): TodayPlan {
-	const dayNumber = Math.max(1, daysBetween(startedOn, today) + 1);
+	// Day number is calendar-derived, but never less than the number of
+	// distinct assignment days actually on record (ignoring any dated in the
+	// future) — two views of the same history that must not contradict.
+	const assignmentDayCount = new Set(
+		assignmentDays.filter((day) => daysBetween(day, today) >= 0)
+	).size;
+	const dayNumber = Math.max(1, daysBetween(startedOn, today) + 1, assignmentDayCount);
 
 	// The passive wave is driven by lessons completed, not by days elapsed —
 	// missing a day must not skip content (D10: no punishment for missed days).

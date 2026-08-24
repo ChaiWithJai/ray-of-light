@@ -41,7 +41,8 @@
 					today: day,
 					lessonCount: course.lessons.length,
 					completedCount: profile.completedLessons.length,
-					entryLessonIndex: profile.plan.entryLessonIndex
+					entryLessonIndex: profile.plan.entryLessonIndex,
+					assignmentDays: Object.keys(profile.current.dailyAssignments[profile.language] ?? {})
 				})
 			: null
 	);
