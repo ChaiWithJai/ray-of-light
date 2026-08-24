@@ -6,7 +6,9 @@ import Chip from './chip.svelte';
 import ConceptIntro from './concept-intro.svelte';
 import Cover from './cover.svelte';
 import CoverLadder from './cover-ladder.svelte';
+import DaySprite from './day-sprite.svelte';
 import Diff from './diff.svelte';
+import DurationSprite from './duration-sprite.svelte';
 import En from './en.svelte';
 import Fr from './fr.svelte';
 import Heading from './heading.svelte';
@@ -38,7 +40,9 @@ export {
 	ConceptIntro,
 	Cover,
 	CoverLadder,
+	DaySprite,
 	Diff,
+	DurationSprite,
 	En,
 	Fr,
 	Heading,
