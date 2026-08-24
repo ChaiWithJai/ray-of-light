@@ -23,7 +23,10 @@ import SearchField from './search-field.svelte';
 import Shell from './shell.svelte';
 import Slider from './slider.svelte';
 import StageMeter from './stage-meter.svelte';
+import Stuck from './stuck.svelte';
+import Term from './term.svelte';
 import Waveform from './waveform.svelte';
+import WikiPanel from './wiki-panel.svelte';
 
 export {
 	AnswerField,
@@ -51,7 +54,10 @@ export {
 	Shell,
 	Slider,
 	StageMeter,
-	Waveform
+	Stuck,
+	Term,
+	Waveform,
+	WikiPanel
 };
 
 export { NAV_ITEMS } from './nav.svelte';

@@ -116,6 +116,15 @@
 	{/if}
 
 	<W.Card>
+		<div class="text-sm">About the method</div>
+		<W.Muted>
+			How the course works: the two waves, each technique, the capability ladder and the
+			terms the lessons use.
+		</W.Muted>
+		<W.Button href="/wiki" class="self-start w-auto px-4 text-sm">Read the method guide</W.Button>
+	</W.Card>
+
+	<W.Card>
 		<div class="text-sm">About your evidence</div>
 		<W.Muted>
 			Matched constructions record recognition evidence only; situation matching is feedback,

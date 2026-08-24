@@ -55,7 +55,9 @@
 		<W.Muted class="text-sm">{prompt.prompt}</W.Muted>
 	</W.Card>
 
-	<W.Muted>Build your sentence around this pattern you already know:</W.Muted>
+	<W.Muted>
+		Build your sentence around this <W.Term id="construction">pattern</W.Term> you already know:
+	</W.Muted>
 	<W.Chip active class="self-start">{construction?.label ?? prompt.useConstruction}</W.Chip>
 	{#if construction}
 		<W.Muted class="text-2xs">{construction.gloss}</W.Muted>

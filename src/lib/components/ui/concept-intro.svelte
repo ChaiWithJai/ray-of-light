@@ -9,9 +9,11 @@
 	 * whenever the learner wants the explanation again.
 	 */
 	import { TECHNIQUE_INTROS, type TechniqueIntroId } from '$lib/intros.js';
+	import { INTRO_PAGE } from '$lib/content/wiki/index.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 	import Card from './card.svelte';
 	import Muted from './muted.svelte';
+	import WikiPanel from './wiki-panel.svelte';
 
 	let { technique }: { technique: TechniqueIntroId } = $props();
 
@@ -19,6 +21,9 @@
 	const seen = $derived(profile.hasSeenIntro(technique));
 	let reopened = $state(false);
 	const open = $derived(!seen || reopened);
+	// The intro is the trailer; "learn more" opens the wiki page as an overlay,
+	// so going deeper never leaves the step (#47).
+	let deeper = $state(false);
 
 	function dismiss() {
 		profile.markIntroSeen(technique);
@@ -34,13 +39,24 @@
 			</div>
 			<div class="text-sm font-semibold">{intro.title}</div>
 			<Muted class="text-xs leading-relaxed">{intro.body}</Muted>
-			<button
-				type="button"
-				class="mt-1 cursor-pointer self-start rounded-full border border-line-strong px-3 py-1 text-xs font-bold text-text-soft transition-colors outline-none hover:border-brand/60 hover:text-brand-deep focus-visible:ring-2 focus-visible:ring-brand"
-				onclick={dismiss}
-			>
-				Got it
-			</button>
+			<div class="mt-1 flex items-center gap-3">
+				<button
+					type="button"
+					class="cursor-pointer self-start rounded-full border border-line-strong px-3 py-1 text-xs font-bold text-text-soft transition-colors outline-none hover:border-brand/60 hover:text-brand-deep focus-visible:ring-2 focus-visible:ring-brand"
+					onclick={dismiss}
+				>
+					Got it
+				</button>
+				<button
+					type="button"
+					data-testid="intro-learn-more"
+					class="cursor-pointer text-2xs text-text-faint underline decoration-dotted underline-offset-2 outline-none hover:text-text-soft focus-visible:ring-2 focus-visible:ring-brand"
+					aria-haspopup="dialog"
+					onclick={() => (deeper = true)}
+				>
+					Learn more
+				</button>
+			</div>
 		</Card>
 	{:else}
 		<button
@@ -50,5 +66,14 @@
 		>
 			About this technique
 		</button>
+	{/if}
+
+	{#if deeper}
+		<WikiPanel
+			slug={INTRO_PAGE[technique]}
+			mode="full"
+			closeLabel="Back to where I was"
+			onclose={() => (deeper = false)}
+		/>
 	{/if}
 {/if}
