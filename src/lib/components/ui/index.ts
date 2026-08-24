@@ -22,6 +22,7 @@ import Rail from './rail.svelte';
 import SearchField from './search-field.svelte';
 import Shell from './shell.svelte';
 import Slider from './slider.svelte';
+import Sprite from './sprite.svelte';
 import StageMeter from './stage-meter.svelte';
 import Waveform from './waveform.svelte';
 
@@ -50,6 +51,7 @@ export {
 	SearchField,
 	Shell,
 	Slider,
+	Sprite,
 	StageMeter,
 	Waveform
 };

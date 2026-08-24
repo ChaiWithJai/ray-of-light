@@ -99,6 +99,11 @@
 			? getConstruction(profile.language, dueResurface[0].constructionId)
 			: undefined
 	);
+	// #46 phase S0: the due construction's sprite renders the same derived
+	// capability state everything else reads — waiting, not withered (spec §6).
+	const resurfaceState = $derived(
+		resurfaceConstruction ? (profile.states.get(resurfaceConstruction.id) ?? null) : null
+	);
 
 	// The journey arc renders only what the schedule and evidence agree on.
 	const completedIndexes = $derived(
@@ -268,9 +273,13 @@
 				</div>
 			</div>
 			{#if resurfaceConstruction}
-				<div class="flex flex-wrap items-baseline gap-2">
-					<W.Chip active>{resurfaceConstruction.label}</W.Chip>
-					<W.Muted class="text-2xs">{resurfaceConstruction.gloss}</W.Muted>
+				<div class="flex items-center gap-2.5">
+					<!-- who's due: the construction's character, present and waiting -->
+					<W.Sprite constructionId={resurfaceConstruction.id} state={resurfaceState} size={38} />
+					<div class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+						<W.Chip active>{resurfaceConstruction.label}</W.Chip>
+						<W.Muted class="text-2xs">{resurfaceConstruction.gloss}</W.Muted>
+					</div>
 				</div>
 			{/if}
 			<W.Muted>

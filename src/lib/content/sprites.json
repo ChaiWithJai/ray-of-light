@@ -1,0 +1,814 @@
+{
+	"$generatedBy": "scripts/generate-sprite-manifest.mts — do not edit by hand",
+	"provenance": {
+		"tier": "parametric-svg",
+		"source": "project-original",
+		"license": "project",
+		"review_status": "substrate-no-ink-layer"
+	},
+	"stages": [
+		"unmet",
+		"exposed",
+		"recognized",
+		"recalled",
+		"stabilized",
+		"transferable"
+	],
+	"cast": {
+		"fr": {
+			"fr.a-cote-de": {
+				"label": "à côté de / en face de + place",
+				"gloss": "locating something next to / opposite something else",
+				"introducedIn": "fr-04",
+				"seed": 1985546842,
+				"hue": 322
+			},
+			"fr.a-gauche-droite": {
+				"label": "à gauche / à droite / tout droit",
+				"gloss": "the three directions you need",
+				"introducedIn": "fr-04",
+				"seed": 3408255934,
+				"hue": 214
+			},
+			"fr.a-heure": {
+				"label": "à + heure",
+				"gloss": "stating at what time something happens",
+				"introducedIn": "fr-05",
+				"seed": 628116066,
+				"hue": 306
+			},
+			"fr.a-quelle-heure": {
+				"label": "à quelle heure ?",
+				"gloss": "asking at what time",
+				"introducedIn": "fr-05",
+				"seed": 3934826261,
+				"hue": 341
+			},
+			"fr.adorer-detester": {
+				"label": "j’adore / je déteste",
+				"gloss": "the strong ends of the liking scale",
+				"introducedIn": "fr-06",
+				"seed": 1537042521,
+				"hue": 201
+			},
+			"fr.aimer-inf": {
+				"label": "j’aime + infinitive",
+				"gloss": "liking an activity — verb straight to the infinitive",
+				"introducedIn": "fr-11",
+				"seed": 295206223,
+				"hue": 103
+			},
+			"fr.aller-inf": {
+				"label": "aller + infinitive",
+				"gloss": "the near future — \"going to …\"",
+				"introducedIn": "fr-11",
+				"seed": 310860897,
+				"hue": 177
+			},
+			"fr.avec-plaisir": {
+				"label": "avec plaisir",
+				"gloss": "accepting warmly",
+				"introducedIn": "fr-13",
+				"seed": 2823367727,
+				"hue": 47
+			},
+			"fr.avez-vous": {
+				"label": "avez-vous + noun ?",
+				"gloss": "asking about availability",
+				"introducedIn": "fr-02",
+				"seed": 1870315475,
+				"hue": 275
+			},
+			"fr.avoir-lair": {
+				"label": "avoir l’air + adjective",
+				"gloss": "saying how someone looks or seems",
+				"introducedIn": "fr-08",
+				"seed": 2137388607,
+				"hue": 207
+			},
+			"fr.bonjour-politesse": {
+				"label": "bonjour + monsieur/madame",
+				"gloss": "the greeting that must precede any request",
+				"introducedIn": "fr-01",
+				"seed": 1702107887,
+				"hue": 167
+			},
+			"fr.ca-fait": {
+				"label": "ça fait + amount",
+				"gloss": "stating a total — \"that comes to …\"",
+				"introducedIn": "fr-03",
+				"seed": 3630115904,
+				"hue": 104
+			},
+			"fr.ca-te-dit": {
+				"label": "ça te dit de + infinitive ?",
+				"gloss": "informal invitation — \"do you feel like …?\"",
+				"introducedIn": "fr-13",
+				"seed": 4068544443,
+				"hue": 123
+			},
+			"fr.ca-va": {
+				"label": "ça va ? / ça va bien",
+				"gloss": "asking and answering \"how’s it going?\" — informal; bounce it back with et toi ?",
+				"introducedIn": "fr-13",
+				"seed": 435898565,
+				"hue": 125
+			},
+			"fr.ca-va-mieux": {
+				"label": "ça va mieux",
+				"gloss": "saying things are improving — \"it’s (already) better\"",
+				"introducedIn": "fr-08",
+				"seed": 806098184,
+				"hue": 224
+			},
+			"fr.cest-adj": {
+				"label": "c'est + adjective",
+				"gloss": "simple evaluation — \"it is …\"",
+				"introducedIn": "fr-01",
+				"seed": 3554927814,
+				"hue": 174
+			},
+			"fr.cest-loin": {
+				"label": "c'est loin ?",
+				"gloss": "asking about distance",
+				"introducedIn": "fr-04",
+				"seed": 3482630611,
+				"hue": 331
+			},
+			"fr.combien": {
+				"label": "combien ?",
+				"gloss": "asking how much / how many",
+				"introducedIn": "fr-03",
+				"seed": 1165888912,
+				"hue": 112
+			},
+			"fr.combien-ca-coute": {
+				"label": "combien ça coûte ?",
+				"gloss": "asking the price",
+				"introducedIn": "fr-12",
+				"seed": 876987972,
+				"hue": 252
+			},
+			"fr.de-a-duree": {
+				"label": "de + time + à + time",
+				"gloss": "a span — \"from … to …\"",
+				"introducedIn": "fr-05",
+				"seed": 3224624580,
+				"hue": 180
+			},
+			"fr.depuis": {
+				"label": "depuis + duration",
+				"gloss": "how long it has been going on",
+				"introducedIn": "fr-08",
+				"seed": 834491537,
+				"hue": 17
+			},
+			"fr.descendre-a": {
+				"label": "descendre à + stop",
+				"gloss": "getting off at a stop",
+				"introducedIn": "fr-05",
+				"seed": 2742107242,
+				"hue": 202
+			},
+			"fr.envoyer-a": {
+				"label": "envoyer + noun + à + place",
+				"gloss": "sending something somewhere",
+				"introducedIn": "fr-12",
+				"seed": 4145288813,
+				"hue": 53
+			},
+			"fr.est-ce-que-je-peux": {
+				"label": "est-ce que je peux + infinitive ?",
+				"gloss": "asking permission",
+				"introducedIn": "fr-09",
+				"seed": 1984457969,
+				"hue": 89
+			},
+			"fr.et-avec-ceci": {
+				"label": "et avec ceci ?",
+				"gloss": "the shopkeeper’s \"anything else?\"",
+				"introducedIn": "fr-03",
+				"seed": 2498571511,
+				"hue": 151
+			},
+			"fr.il-est-heure": {
+				"label": "il est + heure",
+				"gloss": "telling the time — \"it is … o’clock\"",
+				"introducedIn": "fr-05",
+				"seed": 49280751,
+				"hue": 351
+			},
+			"fr.il-faut": {
+				"label": "il faut + infinitive",
+				"gloss": "impersonal necessity — \"one must\"",
+				"introducedIn": "fr-08",
+				"seed": 1869561639,
+				"hue": 279
+			},
+			"fr.il-y-a": {
+				"label": "il y a / il n’y a pas de",
+				"gloss": "there is / there is not",
+				"introducedIn": "fr-10",
+				"seed": 1015955116,
+				"hue": 196
+			},
+			"fr.jai-mal-a": {
+				"label": "j’ai mal à + body part",
+				"gloss": "saying what hurts",
+				"introducedIn": "fr-08",
+				"seed": 1448543390,
+				"hue": 230
+			},
+			"fr.jaime-noun": {
+				"label": "j’aime + le/la/les + noun",
+				"gloss": "liking a thing — definite article for general likes",
+				"introducedIn": "fr-06",
+				"seed": 1883550524,
+				"hue": 284
+			},
+			"fr.je-cherche": {
+				"label": "je cherche + noun",
+				"gloss": "stating what you are looking for — the indirect where-question",
+				"introducedIn": "fr-04",
+				"seed": 1824609199,
+				"hue": 319
+			},
+			"fr.je-mappelle": {
+				"label": "je m’appelle + nom",
+				"gloss": "stating your name (\"I call myself …\")",
+				"introducedIn": "fr-02",
+				"seed": 667507143,
+				"hue": 183
+			},
+			"fr.je-me-sens": {
+				"label": "je me sens + adjective",
+				"gloss": "saying how you feel",
+				"introducedIn": "fr-08",
+				"seed": 3626679451,
+				"hue": 211
+			},
+			"fr.je-naime-pas": {
+				"label": "je n’aime pas + noun",
+				"gloss": "disliking — ne…pas wrapped around aimer",
+				"introducedIn": "fr-06",
+				"seed": 3034733094,
+				"hue": 54
+			},
+			"fr.je-peux-apporter": {
+				"label": "qu'est-ce que je peux apporter ?",
+				"gloss": "offering to bring something",
+				"introducedIn": "fr-13",
+				"seed": 2826734069,
+				"hue": 29
+			},
+			"fr.je-prends": {
+				"label": "je prends + noun",
+				"gloss": "choosing, in the moment",
+				"introducedIn": "fr-06",
+				"seed": 3996559083,
+				"hue": 3
+			},
+			"fr.je-suis-adj-etat": {
+				"label": "être + state adjective",
+				"gloss": "states — je suis malade / stressé; the adjective agrees with the speaker",
+				"introducedIn": "fr-08",
+				"seed": 2793592006,
+				"hue": 286
+			},
+			"fr.je-voudrais": {
+				"label": "je voudrais + noun",
+				"gloss": "polite request — \"I would like\"",
+				"introducedIn": "fr-01",
+				"seed": 3324091652,
+				"hue": 332
+			},
+			"fr.je-voudrais-inf": {
+				"label": "je voudrais + infinitive",
+				"gloss": "polite request to *do* something",
+				"introducedIn": "fr-02",
+				"seed": 3541077818,
+				"hue": 98
+			},
+			"fr.laddition": {
+				"label": "l'addition, s'il vous plaît",
+				"gloss": "asking for the bill",
+				"introducedIn": "fr-06",
+				"seed": 3331162095,
+				"hue": 15
+			},
+			"fr.le-moins-cher": {
+				"label": "le moins cher",
+				"gloss": "the cheapest option",
+				"introducedIn": "fr-12",
+				"seed": 4248417862,
+				"hue": 262
+			},
+			"fr.le-prochain": {
+				"label": "le prochain / la prochaine",
+				"gloss": "the next one",
+				"introducedIn": "fr-05",
+				"seed": 2611358745,
+				"hue": 105
+			},
+			"fr.moi-aussi-non-plus": {
+				"label": "moi aussi / moi non plus",
+				"gloss": "me too / me neither — agreeing with a stated taste",
+				"introducedIn": "fr-13",
+				"seed": 3765743703,
+				"hue": 63
+			},
+			"fr.ne-quittez-pas": {
+				"label": "ne quittez pas",
+				"gloss": "hold the line",
+				"introducedIn": "fr-09",
+				"seed": 957944750,
+				"hue": 230
+			},
+			"fr.on-doit": {
+				"label": "on doit + infinitive",
+				"gloss": "informal \"we have to\"",
+				"introducedIn": "fr-10",
+				"seed": 3983827495,
+				"hue": 175
+			},
+			"fr.on-pourrait": {
+				"label": "on pourrait + infinitive",
+				"gloss": "soft suggestion — \"we could …\"",
+				"introducedIn": "fr-11",
+				"seed": 975760853,
+				"hue": 293
+			},
+			"fr.on-se-retrouve": {
+				"label": "on se retrouve + place/time",
+				"gloss": "arranging a meeting point",
+				"introducedIn": "fr-11",
+				"seed": 182372092,
+				"hue": 52
+			},
+			"fr.on-va": {
+				"label": "on va + infinitive",
+				"gloss": "informal \"we’re going to\"",
+				"introducedIn": "fr-11",
+				"seed": 2346303534,
+				"hue": 294
+			},
+			"fr.ou-est": {
+				"label": "où est + place ?",
+				"gloss": "asking where something is",
+				"introducedIn": "fr-04",
+				"seed": 1718640308,
+				"hue": 308
+			},
+			"fr.payer-par-carte": {
+				"label": "payer par carte",
+				"gloss": "paying by card — « Je peux payer par carte ? »",
+				"introducedIn": "fr-12",
+				"seed": 3492681188,
+				"hue": 68
+			},
+			"fr.pour-aller-a": {
+				"label": "pour aller à + place ?",
+				"gloss": "asking the way — \"how do I get to …?\"",
+				"introducedIn": "fr-04",
+				"seed": 3564373552,
+				"hue": 232
+			},
+			"fr.pour-duree": {
+				"label": "pour + duration",
+				"gloss": "saying how long",
+				"introducedIn": "fr-02",
+				"seed": 2381476571,
+				"hue": 251
+			},
+			"fr.prendre-transport": {
+				"label": "prendre + le/la + transport",
+				"gloss": "taking the métro / bus / train",
+				"introducedIn": "fr-05",
+				"seed": 2414777349,
+				"hue": 309
+			},
+			"fr.quantite-de": {
+				"label": "quantity + de + noun",
+				"gloss": "after any quantity, de never changes",
+				"introducedIn": "fr-03",
+				"seed": 3188717032,
+				"hue": 112
+			},
+			"fr.quest-ce-que": {
+				"label": "qu'est-ce que… ?",
+				"gloss": "asking what",
+				"introducedIn": "fr-06",
+				"seed": 720320916,
+				"hue": 156
+			},
+			"fr.quest-ce-quon-fait": {
+				"label": "qu'est-ce qu'on fait ?",
+				"gloss": "what shall we do?",
+				"introducedIn": "fr-11",
+				"seed": 1187967935,
+				"hue": 335
+			},
+			"fr.rappeler": {
+				"label": "rappeler plus tard",
+				"gloss": "calling back",
+				"introducedIn": "fr-09",
+				"seed": 3710249438,
+				"hue": 158
+			},
+			"fr.tous-les": {
+				"label": "tous les + plural day",
+				"gloss": "a weekly habit — \"every …\"",
+				"introducedIn": "fr-11",
+				"seed": 3503708789,
+				"hue": 149
+			},
+			"fr.trop-assez": {
+				"label": "trop de / assez de",
+				"gloss": "too much / enough",
+				"introducedIn": "fr-10",
+				"seed": 2955238163,
+				"hue": 323
+			},
+			"fr.tu-es-libre": {
+				"label": "tu es libre + time ?",
+				"gloss": "checking availability before inviting",
+				"introducedIn": "fr-13",
+				"seed": 3378062842,
+				"hue": 322
+			},
+			"fr.un-billet-pour": {
+				"label": "un billet pour + place",
+				"gloss": "buying a ticket somewhere",
+				"introducedIn": "fr-05",
+				"seed": 2012003142,
+				"hue": 222
+			},
+			"fr.vouloir-venir": {
+				"label": "tu veux venir ?",
+				"gloss": "informal invitation",
+				"introducedIn": "fr-13",
+				"seed": 1915506676,
+				"hue": 316
+			},
+			"fr.vous-pouvez": {
+				"label": "vous pouvez + infinitive ?",
+				"gloss": "asking someone to act — the converse of est-ce que je peux",
+				"introducedIn": "fr-09",
+				"seed": 2394583184,
+				"hue": 344
+			}
+		},
+		"ta": {
+			"ta.aa-irukku": {
+				"label": "state + -ஆ இருக்கு",
+				"gloss": "saying how you feel — சோர்வா இருக்கு \"feels tired\"",
+				"introducedIn": "ta-08",
+				"seed": 1203165990,
+				"hue": 270
+			},
+			"ta.aa-question": {
+				"label": "statement + -ஆ",
+				"gloss": "yes/no question — add -ஆ to the last word, no word-order change",
+				"introducedIn": "ta-02",
+				"seed": 1734610129,
+				"hue": 169
+			},
+			"ta.aadheenga": {
+				"label": "verb + -ாதீங்க",
+				"gloss": "polite \"please don't…\" — the negative of the -ங்க request",
+				"introducedIn": "ta-03",
+				"seed": 4094026818,
+				"hue": 258
+			},
+			"ta.adutha": {
+				"label": "அடுத்த + noun",
+				"gloss": "the next one",
+				"introducedIn": "ta-05",
+				"seed": 622866255,
+				"hue": 15
+			},
+			"ta.anuppanum": {
+				"label": "noun + அனுப்பணும்",
+				"gloss": "needing to send something",
+				"introducedIn": "ta-12",
+				"seed": 2334932651,
+				"hue": 11
+			},
+			"ta.appuram": {
+				"label": "அப்புறம் + verb",
+				"gloss": "later / afterwards",
+				"introducedIn": "ta-09",
+				"seed": 1677707066,
+				"hue": 146
+			},
+			"ta.bill-kudunga": {
+				"label": "பில் குடுங்க",
+				"gloss": "asking for the bill",
+				"introducedIn": "ta-06",
+				"seed": 2743855927,
+				"hue": 7
+			},
+			"ta.busla": {
+				"label": "vehicle + -ல",
+				"gloss": "by bus / by auto — the same -ல marks the means",
+				"introducedIn": "ta-04",
+				"seed": 690959997,
+				"hue": 117
+			},
+			"ta.chittu-sequence": {
+				"label": "verb + -ட்டு / -ச்சிட்டு",
+				"gloss": "having done X — chains actions; only the last verb carries tense",
+				"introducedIn": "ta-10",
+				"seed": 3964837169,
+				"hue": 209
+			},
+			"ta.dooram": {
+				"label": "தூரமா?",
+				"gloss": "asking about distance",
+				"introducedIn": "ta-04",
+				"seed": 3836491218,
+				"hue": 18
+			},
+			"ta.en-peru": {
+				"label": "என் பேரு + name",
+				"gloss": "introducing yourself — \"my name X\", with no word for \"is\"",
+				"introducedIn": "ta-01",
+				"seed": 666330572,
+				"hue": 92
+			},
+			"ta.enakku-venum": {
+				"label": "எனக்கு + noun + வேணும்",
+				"gloss": "wanting something: \"to me X is wanted\"",
+				"introducedIn": "ta-01",
+				"seed": 2038689081,
+				"hue": 81
+			},
+			"ta.enge-irukku": {
+				"label": "place + எங்க இருக்கு?",
+				"gloss": "asking where something is",
+				"introducedIn": "ta-04",
+				"seed": 3800542653,
+				"hue": 333
+			},
+			"ta.enna-irukku": {
+				"label": "என்ன இருக்கு?",
+				"gloss": "what is available",
+				"introducedIn": "ta-06",
+				"seed": 147721202,
+				"hue": 242
+			},
+			"ta.enna-neram": {
+				"label": "என்ன நேரம்?",
+				"gloss": "asking the time",
+				"introducedIn": "ta-05",
+				"seed": 1421250500,
+				"hue": 20
+			},
+			"ta.enna-pannalam": {
+				"label": "என்ன பண்ணலாம்?",
+				"gloss": "what shall we do?",
+				"introducedIn": "ta-11",
+				"seed": 1817678169,
+				"hue": 9
+			},
+			"ta.eppadi-irukkeenga": {
+				"label": "நல்லா இருக்கீங்களா? / எப்படி இருக்கீங்க?",
+				"gloss": "the how-are-you exchange — நல்லா \"well\" + a form of இரு with the person in the ending",
+				"introducedIn": "ta-01",
+				"seed": 2540654008,
+				"hue": 88
+			},
+			"ta.ettana-naal": {
+				"label": "எத்தனை + counter",
+				"gloss": "asking how many",
+				"introducedIn": "ta-02",
+				"seed": 2483738694,
+				"hue": 54
+			},
+			"ta.evvalavu": {
+				"label": "எவ்வளவு?",
+				"gloss": "how much (price or amount)",
+				"introducedIn": "ta-03",
+				"seed": 3896145000,
+				"hue": 0
+			},
+			"ta.evvalavu-aagum": {
+				"label": "எவ்வளவு ஆகும்?",
+				"gloss": "how much (money or time) will it come to",
+				"introducedIn": "ta-12",
+				"seed": 1956667064,
+				"hue": 104
+			},
+			"ta.illa-neg": {
+				"label": "noun + இல்ல",
+				"gloss": "there is no …",
+				"introducedIn": "ta-10",
+				"seed": 1593357677,
+				"hue": 197
+			},
+			"ta.irukka-q": {
+				"label": "noun + இருக்கா?",
+				"gloss": "asking whether something is available",
+				"introducedIn": "ta-02",
+				"seed": 4291582257,
+				"hue": 297
+			},
+			"ta.irundhu": {
+				"label": "time + இருந்து",
+				"gloss": "since / for a duration",
+				"introducedIn": "ta-08",
+				"seed": 261450263,
+				"hue": 263
+			},
+			"ta.kandippa": {
+				"label": "கண்டிப்பா",
+				"gloss": "certainly / definitely",
+				"introducedIn": "ta-13",
+				"seed": 2966807512,
+				"hue": 352
+			},
+			"ta.keyamana": {
+				"label": "குறைவான / சீக்கிரம்",
+				"gloss": "cheaper / faster",
+				"introducedIn": "ta-12",
+				"seed": 1723077517,
+				"hue": 157
+			},
+			"ta.kku-for": {
+				"label": "number + நாள்/பேர்",
+				"gloss": "counting nights and people",
+				"introducedIn": "ta-02",
+				"seed": 310820515,
+				"hue": 115
+			},
+			"ta.kondu-vara": {
+				"label": "என்ன கொண்டு வரணும்?",
+				"gloss": "offering to bring something",
+				"introducedIn": "ta-13",
+				"seed": 949580918,
+				"hue": 278
+			},
+			"ta.konjam-iru": {
+				"label": "கொஞ்சம் இருங்க",
+				"gloss": "hold on a moment",
+				"introducedIn": "ta-09",
+				"seed": 251369675,
+				"hue": 35
+			},
+			"ta.kudunga": {
+				"label": "noun + குடுங்க",
+				"gloss": "polite imperative — \"please give\"",
+				"introducedIn": "ta-03",
+				"seed": 4054181335,
+				"hue": 295
+			},
+			"ta.manikku": {
+				"label": "number + மணிக்கு",
+				"gloss": "at X o'clock — clock time takes the dative -க்கு",
+				"introducedIn": "ta-05",
+				"seed": 2025770912,
+				"hue": 152
+			},
+			"ta.mudiyumaa": {
+				"label": "infinitive + முடியுமா?",
+				"gloss": "polite \"could you…?\" — asking whether it is possible",
+				"introducedIn": "ta-04",
+				"seed": 834749712,
+				"hue": 72
+			},
+			"ta.naa-conditional": {
+				"label": "verb + -னா / -ந்தா",
+				"gloss": "spoken \"if…\" — built on the past stem; written -ஆல் drops its ல்",
+				"introducedIn": "ta-11",
+				"seed": 2856427365,
+				"hue": 165
+			},
+			"ta.naan-edukkuren": {
+				"label": "noun + எடுத்துக்கறேன்",
+				"gloss": "I'll take / I'll have",
+				"introducedIn": "ta-06",
+				"seed": 2209606929,
+				"hue": 9
+			},
+			"ta.nalla-thoongala": {
+				"label": "verb + ல",
+				"gloss": "the negative — \"not …\"",
+				"introducedIn": "ta-08",
+				"seed": 1792212862,
+				"hue": 22
+			},
+			"ta.oru-kilo": {
+				"label": "quantity + noun",
+				"gloss": "quantities stack before the noun",
+				"introducedIn": "ta-03",
+				"seed": 838244650,
+				"hue": 130
+			},
+			"ta.pakkathula": {
+				"label": "landmark + பக்கத்துல / எதிர்ல",
+				"gloss": "next to / opposite — the landmark comes first",
+				"introducedIn": "ta-04",
+				"seed": 1445868684,
+				"hue": 324
+			},
+			"ta.pesalama": {
+				"label": "person + கிட்ட பேசலாமா?",
+				"gloss": "may I speak to",
+				"introducedIn": "ta-09",
+				"seed": 3970401234,
+				"hue": 114
+			},
+			"ta.pidikkum": {
+				"label": "dative + பிடிக்கும் / பிடிக்காது",
+				"gloss": "liking and not liking — \"to-me X is-pleasing\", the verb never changes",
+				"introducedIn": "ta-06",
+				"seed": 3060390120,
+				"hue": 240
+			},
+			"ta.pogalam": {
+				"label": "போகலாம்",
+				"gloss": "let's go",
+				"introducedIn": "ta-10",
+				"seed": 793441017,
+				"hue": 297
+			},
+			"ta.pona": {
+				"label": "verb + லாம்",
+				"gloss": "the \"let’s / may\" form",
+				"introducedIn": "ta-11",
+				"seed": 469109728,
+				"hue": 208
+			},
+			"ta.pothum": {
+				"label": "போதும் / பத்தாது",
+				"gloss": "enough / not enough",
+				"introducedIn": "ta-10",
+				"seed": 1228016323,
+				"hue": 163
+			},
+			"ta.romba-nalla": {
+				"label": "ரொம்ப + adjective",
+				"gloss": "intensifier — \"very …\"",
+				"introducedIn": "ta-01",
+				"seed": 618501146,
+				"hue": 266
+			},
+			"ta.ticket-kku": {
+				"label": "place + க்கு ஒரு டிக்கெட்",
+				"gloss": "a ticket *to* somewhere",
+				"introducedIn": "ta-05",
+				"seed": 2476646436,
+				"hue": 156
+			},
+			"ta.valathu-idathu": {
+				"label": "வலது / இடது / நேரா",
+				"gloss": "right / left / straight",
+				"introducedIn": "ta-04",
+				"seed": 2450605027,
+				"hue": 67
+			},
+			"ta.vali": {
+				"label": "body part + வலி",
+				"gloss": "saying what hurts",
+				"introducedIn": "ta-08",
+				"seed": 1715341098,
+				"hue": 138
+			},
+			"ta.vanakkam": {
+				"label": "வணக்கம் — vaṇakkam",
+				"gloss": "the all-purpose greeting",
+				"introducedIn": "ta-01",
+				"seed": 2800943068,
+				"hue": 148
+			},
+			"ta.varingala": {
+				"label": "verb + றீங்களா?",
+				"gloss": "inviting — \"will you come?\"",
+				"introducedIn": "ta-13",
+				"seed": 2114088353,
+				"hue": 233
+			},
+			"ta.vēlai": {
+				"label": "வேலை இருக்கு",
+				"gloss": "having work on",
+				"introducedIn": "ta-11",
+				"seed": 614400463,
+				"hue": 343
+			},
+			"ta.venaam": {
+				"label": "noun + வேணாம்",
+				"gloss": "refusing — \"(I) don't want …\", the fixed negative of வேணும்",
+				"introducedIn": "ta-13",
+				"seed": 1614474434,
+				"hue": 74
+			},
+			"ta.vida": {
+				"label": "X-ஐ விட Y",
+				"gloss": "comparing — \"than X, Y…\"; the thing being beaten comes first",
+				"introducedIn": "ta-06",
+				"seed": 4153538802,
+				"hue": 282
+			}
+		}
+	}
+}
