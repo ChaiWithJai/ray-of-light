@@ -91,7 +91,13 @@ test('AC1 + AC2 + AC7: a full daily session, audio first and transfer last', asy
 	await page.getByRole('button', { name: /drink it there or take it away/ }).first().click();
 	await page.getByRole('button', { name: /Next|Continue/ }).click();
 
+	// Shadow (#49): the step owns its moment — no primary Continue until every
+	// chunk has been heard. The echo pass plays each chunk and leaves an equal
+	// gap to say it back; only then does the advance CTA appear.
 	await expect(page).toHaveURL(/\/shadow/);
+	await expect(page.getByRole('button', { name: 'Continue' })).toHaveCount(0);
+	await page.getByRole('button', { name: /start the echo pass/ }).click();
+	await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible({ timeout: 60_000 });
 	await page.getByRole('button', { name: 'Continue' }).click();
 
 	await expect(page).toHaveURL(/\/translate/);

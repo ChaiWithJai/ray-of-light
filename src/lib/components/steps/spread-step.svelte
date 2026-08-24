@@ -35,6 +35,15 @@
 	let ladderStage = $state<SpreadState>('parallel-reading');
 	const line = $derived(lesson.lines[index]);
 	const read = new SvelteSet<string>();
+	/**
+	 * #49: pairs that have been the active pair, in any ladder stage. On the
+	 * stack layout (one pair per viewport) this is a knowable completion state:
+	 * every pair has at least been in front of the learner. On columns every
+	 * pair is visible at once, so no such state exists and the CTA stays
+	 * primary there.
+	 */
+	const seen = new SvelteSet<string>();
+	const seenAll = $derived(layout === 'columns' || seen.size >= lesson.lines.length);
 	const player = $derived(new LessonPlayer(lesson));
 
 	$effect(() => {
@@ -57,6 +66,10 @@
 		profile.record('parallel-read', lesson.id, line.constructions, {
 			contentVersion: CONTENT_VERSION
 		});
+	});
+
+	$effect(() => {
+		if (line) seen.add(line.id);
 	});
 
 	// The spread's current line is the notes aside's line-scope anchor (#48).
@@ -195,6 +208,8 @@
 	</W.Card>
 {/if}
 
-<W.Button tone="primary" class="mt-auto" onclick={onDone}>
+<!-- #49: the advance is demoted, not disabled, until every pair has been in
+     front of the learner — reading order stays the learner's own. -->
+<W.Button tone={seenAll ? 'primary' : 'outline'} class="mt-auto" onclick={onDone}>
 	I've read the spread →
 </W.Button>

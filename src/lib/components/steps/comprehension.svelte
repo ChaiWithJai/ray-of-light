@@ -88,12 +88,16 @@
 	</W.Card>
 
 	{#if picked === null}
-		<W.Chip class="mx-auto" onclick={() => (peeked = true)}>
-			{peeked ? 'hint used, so this one counts as practice' : 'peek (counts as a hint)'}
-		</W.Chip>
-		{#if peeked}
+		<!-- #49: the peek invites; the evidence honesty lands after use, never as
+		     a pre-use penalty warning. -->
+		{#if !peeked}
+			<W.Chip class="mx-auto" onclick={() => (peeked = true)}>peek at the English</W.Chip>
+		{:else}
 			<W.Card>
 				<W.En>{lesson.lines[lineIndex].naturalEnglish}</W.En>
+				<W.Muted class="text-2xs">
+					You peeked, so this one counts as practice rather than recognition.
+				</W.Muted>
 			</W.Card>
 		{/if}
 	{:else}

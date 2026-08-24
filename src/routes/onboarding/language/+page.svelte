@@ -21,14 +21,14 @@
 			greeting: 'Bonjour.',
 			accent: 'text-lang-fr',
 			wash: 'border-lang-fr/35 hover:border-lang-fr/70',
-			note: 'Contemporary spoken French, from the first line.'
+			note: 'You learn to order in a café, book a room, buy food at a market, ask directions, take a train, and describe symptoms to a doctor. Spoken French, taught line by line from recorded dialogues.'
 		},
 		ta: {
 			native: 'தமிழ்',
 			greeting: 'வணக்கம்.',
 			accent: 'text-lang-ta',
 			wash: 'border-lang-ta/35 hover:border-lang-ta/70',
-			note: 'Contemporary spoken Tamil, with script and transliteration.'
+			note: 'You learn to order a coffee, take a room, buy at the market, ask the way, and manage phone calls and invitations. Spoken Chennai Tamil, with script and transliteration side by side.'
 		}
 	};
 
@@ -52,11 +52,12 @@
 				The method
 			</div>
 			<W.Muted>
-				Calm focus. Audible language. Parallel text. Gradual reveal. One short session a
-				day, and the language does the rest.
+				Each lesson is one recorded dialogue from a real situation. You hear it before you
+				read it, then read the language beside its English, and the English is taken away
+				step by step. A few lessons later the dialogue returns for you to say from memory.
 			</W.Muted>
 			<p class="m-0 font-script text-lg leading-snug text-caution">
-				→ you assimilate first; you produce later, from memory.
+				→ understand first; say it later, from memory.
 			</p>
 		</div>
 	{/snippet}
@@ -94,7 +95,7 @@
 				<W.Muted class="min-h-9 text-xs">{id.note}</W.Muted>
 				<W.JourneyArc
 					{language}
-					caption={`Each lesson lives in one real situation, from ${regular[0].situation.toLowerCase()} to ${regular[regular.length - 1].situation.toLowerCase()}. Partway in, earlier lessons return for you to say from memory.`}
+					caption={`One situation per lesson. Lesson 1: ${regular[0].situation.toLowerCase()}. Lesson ${regular[regular.length - 1].index}: ${regular[regular.length - 1].situation.toLowerCase()}. Partway in, earlier dialogues come back for you to say from memory.`}
 				/>
 				<W.Button
 					tone={profile.language === language ? 'primary' : 'outline'}
