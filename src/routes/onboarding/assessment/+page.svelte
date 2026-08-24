@@ -22,6 +22,17 @@
 		"That's all, thank you."
 	]);
 
+	// #42: every response pays back instantly — the placement preview builds
+	// live from the same placement rule the Continue button will commit.
+	const answered = $derived(heard !== null || spoke);
+	const previewEntry = $derived(
+		placeEntryLesson(
+			{ heardCorrectly: heard === 0, spokeBack: spoke },
+			COURSES[profile.language].lessons.length
+		)
+	);
+	const previewLesson = $derived(getLessonByIndex(profile.language, previewEntry));
+
 	function continueToPlan() {
 		// Placement, not judgement: the samples set the entry lesson and nothing
 		// else. The plan page persists it into the profile.
@@ -48,7 +59,10 @@
 
 	<W.JourneyArc
 		language={profile.language}
-		caption="This is the path your starting point sits on. The samples below choose the lesson where you begin."
+		current={answered ? previewEntry : null}
+		caption={answered
+			? `Right now your responses point at lesson ${previewEntry} · ${previewLesson?.title}. Each sample below can move the ring.`
+			: 'This is the path your starting point sits on. The samples below choose the lesson where you begin.'}
 	/>
 
 	<W.Card>
@@ -76,6 +90,13 @@
 			"{option}"
 		</W.Button>
 	{/each}
+	{#if heard !== null}
+		<W.Muted class="anim-uncover text-center text-xs">
+			{heard === 0
+				? 'You recognized the meaning — your starting point moves along the path above.'
+				: 'Noted. Beginning at the first lesson gives you the full run of the method.'}
+		</W.Muted>
+	{/if}
 
 	<W.Card>
 		<div class="text-sm">Now try saying the line back</div>
@@ -86,9 +107,31 @@
 		</W.Muted>
 		<W.MicButton recording={spoke} onclick={() => (spoke = !spoke)} />
 		<W.Muted class="text-center">{spoke ? 'listening…' : 'hold to speak'}</W.Muted>
+		{#if spoke}
+			<W.Muted class="anim-uncover text-center text-xs text-insight">
+				Saying it back moves your starting point further along the path.
+			</W.Muted>
+		{/if}
 	</W.Card>
 
-	<W.Button tone="primary" onclick={continueToPlan}>
+	<!-- #42: the placement the learner is building, always visible and live. -->
+	<W.Card tone="parchment" class="gap-1 p-4">
+		<div class="text-2xs font-bold tracking-[0.14em] text-brand uppercase">
+			Your starting point
+		</div>
+		{#key previewEntry}
+			<div class="anim-uncover font-display text-lg leading-tight font-semibold">
+				Lesson {previewEntry} · {previewLesson?.title}
+			</div>
+		{/key}
+		<W.Muted class="text-xs">
+			{answered
+				? 'Built from your responses so far. Continue locks it in — you can always revisit earlier lessons.'
+				: 'Respond to the samples above and this follows you; Continue locks it in.'}
+		</W.Muted>
+	</W.Card>
+
+	<W.Button tone="primary" class="py-3.5 text-lg" onclick={continueToPlan}>
 		Continue
 	</W.Button>
 	<W.Muted class="text-center text-2xs">
