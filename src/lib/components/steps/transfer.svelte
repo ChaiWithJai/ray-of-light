@@ -45,6 +45,8 @@
 </script>
 
 {#if prompt}
+	<W.ConceptIntro technique="transfer" />
+
 	<W.Card tone="parchment">
 		<div class="text-sm">{prompt.situation}</div>
 		<W.Muted>{prompt.prompt}</W.Muted>

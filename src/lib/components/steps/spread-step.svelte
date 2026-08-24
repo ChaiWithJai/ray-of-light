@@ -68,6 +68,8 @@
 	<W.Muted role="alert" class="text-center text-caution">{player.error}</W.Muted>
 {/if}
 
+<W.ConceptIntro technique="cover-ladder" />
+
 <div class="flex flex-wrap items-center justify-center gap-2">
 	<W.Chip active={coverSource} onclick={() => ((coverSource = !coverSource), (coverTarget = false))}>
 		cover EN

@@ -44,6 +44,8 @@
 		</W.Muted>
 	</div>
 
+	<W.ConceptIntro technique="assessment" />
+
 	<W.Card>
 		<div class="flex items-center gap-2">
 			<W.PlayButton label="Play the sample" disabled={sample.audio.pending} />

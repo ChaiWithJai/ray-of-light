@@ -98,6 +98,8 @@
 	}
 </script>
 
+<W.ConceptIntro technique="recall-wave" />
+
 <W.Muted class="text-center">
 	You met this line in lesson {daysAgo}. Now say it in
 	{lesson.language === 'ta' ? 'Tamil' : 'French'}, using the English as your cue.

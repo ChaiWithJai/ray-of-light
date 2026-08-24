@@ -29,6 +29,8 @@
 	}
 </script>
 
+<W.ConceptIntro technique="shadowing" />
+
 <W.Muted>Repeat each chunk right on the speaker's heels.</W.Muted>
 
 <W.Card tone="accent">

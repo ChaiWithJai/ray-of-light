@@ -361,6 +361,21 @@ class ProfileStore {
 	}
 
 	/* ---------------------------------------------------------------- */
+	/* First-run concept intros (#36)                                    */
+	/* ---------------------------------------------------------------- */
+
+	hasSeenIntro(id: string): boolean {
+		return this.#profile.seenIntros.includes(id);
+	}
+
+	/** Idempotent: dismissing an intro records it once, forever. */
+	markIntroSeen(id: string) {
+		this.#update((p) =>
+			p.seenIntros.includes(id) ? p : { ...p, seenIntros: [...p.seenIntros, id] }
+		);
+	}
+
+	/* ---------------------------------------------------------------- */
 	/* Evidence                                                          */
 	/* ---------------------------------------------------------------- */
 
