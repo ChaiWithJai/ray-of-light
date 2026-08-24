@@ -107,26 +107,6 @@
 <svelte:head><title>Today</title></svelte:head>
 
 <W.Shell brand title={plan ? `Day ${plan.dayNumber}` : ''} settingsLink nav>
-	{#snippet aside()}
-		<div class="flex flex-col gap-3 border-l border-line pl-6">
-			<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
-				Your plan
-			</div>
-			{#if profile.plan}
-				<W.Muted>
-					{profile.plan.dailyMinutes} minutes a day · goal: {profile.plan.goal}
-				</W.Muted>
-				<W.Muted>
-					{profile.completedLessons.length} of {course.lessons.length} lessons behind you.
-					Every 7th is a review day — built in, not extra.
-				</W.Muted>
-			{/if}
-			<p class="m-0 font-script text-lg leading-snug text-caution">
-				→ the scheduler chooses; you just sit down.
-			</p>
-		</div>
-	{/snippet}
-
 	<div class="anim-rise flex items-baseline justify-between gap-2 pt-2">
 		<W.Heading>Today</W.Heading>
 		{#if plan}
