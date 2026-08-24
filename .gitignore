@@ -29,6 +29,12 @@ vite.config.ts.timestamp-*
 # Personal-voice audio (issue #19): generated locally, never committed.
 /static/audio/
 
+# Generated sprite ink (issue #46 S2): produced locally by
+# scripts/generate-sprite-ink.mts; it renders in the app only via approved
+# records in src/lib/content/sprite-ink-reviews.json (the D8 review gate),
+# and is never committed.
+/static/sprites/ink/
+
 # Private voice references and derived voice artifacts must never enter the
 # repo — reference recordings live outside it (~/.ray-of-light/voice/).
 /voice/

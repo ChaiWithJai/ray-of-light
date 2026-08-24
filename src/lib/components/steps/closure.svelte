@@ -81,6 +81,32 @@
 	class="anim-rise anim-d1"
 />
 
+<!-- #46 S2: a quiet roll call — the constructions this session touched, each
+     at its honest derived stage. Calibration, not celebration: the stage word
+     is the same derivation the progress map shows, and nothing here can
+     advance one. -->
+{#if lesson.constructions.length > 0}
+	<W.Card class="anim-rise anim-d1 gap-2.5">
+		<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
+			The patterns you worked with, where they stand
+		</div>
+		<div class="flex flex-col gap-2">
+			{#each lesson.constructions as construction (construction.id)}
+				{@const state = profile.stateOf(construction.id)}
+				<div class="flex items-center gap-2.5" data-testid="closure-roll-call-{construction.id}">
+					<W.Sprite constructionId={construction.id} {state} size={34} />
+					<span class="min-w-0 flex-1 truncate text-sm">{construction.label}</span>
+					<span class="shrink-0 text-2xs text-text-faint">{state ?? 'not yet met'}</span>
+				</div>
+			{/each}
+		</div>
+		<W.Muted class="text-2xs">
+			Stages come from what you showed, and some grow only across separate days — low is
+			normal right after meeting a pattern.
+		</W.Muted>
+	</W.Card>
+{/if}
+
 <W.Heading class="anim-rise anim-d1 pt-2 text-xl">Before you go</W.Heading>
 
 <W.Card class="anim-rise anim-d2">

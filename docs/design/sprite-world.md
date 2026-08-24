@@ -1,6 +1,6 @@
 # Sprite world — time, days, and constructions as characters
 
-**Status:** spec (Design R1 · Phase 0). Refs #46, #42 (engagement scaffolding), #1.
+**Status:** S0–S2 shipped (see §7a); S3 open. Refs #46, #42 (engagement scaffolding), #1.
 
 ---
 
@@ -151,6 +151,60 @@ listed in the manifest, provenance in the manifest entry.
   sprites; local-generation ink pass over the substrate, owner review gate.
 - **Phase S3 (post round 2):** session-shell "game mode" integration, synthesis
   assembly scene. Mobile placements gated on #40's stack layout (chrome-only).
+
+## 7a. Status — what shipped, and the ink-approval workflow
+
+- **S0 (shipped):** manifest (`scripts/generate-sprite-manifest.mts` →
+  `src/lib/content/sprites.json`) + conformance tests + the parametric
+  substrate (`src/lib/sprites.ts`, `src/lib/sprite-render.ts`, `<Sprite>`),
+  on the progress map and Today's resurface card.
+- **S1 (shipped):** the time family (`src/lib/time-sprites.ts`). The day
+  sprite (Today header) is a sun on the course's arc; its position and form
+  buckets — sprout / stride / lantern, `rest` at `courseComplete` — derive
+  from `planToday`'s worked-lesson arithmetic, never the raw day count. The
+  plan-duration sprite is a candle: height and wax notches are the minutes
+  (one notch per five), updating live with the choice. The JourneyArc's
+  current marker stays the ring — at its dot size the day sprite is not
+  legible.
+- **S2 (shipped):** sprite surfaces at the transfer step (the exercised
+  construction fronting the prompt), lesson closure (the roll call of the
+  lesson's constructions at their honest derived stages), `/wiki/capability`
+  (the stage grammar drawn with one sample cast member) and Term popovers
+  (a sprite renders when the term id is a real cast member in the manifest).
+  Plus the ink pipeline and its review gate, below.
+
+**The ink layer and the owner-review gate (D8).**
+`scripts/generate-sprite-ink.mts` produces per-character PNG assets into the
+UNTRACKED `static/sprites/ink/` behind a pluggable engine interface:
+`stylize` (default) deterministically rasterises the exact substrate SVG the
+app draws (`src/lib/sprite-render.ts`, via sharp — no model, no network), and
+`gemini` generates ink via the Gemini API (`GEMINI_API_KEY` from the
+environment; the script says plainly when it is absent). Generating never
+ships anything: `<Sprite>` renders an ink asset ONLY when an approved record
+for its construction id exists in the tracked
+`src/lib/content/sprite-ink-reviews.json` (`src/lib/sprite-ink.ts`), mirroring
+the #13 ReviewRecord discipline — reviewer, date, engine provenance, and the
+sha-256 of the exact approved bytes.
+
+Owner approval workflow, per asset:
+
+1. `npx tsx scripts/generate-sprite-ink.mts [--engine gemini] <constructionId>`
+   — the script prints the output path and its `assetSha256`.
+2. Look at the PNG. If it isn't right, regenerate or discard; nothing has
+   shipped.
+3. To approve, add a record to `sprite-ink-reviews.json`:
+   `{ "constructionId": "…", "assetSha256": "<printed hash>", "reviewer":
+   "jai", "date": "YYYY-MM-DD", "decision": "approved", "engine": "…" }`.
+4. `npx vitest run` — `scripts/sprite-ink.pipeline.test.mts` re-hashes every
+   approved asset on disk, so a record whose file is missing or has drifted
+   fails the build; `src/lib/sprite-ink.test.ts` holds the gate's refusal
+   rules. The approved sprite now renders as ink; every other sprite stays on
+   the substrate.
+
+Regenerating an approved character produces new bytes and therefore demotes
+the old approval (hash mismatch fails tests until the record is updated or
+removed) — reviewing is re-done, not inherited, exactly as with content
+reviews.
 
 ## 8. Data / architecture touchpoints
 
