@@ -171,9 +171,10 @@ test('AC9: Tamil shows script, transliteration and both glosses', async ({ page 
 	await authorizeLearnStep(page, 'ta-01', 'spread', ['preview'], 'ta');
 
 	await expect(page.getByText('எனக்கு ஒரு காபி வேணும்.')).toBeVisible();
-	await expect(page.getByText('enakku oru kaapi vēṇum.')).toBeVisible();
+	// #44: 'kāpi' follows the corpus macron convention (was 'kaapi').
+	await expect(page.getByText('enakku oru kāpi vēṇum.')).toBeVisible();
 
-	await page.getByRole('option', { name: /enakku oru kaapi/ }).click();
+	await page.getByRole('option', { name: /enakku oru kāpi/ }).click();
 	await expect(page.getByText(/lit\. To-me one coffee is-wanted/)).toBeVisible();
 });
 
