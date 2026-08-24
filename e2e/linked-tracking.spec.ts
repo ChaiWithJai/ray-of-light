@@ -1,4 +1,5 @@
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
+import audioOffsets from '../src/lib/content/audio-offsets.json' with { type: 'json' };
 
 async function onboard(page: Page) {
 	await page.goto('/');
@@ -264,7 +265,8 @@ test('two real touch contacts preview, then commit from dedicated handles', asyn
 	// it would append evidence for `je voudrais`; a gesture-level commit appends none.
 	await expect.poll(() => evidenceCount(page)).toBe(evidenceBefore);
 	const committedCalls = await playCalls(page);
-	expect(committedCalls.at(-1)?.currentTime).toBeCloseTo(6.698, 2);
+	const expectedStart = audioOffsets['fr-01'][3].startMs / 1000;
+	expect(committedCalls.at(-1)?.currentTime).toBeCloseTo(expectedStart, 2);
 
 	// Staggered lifts are still one linked gesture: the first released contact
 	// must not commit an intermediate row while the second remains down.
