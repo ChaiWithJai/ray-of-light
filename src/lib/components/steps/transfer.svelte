@@ -63,8 +63,9 @@
 		disabled={submitted}
 		aria-label="Your new sentence"
 	/>
-	<W.MicButton />
 
+	<!-- The graded result sits directly under the attempt it grades, above the
+	     mic — the evidence-honesty caveat lives in Settings, not on the card. -->
 	{#if submitted}
 		<W.Card
 			tone={allConstructionsMatched && evaluation?.contextMatched ? 'good' : 'warn'}
@@ -84,13 +85,12 @@
 							: '→ The target construction pattern did not match. Compare:'}
 			</div>
 			<W.Fr class="text-sm">{prompt.exemplar}</W.Fr>
-			<W.Muted class="text-2xs">
-				{anyConstructionMatched
-					? 'Matched constructions record recognition evidence only; situation matching is feedback, not progress.'
-					: 'No recognition progress was recorded. This incorrect attempt can guide later repair.'}
-				This is not a judgment of full grammar or native naturalness.
-			</W.Muted>
 		</W.Card>
+	{/if}
+
+	<W.MicButton />
+
+	{#if submitted}
 		<W.Button tone="primary" onclick={onDone}>Continue</W.Button>
 	{:else}
 		<W.Button tone="primary" disabled={answer.trim() === ''} onclick={submit}>

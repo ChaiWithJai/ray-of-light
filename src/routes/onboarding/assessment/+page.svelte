@@ -36,18 +36,6 @@
 <svelte:head><title>Entry assessment</title></svelte:head>
 
 <W.Shell title="Getting started · 2/3" back="/onboarding/language">
-	{#snippet aside()}
-		<div class="flex flex-col gap-3 border-l border-line pl-6">
-			<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
-				Why no score
-			</div>
-			<W.Muted>
-				This isn't a test — it's placement. Listening, reading and speaking samples set the
-				entry lesson, nothing else.
-			</W.Muted>
-		</div>
-	{/snippet}
-
 	<div class="anim-rise flex flex-col gap-2 pt-2">
 		<W.Heading>Let's find your starting point</W.Heading>
 		<W.Muted>Respond naturally — there are no wrong answers.</W.Muted>

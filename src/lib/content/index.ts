@@ -17,7 +17,7 @@ import { TA_LESSONS, TA_PROFILE } from './ta.js';
 import { validateReviewGate } from './review-gate.js';
 
 /** Bumped whenever content changes, so evidence can cite what it was recorded against. */
-export const CONTENT_VERSION = '2026.08.23-poc.2';
+export const CONTENT_VERSION = '2026.08.23-poc.3';
 
 export type Course = {
 	language: LanguageCode;

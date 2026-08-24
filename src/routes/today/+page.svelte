@@ -6,7 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import * as W from '$lib/components/ui/index.js';
-	import { COURSES, getLesson, getLessonByIndex } from '$lib/content/index.js';
+	import { COURSES, getConstruction, getLesson, getLessonByIndex } from '$lib/content/index.js';
 	import { flowFor, RECALL_FLOW } from '$lib/flow.js';
 	import { planToday, POC_WAVE_CONFIG, toDayKey } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
@@ -41,7 +41,8 @@
 					today: day,
 					lessonCount: course.lessons.length,
 					completedCount: profile.completedLessons.length,
-					entryLessonIndex: profile.plan.entryLessonIndex
+					entryLessonIndex: profile.plan.entryLessonIndex,
+					assignmentDays: Object.keys(profile.current.dailyAssignments[profile.language] ?? {})
 				})
 			: null
 	);
@@ -95,31 +96,18 @@
 			? dueResurface.filter((item) => item.lessonId === resurfaceLesson.id).length
 			: 0
 	);
+	// Name what is actually due: the first due construction's label and gloss,
+	// not just "a line you stumbled on".
+	const resurfaceConstruction = $derived(
+		dueResurface.length > 0
+			? getConstruction(profile.language, dueResurface[0].constructionId)
+			: undefined
+	);
 </script>
 
 <svelte:head><title>Today</title></svelte:head>
 
 <W.Shell brand title={plan ? `Day ${plan.dayNumber}` : ''} settingsLink nav>
-	{#snippet aside()}
-		<div class="flex flex-col gap-3 border-l border-line pl-6">
-			<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
-				Your plan
-			</div>
-			{#if profile.plan}
-				<W.Muted>
-					{profile.plan.dailyMinutes} minutes a day · goal: {profile.plan.goal}
-				</W.Muted>
-				<W.Muted>
-					{profile.completedLessons.length} of {course.lessons.length} lessons behind you.
-					Every 7th is a review day — built in, not extra.
-				</W.Muted>
-			{/if}
-			<p class="m-0 font-script text-lg leading-snug text-caution">
-				→ the scheduler chooses; you just sit down.
-			</p>
-		</div>
-	{/snippet}
-
 	<div class="anim-rise flex items-baseline justify-between gap-2 pt-2">
 		<W.Heading>Today</W.Heading>
 		{#if plan}
@@ -255,6 +243,12 @@
 					{resurfaceLesson.title}
 				</div>
 			</div>
+			{#if resurfaceConstruction}
+				<div class="flex flex-wrap items-baseline gap-2">
+					<W.Chip active>{resurfaceConstruction.label}</W.Chip>
+					<W.Muted class="text-2xs">{resurfaceConstruction.gloss}</W.Muted>
+				</div>
+			{/if}
 			<W.Muted>
 				{resurfaceCount === 1 ? 'A line' : `${resurfaceCount} lines`} you stumbled on {resurfaceCount ===
 				1

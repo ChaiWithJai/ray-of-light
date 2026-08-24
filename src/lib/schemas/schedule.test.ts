@@ -96,6 +96,41 @@ describe('planToday', () => {
 		const plan = planToday({ ...base, today: '2025-12-25', completedCount: 0 });
 		expect(plan.dayNumber).toBe(1);
 	});
+
+	it('never shows a day number smaller than the assignment history (#45)', () => {
+		// A synthetic or restored profile can carry shifted assignment keys while
+		// startedOn still says "today". The history wins: three recorded
+		// assignment days can never sit next to "Day 1".
+		const plan = planToday({
+			...base,
+			startedOn: '2026-01-04',
+			today: '2026-01-04',
+			completedCount: 3,
+			assignmentDays: ['2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04']
+		});
+		expect(plan.dayNumber).toBe(4);
+	});
+
+	it('counts assignment days distinctly and ignores days in the future', () => {
+		const plan = planToday({
+			...base,
+			startedOn: '2026-01-02',
+			today: '2026-01-02',
+			completedCount: 2,
+			assignmentDays: ['2026-01-01', '2026-01-01', '2026-01-02', '2026-01-09']
+		});
+		expect(plan.dayNumber).toBe(2);
+	});
+
+	it('keeps the calendar-derived day number when it is the larger view', () => {
+		const plan = planToday({
+			...base,
+			today: '2026-01-15',
+			completedCount: 2,
+			assignmentDays: ['2026-01-01', '2026-01-02']
+		});
+		expect(plan.dayNumber).toBe(15);
+	});
 });
 
 describe('planToday with placement', () => {

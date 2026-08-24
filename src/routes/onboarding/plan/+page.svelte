@@ -45,21 +45,6 @@
 <svelte:head><title>Learning plan</title></svelte:head>
 
 <W.Shell title="Getting started · 3/3" back="/onboarding/assessment">
-	{#snippet aside()}
-		<div class="flex flex-col gap-3 border-l border-line pl-6">
-			<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
-				Two waves
-			</div>
-			<W.Muted>
-				First you absorb (the passive wave). Later, earlier lessons come back to be produced
-				from memory (the active wave). The commitment sets that pacing — it is not cosmetic.
-			</W.Muted>
-			<p class="m-0 font-script text-lg leading-snug text-caution">
-				→ no streaks, no confetti. Just the schedule.
-			</p>
-		</div>
-	{/snippet}
-
 	<div class="anim-rise pt-2">
 		<W.Heading>How much, daily?</W.Heading>
 	</div>
