@@ -10,6 +10,7 @@
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import { describe } from '$lib/morphology.js';
 	import type { Lesson, LessonLine } from '$lib/schemas/content.js';
+	import { activeLine } from '$lib/stores/active-line.svelte.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 	import { SvelteSet } from 'svelte/reactivity';
 
@@ -45,6 +46,14 @@
 		profile.record('parallel-read', lesson.id, line.constructions, {
 			contentVersion: CONTENT_VERSION
 		});
+	});
+
+	// The spread's current line is the notes aside's line-scope anchor (#48).
+	$effect(() => {
+		if (line) activeLine.set({ lessonId: lesson.id, lineId: line.id, label: `Line ${index + 1}` });
+	});
+	$effect(() => {
+		return () => activeLine.clear();
 	});
 
 	// The word a note is anchored to, else the line's first substantive word.
