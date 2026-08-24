@@ -19,6 +19,8 @@ export class LessonPlayer {
 	playing = $state(false);
 	/** Index into lesson.lines currently sounding, -1 when none. */
 	activeLine = $state(-1);
+	/** Current playhead position in ms into the lesson recording. */
+	positionMs = $state(0);
 	rate = $state(1);
 	/** Transient playback problem — retrying is reasonable. */
 	error = $state<string | null>(null);
@@ -96,6 +98,7 @@ export class LessonPlayer {
 
 	#tick(a: HTMLAudioElement) {
 		const ms = a.currentTime * 1000;
+		this.positionMs = ms;
 		if (this.#stopAtMs !== null && ms >= this.#stopAtMs) {
 			a.pause();
 			this.#finish();
@@ -147,12 +150,22 @@ export class LessonPlayer {
 
 	/** Play a single line's slice (AC 3: audio can follow the active line). */
 	playLine(i: number, onEnded?: () => void) {
-		const a = this.#ensure();
 		const line = this.#lesson.lines[i];
-		if (!a || line?.audio.startMs === undefined || line.audio.endMs === undefined) return;
-		this.#stopAtMs = line.audio.endMs;
+		if (line?.audio.startMs === undefined || line.audio.endMs === undefined) return;
+		this.playSlice(line.audio.startMs, line.audio.endMs, onEnded);
+	}
+
+	/**
+	 * Play an arbitrary measured slice of the recording — the shadow step's
+	 * phrase chunks (`line.chunks`) carry absolute start/end offsets into the
+	 * lesson recording, so echo practice can sound one chunk at a time.
+	 */
+	playSlice(startMs: number, endMs: number, onEnded?: () => void) {
+		const a = this.#ensure();
+		if (!a) return;
+		this.#stopAtMs = endMs;
 		this.#onEnded = onEnded ?? null;
-		a.currentTime = line.audio.startMs / 1000;
+		a.currentTime = startMs / 1000;
 		this.#play(a);
 	}
 

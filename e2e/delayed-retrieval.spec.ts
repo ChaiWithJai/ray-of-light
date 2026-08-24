@@ -78,8 +78,10 @@ async function completeDailySession(page: Page, lessonId: string) {
 		await page.getByRole('button', { name: /Next|Continue/ }).click();
 	}
 
+	// Shadow (#49): the advance CTA is gated behind the echo pass; this suite
+	// tests retrieval scheduling, so take the product's own whispered skip.
 	await expect(page).toHaveURL(/\/shadow/);
-	await page.getByRole('button', { name: 'Continue' }).click();
+	await page.getByRole('button', { name: 'Skip ahead →' }).click();
 
 	await expect(page).toHaveURL(/\/translate/);
 	await page.getByLabel('Your English translation').fill(script.translate);

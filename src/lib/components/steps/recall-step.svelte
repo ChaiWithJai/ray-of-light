@@ -166,8 +166,9 @@
 </div>
 
 {#if hinted}
-	<W.Card tone="warn" class="anim-uncover">
-		<W.Muted class="text-xs text-caution">
+	<!-- #49: post-hoc honesty in a plain card — information, not a reprimand. -->
+	<W.Card class="anim-uncover">
+		<W.Muted class="text-xs">
 			You used a hint, so this attempt counts as practice rather than recall.
 		</W.Muted>
 		<W.Fr class="text-sm">
