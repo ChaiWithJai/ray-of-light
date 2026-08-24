@@ -166,17 +166,20 @@ test('keyboard movement activates aligned pairs and sentence audio', async ({ pa
 test('covered support stays covered in the accessible name', async ({ page }) => {
 	await onboard(page);
 	await authorizeLearnSpread(page);
-	await page.getByRole('button', { name: 'cover EN' }).click();
+	// #34: the free "cover EN" toggle became the ladder's "Hide English" rung.
+	await page.getByRole('button', { name: 'Hide English' }).click();
 	const readingLabel = await page.getByRole('option').first().getAttribute('aria-label');
 	expect(readingLabel).toContain('Bonjour');
 	expect(readingLabel).toContain('English covered');
 	expect(readingLabel).not.toContain('Good morning');
 
+	// #39: recall now chunks to the prompted line (fr-01's "je voudrais" line),
+	// so the single visible item is that pair — covered target, English cue.
 	await authorizeRecall(page);
 	const retrievalLabel = await page.getByRole('option').first().getAttribute('aria-label');
 	expect(retrievalLabel).toContain('target language covered');
-	expect(retrievalLabel).toContain('Good morning');
-	expect(retrievalLabel).not.toContain('Bonjour');
+	expect(retrievalLabel).toContain('I would like a coffee');
+	expect(retrievalLabel).not.toContain('Je voudrais');
 });
 
 test('a one-finger page scroll does not play audio or record a new line', async ({ page }) => {

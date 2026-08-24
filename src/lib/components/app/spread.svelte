@@ -25,12 +25,23 @@
 		state: spreadState = 'parallel-reading',
 		index = $bindable(0),
 		settings,
+		layout = 'columns',
+		pinned = false,
 		onlineactivate
 	}: {
 		lesson: Lesson;
 		state?: SpreadState;
 		index?: number;
 		settings: LearnerSettings;
+		/**
+		 * Two projections of the same state machine (mobile-method spike):
+		 * `columns` is the desktop two-column page; `stack` shows one pair at a
+		 * time as a vertical stack — target above, English below, both in a
+		 * single fixation zone — stepped by swipe/keys.
+		 */
+		layout?: 'columns' | 'stack';
+		/** Hold the stack on one pair (the chunked exercise item, #39). */
+		pinned?: boolean;
 		onlineactivate?: (line: LessonLine) => void;
 	} = $props();
 
@@ -165,10 +176,10 @@
 	}
 
 	function onkeydown(event: KeyboardEvent) {
-		if (event.key === 'ArrowDown' || event.key === 'j') {
+		if (!pinned && (event.key === 'ArrowDown' || event.key === 'j')) {
 			event.preventDefault();
 			move(1);
-		} else if (event.key === 'ArrowUp' || event.key === 'k') {
+		} else if (!pinned && (event.key === 'ArrowUp' || event.key === 'k')) {
 			event.preventDefault();
 			move(-1);
 		} else if (event.key === 'Enter' || event.key === ' ') {
@@ -176,8 +187,34 @@
 			activate(index);
 		}
 	}
+
+	/* Stack projection: swipe-sequential pair stepping (no scroll, no tracking
+	 * machinery — the pair is the unit). A horizontal swipe steps one pair;
+	 * vertical movement is left to the page. */
+	let swipeStart: { x: number; y: number } | null = null;
+
+	function onstackpointerdown(event: PointerEvent) {
+		if (pinned) return;
+		swipeStart = { x: event.clientX, y: event.clientY };
+	}
+
+	function onstackpointerup(event: PointerEvent) {
+		if (pinned || !swipeStart) return;
+		const dx = event.clientX - swipeStart.x;
+		const dy = event.clientY - swipeStart.y;
+		swipeStart = null;
+		if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.5) move(dx < 0 ? 1 : -1);
+	}
 </script>
 
+{#if !pinned}
+	<!-- The step's ask, stated over the spread rather than whispered under it (#34). -->
+	<p class="anim-rise m-0 text-center font-display text-base leading-snug font-semibold sm:text-lg">
+		{support.instruction}
+	</p>
+{/if}
+
+{#if layout === 'columns'}
 <div
 	role="listbox"
 	tabindex="0"
@@ -224,7 +261,10 @@
 				if (activePointers.size === 0) previewIndex = i;
 			}}
 		>
-			<W.PairRow highlight={current} class="relative {current ? '' : 'opacity-90'}">
+			<W.PairRow
+				highlight={current}
+				class="relative {current ? 'shadow-card ring-1 ring-brand/30' : 'opacity-90'}"
+			>
 				<!-- Target column -->
 				<W.Cover
 					covered={!support.targetVisible}
@@ -257,25 +297,41 @@
 				</W.Cover>
 
 				{#if settings.trackingMode === 'two-finger'}
+					<!-- The handles are the invitation: both fingers hold their place
+					     while the eyes and ears do the mapping. The current pair's
+					     handles carry a soft halo so the ritual reads at a glance. -->
 					<span
 						data-tracking-handle
 						data-side="target"
 						aria-hidden="true"
-						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card"
+						class="absolute top-1/2 left-[calc(50%-30px)] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card {current
+							? 'ring-4 ring-brand/15'
+							: ''}"
 					>↕</span>
 					<span
 						data-tracking-handle
 						data-side="source"
 						aria-hidden="true"
-						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card"
+						class="absolute top-1/2 right-[2px] z-10 flex size-[28px] -translate-y-1/2 touch-none items-center justify-center rounded-full border border-brand bg-surface-raised text-brand shadow-card {current
+							? 'ring-4 ring-brand/15'
+							: ''}"
 					>↕</span>
+				{:else if current}
+					<!-- Single-guide mode: display-only anchor marks on the tracked
+					     pair — the same two held places, drawn rather than touched. -->
+					<span
+						aria-hidden="true"
+						class="anim-breathe pointer-events-none absolute top-1/2 left-[calc(50%-12px)] size-1.5 -translate-y-1/2 rounded-full bg-brand/40"
+					></span>
+					<span
+						aria-hidden="true"
+						class="anim-breathe pointer-events-none absolute top-1/2 right-2 size-1.5 -translate-y-1/2 rounded-full bg-brand/40"
+					></span>
 				{/if}
 			</W.PairRow>
 		</div>
 	{/each}
 </div>
-
-<W.Hint>{support.instruction}</W.Hint>
 
 {#if settings.trackingMode === 'single-guide'}
 	<W.Hint>
@@ -285,4 +341,91 @@
 	<W.Hint>
 		drag either side and both anchors move together
 	</W.Hint>
+{/if}
+{:else}
+	<!-- Stack projection: one pair fills the card — target above, English
+	     below, both in one fixation zone. Same states, same covers, same
+	     evidence; only the rendering differs (mobile-method spike, Model A/B). -->
+	{@const line = lines[displayIndex]}
+	<div
+		role="listbox"
+		tabindex="0"
+		aria-label={pinned
+			? 'Bilingual pair.'
+			: 'Bilingual pair stack. Use up and down arrows, or swipe, to move between line pairs.'}
+		aria-activedescendant="pair-{displayIndex}"
+		class="flex touch-pan-y flex-col gap-2 rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-brand"
+		{onkeydown}
+		onpointerdown={onstackpointerdown}
+		onpointerup={onstackpointerup}
+		onpointercancel={() => (swipeStart = null)}
+	>
+		{#key line.id}
+			<div
+				id="pair-{displayIndex}"
+				data-line-index={displayIndex}
+				role="option"
+				aria-selected={true}
+				aria-label={accessibleLabel(line, displayIndex)}
+				tabindex="-1"
+				class="anim-rise flex cursor-pointer flex-col gap-3 rounded-2xl border border-effort-edge/70 bg-page px-4 py-5 shadow-card sm:px-6"
+				onclick={() => activate(displayIndex)}
+				onkeydown={(event) => {
+					if (event.key === 'Enter' || event.key === ' ') activate(displayIndex);
+				}}
+			>
+				<W.Cover
+					covered={!support.targetVisible}
+					label={coveredLabel(spreadState)}
+					tone={spreadState === 'active-retrieval' ? 'accent' : 'default'}
+					class="min-h-9"
+				>
+					<W.Fr n={displayIndex + 1} class="text-lg font-semibold sm:text-xl">
+						{line.targetScript}
+						{#if !line.audio.pending}<span class="text-2xs" aria-hidden="true">▶</span>{/if}
+					</W.Fr>
+					{#if showTranslit && line.transliteration}
+						<div class="pl-[16px] text-xs text-text-faint italic">
+							{line.transliteration}
+						</div>
+					{/if}
+				</W.Cover>
+
+				<W.Cover covered={!support.sourceVisible} label="covered" class="min-h-6">
+					<W.En n={displayIndex + 1} class="text-base">{line.naturalEnglish}</W.En>
+					{#if isTamil && line.literalEnglish}
+						<div class="pl-[16px] text-2xs text-text-faint">
+							lit. {line.literalEnglish}
+						</div>
+					{/if}
+				</W.Cover>
+			</div>
+		{/key}
+
+		{#if pinned}
+			<div class="text-center font-mono text-2xs text-text-faint">
+				line {displayIndex + 1} of {lines.length} in this dialogue
+			</div>
+		{:else}
+			<div class="flex items-center justify-between gap-2">
+				<button
+					type="button"
+					aria-label="Previous pair"
+					disabled={index === 0}
+					class="flex size-9 cursor-pointer items-center justify-center rounded-full border border-line-strong bg-surface-raised text-text-soft transition-colors duration-(--duration-quick) outline-none hover:border-brand/60 hover:text-brand-deep focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-40"
+					onclick={() => move(-1)}
+				>‹</button>
+				<span class="font-mono text-2xs text-text-faint">
+					pair {displayIndex + 1} of {lines.length} · swipe to step
+				</span>
+				<button
+					type="button"
+					aria-label="Next pair"
+					disabled={index === lines.length - 1}
+					class="flex size-9 cursor-pointer items-center justify-center rounded-full border border-line-strong bg-surface-raised text-text-soft transition-colors duration-(--duration-quick) outline-none hover:border-brand/60 hover:text-brand-deep focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-40"
+					onclick={() => move(1)}
+				>›</button>
+			</div>
+		{/if}
+	</div>
 {/if}

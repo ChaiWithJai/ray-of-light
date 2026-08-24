@@ -42,12 +42,15 @@
 	}
 </script>
 
-<W.Muted>Translate into English:</W.Muted>
+<!-- #34: the line under translation is the protagonist of this screen. -->
+<p class="anim-rise m-0 text-center font-display text-base leading-snug font-semibold sm:text-lg">
+	Translate this line into English.
+</p>
 
-<W.Card tone="accent">
-	<W.Fr class="text-lg">{line.targetScript}</W.Fr>
+<W.Card tone="accent" thick class="anim-rise anim-d1 items-center gap-2 p-5 text-center sm:p-6">
+	<W.Fr class="text-xl sm:text-2xl">{line.targetScript}</W.Fr>
 	{#if line.transliteration}
-		<W.Muted class="text-xs italic">{line.transliteration}</W.Muted>
+		<W.Muted class="text-sm italic">{line.transliteration}</W.Muted>
 	{/if}
 </W.Card>
 

@@ -114,6 +114,15 @@
 	{/if}
 </div>
 
-<W.Button tone={enough ? 'primary' : 'outline'} onclick={onDone}>
-	{enough ? "I've listened twice →" : 'Skip ahead →'}
-</W.Button>
+{#if enough}
+	<W.Button tone="primary" onclick={onDone}>I've listened twice →</W.Button>
+{:else}
+	<!-- #34: Play is the step's one event; skipping is possible but whispered. -->
+	<button
+		type="button"
+		class="mx-auto cursor-pointer self-center bg-transparent p-1 text-xs text-text-faint underline decoration-dotted underline-offset-2 transition-colors duration-(--duration-quick) outline-none hover:text-text-soft focus-visible:ring-2 focus-visible:ring-brand"
+		onclick={onDone}
+	>
+		Skip ahead →
+	</button>
+{/if}
