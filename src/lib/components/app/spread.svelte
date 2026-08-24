@@ -204,7 +204,25 @@
 		const dx = event.clientX - swipeStart.x;
 		const dy = event.clientY - swipeStart.y;
 		swipeStart = null;
-		if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.5) move(dx < 0 ? 1 : -1);
+		if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+			move(dx < 0 ? 1 : -1);
+			// A swipe is one discrete step. The browser still synthesizes a
+			// compatibility click at the touch-end point, which after the
+			// re-render can land on whatever now sits there (a chevron, a
+			// replay affordance) and turn one gesture into two actions — the
+			// same reason the column projection suppresses post-gesture
+			// clicks. Swallow exactly that one click.
+			suppressStackClick = true;
+		}
+	}
+
+	let suppressStackClick = false;
+
+	function onstackclickcapture(event: MouseEvent) {
+		if (!suppressStackClick) return;
+		suppressStackClick = false;
+		event.stopPropagation();
+		event.preventDefault();
 	}
 
 	/* Thumb-rail driver (mobile-method spike, Model A): a fourth ReadingAnchor
@@ -425,6 +443,7 @@
 		{onkeydown}
 		onpointerdown={onstackpointerdown}
 		onpointerup={onstackpointerup}
+		onclickcapture={onstackclickcapture}
 		onpointercancel={() => (swipeStart = null)}
 	>
 		{#key line.id}
