@@ -6,6 +6,8 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import * as W from '$lib/components/ui/index.js';
+	import LessonNotes from '$lib/components/app/lesson-notes.svelte';
+	import NotesLink from '$lib/components/app/notes-link.svelte';
 	import Preview from '$lib/components/steps/preview.svelte';
 	import SpreadStep from '$lib/components/steps/spread-step.svelte';
 	import Comprehension from '$lib/components/steps/comprehension.svelte';
@@ -127,14 +129,22 @@
 						</li>
 					{/each}
 				</ol>
+				<!-- #48 Phase H0: the aside's consistent job — the learner's notebook. -->
+				<div class="border-t border-line pt-4">
+					<LessonNotes lessonId={lesson.id} />
+				</div>
 			</div>
 		{/snippet}
 
 		{#key step}
 			<div class="anim-rise flex min-h-[70vh] flex-1 flex-col gap-4">
-			<!-- #47 job 1: the quiet unblocking affordance. Opens the technique's
-			     unstuck lines as an overlay; the session route never changes. -->
-			<W.Stuck {step} class="-mb-2" />
+			<!-- #47 job 1 and #48: the quiet session-chrome affordances. Both open
+			     overlays; the session route never changes. The notes link renders
+			     only below lg, where there is no aside column. -->
+			<div class="-mb-2 flex items-center justify-end gap-4">
+				<NotesLink lessonId={lesson.id} />
+				<W.Stuck {step} class="self-auto" />
+			</div>
 			{#if step === 'preview'}
 				<Preview {lesson} onDone={advance} />
 			{:else if step === 'spread'}

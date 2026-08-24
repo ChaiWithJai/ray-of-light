@@ -116,6 +116,15 @@
 	{/if}
 
 	<W.Card>
+		<div class="text-sm">Your notebook</div>
+		<W.Muted>
+			Every note you have written — during lessons and on your own. Notes stay on this
+			device.
+		</W.Muted>
+		<W.Button href="/notebook" class="w-auto self-start px-4 text-sm">Open your notebook</W.Button>
+	</W.Card>
+
+	<W.Card>
 		<div class="text-sm">About the method</div>
 		<W.Muted>
 			How the course works: the two waves, each technique, the capability ladder and the
