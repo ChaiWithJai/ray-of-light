@@ -52,10 +52,27 @@
 </script>
 
 {#if check}
-	<Spread {lesson} state="comprehension" bind:index settings={profile.settings} />
+	<!-- #39: one check at a time — the line under question and its choices sit
+	     together, and the set advances item by item. -->
+	{#if checks.length > 1}
+		<div class="text-center font-mono text-2xs text-text-faint">
+			check {current + 1} of {checks.length}
+		</div>
+	{/if}
 
-	<W.Card>
-		<div class="text-sm">{check.prompt}</div>
+	{#key check.lineId}
+		<Spread
+			{lesson}
+			state="comprehension"
+			layout="stack"
+			pinned
+			bind:index
+			settings={profile.settings}
+		/>
+	{/key}
+
+	<W.Card thick class="anim-rise anim-d1 gap-2.5 p-5">
+		<div class="font-display text-base leading-snug font-semibold sm:text-lg">{check.prompt}</div>
 		{#each check.options as option, i (option)}
 			{@const isAnswer = i === check.answerIndex}
 			{@const revealed = picked !== null}
