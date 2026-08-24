@@ -1,0 +1,286 @@
+[
+ {
+  "mode": "under-weighted focus area",
+  "description": "The screen's core interaction occupies too little real estate and lacks visual cues/animation to signal it is the main event \u2014 presence without emphasis. Fixes must stay true to the instructional-design method (calm focus, gradual reveal), not generic attention-grabbing.",
+  "count": 16,
+  "example_ids": [
+   "01-language/desktop",
+   "02-assessment/desktop",
+   "04-today-fresh/desktop (accepted suggestion)",
+   "05-preview/desktop (accepted suggestion)",
+   "06-spread/desktop (accepted suggestion)",
+   "06-spread/desktop",
+   "08-comprehension/desktop (accepted suggestion)",
+   "09-shadow/desktop",
+   "13-transfer/desktop (accepted suggestion)",
+   "17-today-recall-paired/desktop (accepted suggestion)",
+   "18-recall/desktop (accepted suggestion)",
+   "18-recall/mobile (accepted suggestion)",
+   "22-today-resurface/desktop (accepted)",
+   "23-progress/desktop (accepted)",
+   "31-ta-spread/desktop (accepted)"
+  ],
+  "example_quotes": [
+   "core focus area\u2026 should take a much larger real estate\u2026 strong visual cues and animations\u2026 true to our instructional design methodology",
+   "poor use of spacing and sizing, this should style the whole `div` and the main action should be unavoidable for getting started with the correct guidance on doi",
+   "METHOD INTENT: 'the parallel spread is designed for the user using their fingers to read both at the same time and process the visual information while hearing it or trying to say it themselves' \u2014 the two-finger multimodal affordance is the spread's core and is currently invisible; tracking exists in code but nothing invites the fingers",
+   "shadow step: 'make this use more space and be a proper decoration for this div'"
+  ]
+ },
+ {
+  "mode": "missing journey orientation",
+  "description": "Screens don't situate the learner in the program's arc \u2014 where am I now, what does the path look like, what will I be able to do at the end. Orientation ('run of the program') should be explicit, especially at entry points.",
+  "count": 6,
+  "example_ids": [
+   "01-language/desktop",
+   "04-today-fresh/desktop (accepted suggestion)",
+   "15-closure/desktop (accepted suggestion)",
+   "16-today-complete/desktop (accepted suggestion)",
+   "02-assessment/desktop (accepted suggestion)",
+   "23-progress/desktop (accepted)"
+  ],
+  "example_quotes": [
+   "explain the 'run of the program' so that learners understand where they are now, where they will be at the end"
+  ]
+ },
+ {
+  "mode": "copy below instructional-design standard",
+  "description": "Copy doesn't read like a course written by an instructional designer: unnecessarily terse, missing the guiding/explanatory register a designed learning experience carries. Fix with ID-grade copywriting plus progressive disclosure for depth.",
+  "count": 23,
+  "example_ids": [
+   "01-language/desktop",
+   "01-language/mobile",
+   "03-plan/desktop",
+   "03-plan/desktop",
+   "03-plan/desktop (accepted suggestion)",
+   "04-today-fresh/desktop (accepted suggestion)",
+   "04-today-fresh/desktop",
+   "05-preview/desktop",
+   "12-completion/desktop",
+   "15-closure/desktop",
+   "16-today-complete/desktop (accepted suggestion)",
+   "17-today-recall-paired/desktop (accepted suggestion)",
+   "18-recall/desktop (accepted suggestion)",
+   "02-assessment/desktop (accepted)",
+   "(batch)",
+   "19-recall-attempted/desktop",
+   "20-compare-miss/desktop",
+   "21-compare-revealed/desktop",
+   "21-compare-revealed/desktop",
+   "23-progress/desktop (accepted)",
+   "24-book/desktop (accepted)",
+   "30-ta-today/desktop (accepted)"
+  ],
+  "example_quotes": [
+   "no need to be unnecessarily terse\u2026 use techniques such as progressive disclosure when we need to share more information",
+   "Make this match the copywriting for a course made by an instructional designer.",
+   "'this does not help' \u00d72 on 'Commitment sets pacing. No streaks, no confetti.' \u2014 negative self-referential copy: tells the learner what the app is NOT instead of guiding them (repeated in the aside too)",
+   "'remove' on the 'Nothing else to choose. That's the point.' tagline \u2014 third strike for negative self-referential copy; owner verdict is removal, not rewrite",
+   "'remove' on the 'No text yet \u2014 let your ears go first.' subtitle \u2014 removal list grows: the pattern is copy that narrates the design instead of guiding the learner",
+   "'remove this text' on 'Choose one \u2014 then you'll see why.' \u2014 fourth removal-list entry, same design-narration voice",
+   "'remove em dash' \u2014 voice detail: the em-dash aside tic reads as design narration; copy sweep should drop the mannerism app-wide",
+   "'rephrase to be simple' \u2014 recall instruction copy simplification",
+   "'rephrase this to be simple' \u2014 compare-step reflect prompt ('Look at your line again first. What would you change before you see the original?')",
+   "'this does not help the user, re-do this copywriting as an instructional designer' \u2014 compare-revealed guidance copy"
+  ]
+ },
+ {
+  "mode": "cover states as free toggles, not a guided ladder",
+  "description": "The support-removal system has a small finite set of meaningful states (issue #1's ladder: audio-only \u2192 EN visible \u2192 both \u2192 FR-only \u2192 \u2026), but the UI exposes them as independent cover-EN/cover-FR toggles the learner must puzzle out \u2014 easy to derail into 'what state am I in?'. Present the finite states as one legible guided progression (a stepper the method advances) instead of free toggles.",
+  "count": 1,
+  "example_ids": [
+   "07-spread-covered/desktop"
+  ],
+  "example_quotes": [
+   "could easily confuse the user given the finite states \u2014 and not derailing while trying to figure this out"
+  ]
+ },
+ {
+  "mode": "method techniques land unintroduced",
+  "description": "Unusual method moves (shadowing, the recall wave, the cover ladder, transfer) drop the learner straight into the exercise with no first-encounter introduction \u2014 no 'here's what this is, why it works, what to do' to earn buy-in before asking for effort. First-run concept intros (once, dismissible, progressive-disclosure style) prevent the confusion the owner is nervous about; pairs with the jargon findings (the terms would land after the concept is introduced).",
+  "count": 2,
+  "example_ids": [
+   "09-shadow/desktop",
+   "13-transfer/desktop"
+  ],
+  "example_quotes": [
+   "maybe introduce this concept to get buy-in from the learner first because I'm nervous they will get confused",
+   "transfer step: 'help them recall prior knowledge, and understand what the schema of construction means' \u2014 activate the owned construction before demanding production"
+  ]
+ },
+ {
+  "mode": "exercises show the whole set instead of chunking",
+  "description": "Exercise steps (recall especially) present all items at once with one detached input at the bottom, instead of chunking: one phrase at a time, the input adjacent to where the learner is looking, complete all N, then advance. Progressive disclosure applied to exercise structure \u2014 reduces visual search, keeps attempt and stimulus together, and unifies with the mobile swipe-sequential architecture (same principle, all viewports).",
+  "count": 1,
+  "example_ids": [
+   "19-recall-attempted/desktop"
+  ],
+  "example_quotes": [
+   "making this closer to where the user sees this visually\u2026 only do 1 phrase at a time and have them do all 11 and then hit next ('progressive disclosure' or potential chunking of exercises)"
+  ]
+ },
+ {
+  "mode": "onboarding lacks engagement scaffolding",
+  "description": "Onboarding/intake steps don't actively carry the learner through their cognitive load: no short feedback loops that pay back each action, and no motivational framing strong enough to supersede the effort of completing intake. Progressive disclosure + instant per-action response + why-this-is-worth-it framing, applied per section.",
+  "count": 2,
+  "example_ids": [
+   "02-assessment/desktop",
+   "03-plan/desktop"
+  ],
+  "example_quotes": [
+   "progressive disclosure and short feedback loops that engage the user's brain\u2026 overcome the cognitive load of doing this intake process",
+   "help the user overcome motivation that will supersede the cognitive load required to complete onboarding"
+  ]
+ },
+ {
+  "mode": "aside without a job",
+  "description": "The desktop aside carries superfluous filler on some screens (onboarding) while being genuinely useful on others (lesson steps) \u2014 it needs ONE consistent job app-wide. Owner's direction for that job: an in-context AI learning harness \u2014 the learner's own notes + Bonsai-27B running locally via WebGPU, skills/context baked in, NotebookLM-style. Positive exemplar: the preview step's method aside; negative: assessment/plan filler.",
+  "count": 7,
+  "example_ids": [
+   "02-assessment/desktop",
+   "03-plan/desktop",
+   "05-preview/desktop (positive exemplar)",
+   "16-today-complete/desktop",
+   "17-today-recall-paired/desktop",
+   "17-today-recall-paired/desktop",
+   "22-today-resurface/desktop"
+  ],
+  "example_quotes": [
+   "this is superflous is there a better more consistent use for this sidebar area that would benefit desktop and give mobile users a reason to come to desktop, maybe a section for their own notes and it ",
+   "sidebar should be repurposed",
+   "much more effective sidebar here compared to earlier onboarding sidebars\u2026 the AI harness idea\u2026 Bonsai27B via WebGPU and skills/context baked in similar to how NotebookLM is an effective harness for learning",
+   "similar sidebar feedback around utility here \u2014 day-complete aside also lacks the consistent job",
+   "'remove this text' drawn over the ENTIRE aside column + 'sidebar lacks utility here' \u2014 the current aside content is removable filler on Today as well; verdict hardening: strip the filler now, land the real job (notes/Bonsai harness) as the replacement"
+  ]
+ },
+ {
+  "mode": "state-truth",
+  "description": "UI states that contradict the learner's actual state on the same screen (stale day counter vs progress).",
+  "count": 4,
+  "example_ids": [
+   "17-today-recall-paired/desktop (accepted seed)",
+   "22-today-resurface/desktop"
+  ],
+  "example_quotes": [
+   "'wrong day' \u2014 second human confirmation of the stale day counter; promote to bug lane, verify derivation in code at synthesis"
+  ]
+ },
+ {
+  "mode": "dev-facing state leaking into learner UI",
+  "description": "Provenance/engineering disclosures rendered on the learning surface (e.g. 'draft synthesized voice (Thomas fr_FR) \u2014 native recording pending' under the preview stage). Honesty belongs in the product, but at the right altitude: settings/about or a first-run notice, not persistent copy inside the listening ritual.",
+  "count": 1,
+  "example_ids": [
+   "05-preview/desktop"
+  ],
+  "example_quotes": [
+   "not helpful outside of my dev environment"
+  ]
+ },
+ {
+  "mode": "session shell lacks mode identity",
+  "description": "The in-lesson header/chrome ('AU CAF\u00c9 \u00b7 STEP 1 \u00b7 LISTEN') reads as generic app chrome rather than signaling you've entered a distinct session mode. Either keep it strictly consistent with the app shell or commit the other way: style the whole lesson shell as a 'game mode' the learner visibly enters and exits \u2014 which pairs with the preview's dark stage and the character-world direction.",
+  "count": 1,
+  "example_ids": [
+   "05-preview/desktop"
+  ],
+  "example_quotes": [
+   "keep this consistent or update the style of how this is rendered to make this seem like its a 'game mode'"
+  ]
+ },
+ {
+  "mode": "mobile needs its own interaction architecture",
+  "description": "Mobile is currently a compressed port of desktop. Two rules emerged: (1) lesson steps are no-scroll, swipe-sequential full-viewport cards; scroll is reserved for rare, deliberate deep-dives. (2) OPEN QUESTION, the hard one: the finger-parallel-reading technique itself \u2014 pointing at both languages at once \u2014 may not be tenable on a narrow viewport at all; mobile may need a re-derivation of the parallel-reading method (e.g., thumb-anchored pair stepping, alternating reveal) rather than a shrunken spread. Decide the mobile-native form of the method before styling anything.",
+  "count": 2,
+  "example_ids": [
+   "05-preview/mobile",
+   "08-comprehension/mobile"
+  ],
+  "example_quotes": [
+   "the user wants no scrolling when in this part \u2014 we should focus on sequentially moving via swiping and then occasionally and sparingly\u2026 a deeper dive via scrolling\u2026 only when it's important to leave a lasting impression",
+   "what mobile application development would do to handle porting our instructional design theory about parallel reading\u2026 by pointing your finger to read. but is that really tenable for mobile."
+  ]
+ },
+ {
+  "mode": "unmarked hint text",
+  "description": "Informational, no-action text (interaction hints like 'Track both lines together. Tap a line to replay it.') renders as plain body copy indistinguishable from content. Hints need a distinct callout treatment \u2014 a visual grammar that says 'this is guidance for working the learning UX', separate from both content and controls.",
+  "count": 1,
+  "example_ids": [
+   "06-spread/desktop"
+  ],
+  "example_quotes": [
+   "signal information text with no action using a callout if I need a hint to work with the learning UX"
+  ]
+ },
+ {
+  "mode": "copy-logic",
+  "description": "Copy rendered false by layout/state (taglines above cards they claim don't exist).",
+  "count": 1,
+  "example_ids": [],
+  "example_quotes": []
+ },
+ {
+  "mode": "state-legibility",
+  "description": "A state is shown but not legible enough to act on (resurface card without the construction).",
+  "count": 1,
+  "example_ids": [],
+  "example_quotes": []
+ },
+ {
+  "mode": "composition",
+  "description": "Layout dead space / stranded CTAs at desktop widths.",
+  "count": 2,
+  "example_ids": [
+   "14-transfer-checked/desktop",
+   "20-compare-miss/desktop (accepted seed)"
+  ],
+  "example_quotes": [
+   "graded-result card placement: feedback lands below the mic, detached from the attempt it grades \u2014 'consider best practices around this placement'; its evidence-honesty small print also reads dev-voiced (overlaps dev-leak mode)"
+  ]
+ },
+ {
+  "mode": "transliteration-consistency",
+  "description": "Scaffold layer convention wobbles within a lesson.",
+  "count": 1,
+  "example_ids": [],
+  "example_quotes": []
+ },
+ {
+  "mode": "\u2605 creative direction: sprite world (time, days, constructions)",
+  "description": "Not a defect \u2014 a direction. A coherent sprite/character world spanning the app's core entities: time & days (plan durations, Today's day counter) AND constructions \u2014 each construction in the curriculum gets its own sprite identity, making the progress map, transfer prompts, and resurface cards populated by recognizable characters the learner collects capability with. The expressive counterpart of engagement scaffolding; must stay a world inside the calm method, not gamification chrome.",
+  "count": 3,
+  "example_ids": [
+   "03-plan/desktop",
+   "04-today-fresh/desktop",
+   "13-transfer/desktop"
+  ],
+  "example_quotes": [
+   "time is a concept that I personally play with a lot. could we create sprites",
+   "time and days should have sprites and maybe a character world",
+   "if this is an entity then we should also have sprites for constructions and the specific constructions in our curriculums"
+  ]
+ },
+ {
+  "mode": "\u2605 creative direction: learner-facing method wiki",
+  "description": "Not a defect \u2014 a direction. A dedicated learner-facing wiki for the taxonomy ('construction', waves, capability states) and the learning methodology, linked contextually from exercise surfaces for three jobs: (1) stuck, (2) go deeper, (3) quick on-the-fly reference. Becomes the destination that first-run concept intros and jargon terms link to; candidate home: the aside's AI-harness (Bonsai) could sit on top of it as context.",
+  "count": 1,
+  "example_ids": [
+   "13-transfer/desktop"
+  ],
+  "example_quotes": [
+   "a dedicated wiki for our taxonomy and learning methodology to link back to for learners who 1. get stuck 2. need to go deeper 3. need quick reference on-the-fly"
+  ]
+ },
+ {
+  "mode": "\u26a0 needs live verification",
+  "description": "Findings that may be capture artifacts rather than product defects \u2014 verify in the running app before ticketing.",
+  "count": 2,
+  "example_ids": [
+   "19-recall-attempted/desktop",
+   "19-recall-attempted/mobile"
+  ],
+  "example_quotes": [
+   "'out of place' on the sticky RECALL header rendered mid-page \u2014 likely a fullPage-screenshot artifact of position:sticky; verify live, else fix the capture rig",
+   "same 'out of place' band on the mobile capture \u2014 consistent with the sticky-header fullPage artifact; one live check covers both"
+  ]
+ }
+]
