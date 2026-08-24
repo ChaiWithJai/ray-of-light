@@ -19,6 +19,7 @@
 		brand = false,
 		nav = false,
 		wide = false,
+		session = false,
 		aside = undefined,
 		children
 	}: {
@@ -35,19 +36,40 @@
 		nav?: boolean;
 		/** Reading spreads get a wider measure. */
 		wide?: boolean;
+		/**
+		 * Session mode (#43): the in-lesson shell the learner visibly enters.
+		 * The header dims to the preview's stage tone with a warm footlight
+		 * hairline — one committed treatment across every step, and a clear
+		 * boundary between the app and being inside a session.
+		 */
+		session?: boolean;
 		aside?: Snippet;
 		children?: Snippet;
 	} = $props();
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<header class="sticky top-0 z-10 border-b border-line bg-surface/85 backdrop-blur">
+	<header
+		class={cn(
+			'sticky top-0 z-10 border-b backdrop-blur',
+			session ? 'border-stage-soft bg-stage/95 text-stage-text' : 'border-line bg-surface/85'
+		)}
+	>
 		<div class="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 sm:px-6">
 			{#if back}
 				<a
 					href={back}
-					aria-label={backKind === 'close' ? 'Leave and return' : 'Back'}
-					class="-ml-2 flex size-9 shrink-0 items-center justify-center rounded-full text-text-soft transition-colors outline-none hover:bg-line/40 hover:text-text focus-visible:ring-2 focus-visible:ring-brand"
+					aria-label={session
+						? 'Leave the session'
+						: backKind === 'close'
+							? 'Leave and return'
+							: 'Back'}
+					class={cn(
+						'-ml-2 flex size-9 shrink-0 items-center justify-center rounded-full transition-colors outline-none focus-visible:ring-2',
+						session
+							? 'text-stage-muted hover:bg-stage-soft/60 hover:text-stage-text focus-visible:ring-stage-text'
+							: 'text-text-soft hover:bg-line/40 hover:text-text focus-visible:ring-brand'
+					)}
 				>
 					{#if backKind === 'close'}<X size={18} />{:else}<ChevronLeft size={20} />{/if}
 				</a>
@@ -58,13 +80,27 @@
 				</span>
 			{/if}
 
-			<span class="min-w-0 truncate text-xs font-bold tracking-[0.14em] text-text-soft uppercase">
+			{#if session}
+				<span
+					aria-hidden="true"
+					class="anim-breathe size-1.5 shrink-0 rounded-full bg-caution"
+					title="In session"
+				></span>
+			{/if}
+			<span
+				class={cn(
+					'min-w-0 truncate text-xs font-bold tracking-[0.14em] uppercase',
+					session ? 'text-stage-text' : 'text-text-soft'
+				)}
+			>
 				{title}
 			</span>
 
 			<div class="ml-auto flex shrink-0 items-center gap-3">
 				{#if meta}
-					<span class="font-mono text-xs text-text-faint">{meta}</span>
+					<span class={cn('font-mono text-xs', session ? 'text-stage-muted' : 'text-text-faint')}>
+						{meta}
+					</span>
 				{/if}
 				{#if nav}<Nav variant="inline" />{/if}
 				{#if settingsLink}
@@ -78,6 +114,13 @@
 				{/if}
 			</div>
 		</div>
+		{#if session}
+			<!-- The footlights: the warm hairline that marks the stage's edge. -->
+			<div
+				aria-hidden="true"
+				class="h-[3px] w-full bg-gradient-to-r from-transparent via-caution/70 to-transparent"
+			></div>
+		{/if}
 	</header>
 
 	<div
