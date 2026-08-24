@@ -1,0 +1,4 @@
+{
+	"$comment": "Owner-review gate for generated sprite ink (issue #46 S2, D8). An ink asset in static/sprites/ink/ renders only when an approved record for it exists here. Record shape: { constructionId, assetSha256 (sha-256 of the exact PNG bytes), reviewer, date (YYYY-MM-DD), decision: 'approved', engine }. Workflow: docs/design/sprite-world.md §Status.",
+	"reviews": []
+}

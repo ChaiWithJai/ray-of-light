@@ -114,6 +114,13 @@
 	const arcCurrent = $derived(
 		assignedNewLesson && !newDone ? assignedNewLesson.index : (plan?.newLessonIndex ?? null)
 	);
+
+	// #46 S1: the day sprite draws real progress through the lessons — the sun's
+	// position on the arc is `planToday`'s own arithmetic, never the raw day
+	// count, so a missed day moves nothing (D10).
+	const workedLessons = $derived(
+		plan ? (plan.courseComplete ? course.lessons.length : (plan.newLessonIndex ?? 1) - 1) : 0
+	);
 </script>
 
 <svelte:head><title>Today</title></svelte:head>
@@ -122,7 +129,17 @@
 	<div class="anim-rise flex items-baseline justify-between gap-2 pt-2">
 		<W.Heading>Today</W.Heading>
 		{#if plan}
-			<span class="font-script text-xl text-text-soft">day {plan.dayNumber}</span>
+			<span class="flex items-center gap-1.5">
+				<!-- #46 S1: the day, drawn — same derived plan the text states -->
+				<W.DaySprite
+					dayNumber={plan.dayNumber}
+					{workedLessons}
+					lessonCount={course.lessons.length}
+					courseComplete={plan.courseComplete}
+					size={32}
+				/>
+				<span class="font-script text-xl text-text-soft">day {plan.dayNumber}</span>
+			</span>
 		{/if}
 	</div>
 

@@ -58,10 +58,21 @@
 	<W.Muted>
 		Build your sentence around this <W.Term id="construction">pattern</W.Term> you already know:
 	</W.Muted>
-	<W.Chip active class="self-start">{construction?.label ?? prompt.useConstruction}</W.Chip>
-	{#if construction}
-		<W.Muted class="text-2xs">{construction.gloss}</W.Muted>
-	{/if}
+	<!-- #46 S2: this is the construction's own moment — its character fronts the
+	     prompt at its honest derived stage, activating "you own this one". -->
+	<div class="flex items-center gap-2.5">
+		<W.Sprite
+			constructionId={prompt.useConstruction}
+			state={profile.stateOf(prompt.useConstruction)}
+			size={44}
+		/>
+		<div class="flex min-w-0 flex-col gap-0.5">
+			<W.Chip active class="self-start">{construction?.label ?? prompt.useConstruction}</W.Chip>
+			{#if construction}
+				<W.Muted class="text-2xs">{construction.gloss}</W.Muted>
+			{/if}
+		</div>
+	</div>
 
 	<W.AnswerField
 		bind:value={answer}

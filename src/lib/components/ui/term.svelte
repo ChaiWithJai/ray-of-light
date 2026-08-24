@@ -12,6 +12,9 @@
 	import type { Snippet } from 'svelte';
 	import { cn } from '$lib/utils.js';
 	import { glossaryEntry } from '$lib/content/wiki/index.js';
+	import { spriteCastEntry } from '$lib/content/sprite-cast.js';
+	import { profile } from '$lib/stores/profile.svelte.js';
+	import Sprite from './sprite.svelte';
 
 	let {
 		id,
@@ -25,6 +28,11 @@
 	} = $props();
 
 	const entry = $derived(glossaryEntry(id));
+	// #46 S2: a term that names a real cast member (a construction id in the
+	// sprite manifest) shows its character at the learner's honest derived
+	// stage. Method terms are not characters and never get one.
+	const castEntry = $derived(spriteCastEntry(id));
+	const castState = $derived(castEntry ? profile.stateOf(id) : null);
 </script>
 
 {#if entry}
@@ -49,6 +57,12 @@
 					{entry.term}
 				</div>
 				<p class="m-0 mt-1 text-xs leading-relaxed text-text-soft">{entry.oneLiner}</p>
+				{#if castEntry}
+					<div class="mt-2 flex items-center gap-2" data-testid="term-sprite-{id}">
+						<Sprite constructionId={id} state={castState} size={32} />
+						<span class="text-2xs text-text-faint">{castState ?? 'not yet met'}</span>
+					</div>
+				{/if}
 				<a
 					href="/wiki/glossary/{entry.id}"
 					class="mt-2 inline-block text-2xs font-bold text-brand-deep underline decoration-dotted underline-offset-2 outline-none hover:text-brand focus-visible:ring-2 focus-visible:ring-brand"

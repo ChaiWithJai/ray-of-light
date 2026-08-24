@@ -21,10 +21,12 @@ export default defineConfig({
 	],
 
 	test: {
-		// Playwright owns e2e/; vitest owns the unit suites next to their sources.
-		// Without this, vitest tries to run the Playwright spec and fails on its
-		// fixtures rather than on anything real.
-		include: ['src/**/*.{test,spec}.{js,ts}'],
+		// Playwright owns e2e/; vitest owns the unit suites next to their sources,
+		// plus the node-side pipeline suites in scripts/ (which need node builtins
+		// the app tsconfig deliberately excludes). Without this, vitest tries to
+		// run the Playwright spec and fails on its fixtures rather than on
+		// anything real.
+		include: ['src/**/*.{test,spec}.{js,ts}', 'scripts/**/*.{test,spec}.{mts,ts}'],
 		exclude: ['e2e/**', 'node_modules/**']
 	}
 });

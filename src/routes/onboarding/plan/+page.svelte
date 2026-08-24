@@ -76,12 +76,16 @@
 	</div>
 
 	<!-- #42: the commitment answers back — the session shape rebuilds from the
-	     minutes the moment they change. -->
+	     minutes the moment they change. #46 S1: and it answers back as a shape —
+	     the candle's height and notches are the chosen minutes, live. -->
 	{#key minutes}
-		<W.Muted class="anim-uncover text-xs">
-			A {minutes}-minute day splits into about {Math.round(minutes * 0.6)} minutes with the new
-			lesson and {Math.round(minutes * 0.4)} minutes of recall once the second wave opens.
-		</W.Muted>
+		<div class="anim-uncover flex items-center gap-3">
+			<W.DurationSprite {minutes} size={46} />
+			<W.Muted class="text-xs">
+				A {minutes}-minute day splits into about {Math.round(minutes * 0.6)} minutes with the new
+				lesson and {Math.round(minutes * 0.4)} minutes of recall once the second wave opens.
+			</W.Muted>
+		</div>
 	{/key}
 
 	<W.JourneyArc
