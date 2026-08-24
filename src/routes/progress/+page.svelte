@@ -19,6 +19,16 @@
 
 	const seen = $derived(rows.filter((r) => r.state !== null));
 	const completed = $derived(profile.completedLessons.length);
+
+	/** Learner-voiced, one-line definitions of the five capability states (D3). */
+	const STATE_MEANINGS: Record<(typeof CONSTRUCTION_STATES)[number], string> = {
+		exposed: "you've met it in a lesson",
+		recognized: 'you understand it when you hear or read it',
+		recalled: "you've produced it yourself from the English, after a delay",
+		stabilized: "you've recalled it again on separate days",
+		transferable: "you've used it in a brand-new situation of your own"
+	};
+	let showStateMeanings = $state(false);
 </script>
 
 <svelte:head><title>Progress</title></svelte:head>
@@ -28,18 +38,40 @@
 		<W.Heading>Progress</W.Heading>
 	</div>
 
-	<W.Muted>Capability, not lesson count. 5 states per construction:</W.Muted>
+	<W.Muted>
+		This page tracks what you can do with each phrase pattern you've met. Every pattern
+		climbs the same ladder as you show more with it:
+	</W.Muted>
 	<div class="flex flex-wrap items-center gap-[4px] text-2xs text-text-soft">
 		{#each CONSTRUCTION_STATES as state, i (state)}
 			{#if i > 0}<span>→</span>{/if}<span>{state}</span>
 		{/each}
+		<button
+			type="button"
+			class="ml-1 cursor-pointer rounded-full border border-line px-2 py-0.5 text-2xs text-text-soft outline-none hover:text-text focus-visible:ring-2 focus-visible:ring-brand"
+			aria-expanded={showStateMeanings}
+			onclick={() => (showStateMeanings = !showStateMeanings)}
+		>
+			{showStateMeanings ? 'hide meanings' : 'what these mean'}
+		</button>
 	</div>
+	{#if showStateMeanings}
+		<W.Card class="anim-uncover p-3">
+			<dl class="m-0 flex flex-col gap-1 text-2xs">
+				{#each CONSTRUCTION_STATES as state (state)}
+					<div class="flex gap-2">
+						<dt class="w-24 shrink-0 font-bold">{state}</dt>
+						<dd class="m-0 text-text-soft">{STATE_MEANINGS[state]}</dd>
+					</div>
+				{/each}
+			</dl>
+		</W.Card>
+	{/if}
 
 	{#if seen.length === 0}
 		<W.Card>
 			<W.Muted>
-				Nothing yet. Constructions appear here once you've met them in a lesson — not when
-				you finish one.
+				Nothing yet. Phrase patterns appear here as soon as you meet them inside a lesson.
 			</W.Muted>
 		</W.Card>
 	{:else}
@@ -60,8 +92,9 @@
 		<W.Card tone="warn">
 			<W.Muted class="text-2xs text-caution">
 				You've finished {completed}
-				{completed === 1 ? 'lesson' : 'lessons'}, but nothing is retrievable yet. That is
-				expected this early — and it is why there is no "completed" badge here.
+				{completed === 1 ? 'lesson' : 'lessons'}, and nothing is retrievable yet. That is
+				normal this early: retrieval strength grows when lessons return for recall a few
+				days after you first meet them.
 			</W.Muted>
 		</W.Card>
 	{/if}

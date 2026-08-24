@@ -48,8 +48,8 @@
 	{#if metIndex === 0}
 		<W.Card>
 			<W.Muted>
-				Nothing to talk with yet. Finish a lesson first — the partner is built only from
-				material you've met, so an empty course means an empty conversation.
+				Nothing to talk about yet. Finish a lesson first: your conversation partner speaks
+				only lines you have already met, so it grows as you do.
 			</W.Muted>
 		</W.Card>
 		<W.Button class="mt-auto" href="/today">Back to Today</W.Button>
@@ -79,8 +79,8 @@
 			</W.Button>
 		</div>
 
-		<W.Muted class="text-center text-2xs">
-			Stuck? Every phrase you need is in Phrases — {corpus.length} lines are in play.
-		</W.Muted>
+		<W.Hint>
+			Stuck? Every phrase you need is in Phrases. {corpus.length} lines are in play.
+		</W.Hint>
 	{/if}
 </W.Shell>

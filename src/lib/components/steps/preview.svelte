@@ -57,7 +57,10 @@
 
 		<div class="text-center">
 			<div class="font-display text-2xl font-semibold text-stage-text">Just listen.</div>
-			<div class="mt-1.5 text-sm text-stage-muted">No text yet — let your ears go first.</div>
+			<div class="mt-1.5 text-sm text-stage-muted">
+				Play the dialogue through twice, at any speed. Understanding can wait; for now, get
+				used to the sound.
+			</div>
 		</div>
 
 		{#if player.available}

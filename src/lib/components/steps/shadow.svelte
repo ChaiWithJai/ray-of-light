@@ -29,7 +29,7 @@
 	}
 </script>
 
-<W.Muted>Repeat right on the speaker's heels — chunk by chunk.</W.Muted>
+<W.Muted>Repeat each chunk right on the speaker's heels.</W.Muted>
 
 <W.Card tone="accent">
 	<W.Fr class="text-base">{line?.targetScript}</W.Fr>
@@ -45,7 +45,7 @@
 		</div>
 	{:else}
 		<W.Muted class="text-2xs">
-			No chunk boundaries authored for this line — shadow the whole line.
+			This line works as a single phrase: shadow it in one breath.
 		</W.Muted>
 	{/if}
 
@@ -62,9 +62,9 @@
 	/>
 </W.Card>
 
-<div class="text-center text-sm">
+<W.Hint>
 	▶ chunk … <b class="text-brand">your turn</b> … next chunk
-</div>
+</W.Hint>
 
 <W.MicButton />
 

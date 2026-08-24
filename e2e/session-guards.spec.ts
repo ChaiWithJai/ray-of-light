@@ -165,14 +165,14 @@ test('refresh on legitimate recall comparison preserves attempt-before-reveal', 
 	await page.goto('/today');
 	await page.getByRole('button', { name: 'Start recall' }).click();
 	await page.getByLabel('Your production').fill("Je voudrais un café, s'il vous plaît.");
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 	await expect(page).toHaveURL(/\/recall\/fr-01\/compare/);
 
 	await page.reload();
 	await expect(page.getByText("Je voudrais un café, s'il vous plaît.")).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Show the canonical line' })).toBeVisible();
-	await page.getByRole('button', { name: 'Show the canonical line' }).click();
-	await expect(page.getByText('That matches the canonical line.')).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Show the original line' })).toBeVisible();
+	await page.getByRole('button', { name: 'Show the original line' }).click();
+	await expect(page.getByText('That matches the original line.')).toBeVisible();
 });
 
 test('valid closure clears the session and records completion atomically', async ({ page }) => {

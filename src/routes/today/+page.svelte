@@ -126,7 +126,8 @@
 				<W.Pill active>{profile.activeSession.mode}</W.Pill>
 			</div>
 			<W.Muted>
-				Your unfinished session is saved at {profile.activeSession.currentStep}.
+				You left off at the {profile.activeSession.currentStep} step. Everything you did is
+				saved, so you can pick up right where you stopped.
 			</W.Muted>
 			<W.Button
 				tone="primary"
@@ -149,14 +150,16 @@
 	{:else if assignmentComplete}
 		<W.Card tone="good" class="anim-rise anim-d1 p-5">
 			<div class="font-display text-xl font-semibold text-insight">Today's session complete</div>
-			<W.Muted>Your next two-wave assignment will be prepared tomorrow.</W.Muted>
+			<W.Muted>
+				Tomorrow brings the next lesson, plus an earlier one to say from memory.
+			</W.Muted>
 		</W.Card>
 	{:else if plan.courseComplete && !assignedRecallLesson}
 		<W.Card tone="good" class="anim-rise anim-d1 p-5">
 			<div class="font-display text-xl font-semibold text-insight">Course complete</div>
 			<W.Muted>
-				You've worked through all {course.lessons.length} lessons. Progress now lives in what
-				you can still retrieve — see Progress.
+				You've worked through all {course.lessons.length} lessons. From here, growth lives in
+				what you can still retrieve; the Progress page shows it.
 			</W.Muted>
 			<W.Button class="mt-1.5" onclick={() => goto('/progress')}>
 				See what stuck
@@ -180,8 +183,8 @@
 				</div>
 				<W.Muted>
 					{assignedNewLesson.kind === 'synthesis'
-						? 'Nothing new — only reassembly'
-						: 'Passive procedure: listen, read, retrieve'}
+						? 'A review session: you already know every piece; today you reassemble them.'
+						: 'A guided session: listen to the dialogue, read both languages side by side, then try a few lines yourself.'}
 				</W.Muted>
 				<W.Button
 					tone="primary"
@@ -214,7 +217,10 @@
 						{assignedRecallLesson.title}
 					</div>
 				</div>
-				<W.Muted>Active wave: say it from the English — from memory.</W.Muted>
+				<W.Muted>
+					You worked through this lesson a few days ago. Today, say its lines in
+					{profile.language === 'ta' ? 'Tamil' : 'French'} from the English, from memory.
+				</W.Muted>
 				<W.Button
 					class="mt-1.5"
 					onclick={() =>
@@ -225,9 +231,6 @@
 			</W.Card>
 		{/if}
 
-		<W.Muted class="anim-rise anim-d3 pt-2 text-center">
-			Nothing else to choose. That's the point.
-		</W.Muted>
 	{/if}
 
 	{#if plan && !profile.activeSession && resurfaceLesson}
@@ -253,7 +256,7 @@
 				{resurfaceCount === 1 ? 'A line' : `${resurfaceCount} lines`} you stumbled on {resurfaceCount ===
 				1
 					? 'is'
-					: 'are'} due for another retrieval — from memory, no judgement.
+					: 'are'} ready for another try. Say it from memory; a rough attempt still counts.
 			</W.Muted>
 			<W.Button
 				class="mt-1.5"

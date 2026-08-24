@@ -73,7 +73,7 @@ test('a correct active-recall attempt persists recall-correct evidence', async (
 	await startRecall(page, 'fr-02');
 	await expect(page.getByText(/I would like to book a room for two nights/)).toBeVisible();
 	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 
 	await expect(page).toHaveURL(/\/recall\/fr-02\/compare/);
 	const evidence = await persistedEvidence(page);
@@ -82,10 +82,10 @@ test('a correct active-recall attempt persists recall-correct evidence', async (
 		'fr.pour-duree'
 	]);
 	expect(evidence.every((event) => event.kind === 'recall-correct' && !event.hinted)).toBe(true);
-	await page.getByRole('button', { name: 'Show the canonical line' }).click();
+	await page.getByRole('button', { name: 'Show the original line' }).click();
 	await expect(
 		page
-			.getByText('CANONICAL ▶')
+			.getByText('THE ORIGINAL ▶')
 			.locator('..')
 			.getByText('Je voudrais réserver une chambre pour deux nuits.', { exact: true })
 	).toBeVisible();
@@ -95,7 +95,7 @@ test('a nonblank wrong active-recall attempt persists incorrect evidence', async
 	await onboard(page);
 	await startRecall(page, 'fr-02');
 	await page.getByLabel('Your production').fill('Bonjour, monsieur.');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 
 	await expect(page).toHaveURL(/\/recall\/fr-02\/compare/);
 	const evidence = await persistedEvidence(page);
@@ -106,10 +106,10 @@ test('a nonblank wrong active-recall attempt persists incorrect evidence', async
 	expect(evidence.every((event) => event.kind === 'attempt-incorrect' && !event.hinted)).toBe(
 		true
 	);
-	await page.getByRole('button', { name: 'Show the canonical line' }).click();
+	await page.getByRole('button', { name: 'Show the original line' }).click();
 	await expect(
 		page
-			.getByText('CANONICAL ▶')
+			.getByText('THE ORIGINAL ▶')
 			.locator('..')
 			.getByText('Je voudrais réserver une chambre pour deux nuits.', { exact: true })
 	).toBeVisible();
@@ -120,7 +120,7 @@ test('a hinted accepted answer is recorded but grants no unhinted recall', async
 	await startRecall(page, 'fr-02');
 	await page.getByRole('button', { name: 'hint: first word' }).click();
 	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 
 	const evidence = await persistedEvidence(page);
 	expect(evidence.map((event) => event.constructionId)).toEqual([
@@ -135,7 +135,7 @@ test('an authored Tamil transliteration is accepted and compared as accepted', a
 	await startRecall(page, 'ta-02', 'ta');
 	await expect(page.getByText('Say it in Tamil: "Do you have a room?"', { exact: true })).toBeVisible();
 	await page.getByLabel('Your production').fill('room irukkā');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 
 	expect(await persistedEvidence(page)).toEqual([
 		expect.objectContaining({
@@ -144,18 +144,18 @@ test('an authored Tamil transliteration is accepted and compared as accepted', a
 			hinted: false
 		})
 	]);
-	await page.getByRole('button', { name: 'Show the canonical line' }).click();
-	const acceptedCard = page.getByText('ACCEPTED FORM ▶').locator('..');
+	await page.getByRole('button', { name: 'Show the original line' }).click();
+	const acceptedCard = page.getByText('ALSO ACCEPTED ▶').locator('..');
 	await expect(acceptedCard).toBeVisible();
 	await expect(acceptedCard.getByText('room irukkā', { exact: true })).toBeVisible();
-	await expect(page.getByText('Canonical script: ரூம் இருக்கா?')).toBeVisible();
+	await expect(page.getByText('The lesson writes it: ரூம் இருக்கா?')).toBeVisible();
 });
 
 test('rapid duplicate recall submission appends one evidence batch', async ({ page }) => {
 	await onboard(page);
 	await startRecall(page, 'fr-02');
 	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).evaluate((button) => {
+	await page.getByRole('button', { name: /Compare with the original line/ }).evaluate((button) => {
 		(button as HTMLButtonElement).click();
 		(button as HTMLButtonElement).click();
 	});

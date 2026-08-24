@@ -8,6 +8,7 @@ import Diff from './diff.svelte';
 import En from './en.svelte';
 import Fr from './fr.svelte';
 import Heading from './heading.svelte';
+import Hint from './hint.svelte';
 import MicButton from './mic-button.svelte';
 import Muted from './muted.svelte';
 import Nav from './nav.svelte';
@@ -32,6 +33,7 @@ export {
 	En,
 	Fr,
 	Heading,
+	Hint,
 	MicButton,
 	Muted,
 	Nav,

@@ -126,12 +126,13 @@
 			<div class="flex flex-col gap-4 border-l border-line pl-6">
 				<div>
 					<div class="text-2xs font-bold tracking-[0.14em] text-text-faint uppercase">
-						Active wave
+						Recall session
 					</div>
 					<div class="font-display text-lg leading-tight font-semibold">{lesson.title}</div>
 					<W.Muted class="mt-1 text-xs">
-						Produce from the English, then diagnose the difference yourself. A hinted
-						retrieval is real information — but it is not `recalled`.
+						Say the line from the English first, then compare it with the original and
+						spot the differences yourself. If you take a hint, the attempt still counts
+						as useful practice.
 					</W.Muted>
 				</div>
 				<ol class="m-0 flex list-none flex-col gap-1 p-0" aria-label="Session steps">

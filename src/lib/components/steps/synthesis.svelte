@@ -43,4 +43,4 @@
 </W.Card>
 
 <W.Button tone="primary" onclick={onDone}>Perform it 🎙</W.Button>
-<W.Muted class="text-center">nothing new to learn today — only reassembly</W.Muted>
+<W.Muted class="text-center">nothing new to learn today, only reassembly</W.Muted>

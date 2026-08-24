@@ -99,7 +99,8 @@
 </script>
 
 <W.Muted class="text-center">
-	You read this in lesson {daysAgo}. Say it in {lesson.language === 'ta' ? 'Tamil' : 'French'}.
+	You met this line in lesson {daysAgo}. Now say it in
+	{lesson.language === 'ta' ? 'Tamil' : 'French'}, using the English as your cue.
 </W.Muted>
 
 {#if recallPrompt}
@@ -154,7 +155,7 @@
 {#if hinted}
 	<W.Card tone="warn">
 		<W.Muted class="text-xs text-caution">
-			Hint used — this line won't count as recalled.
+			You used a hint, so this attempt counts as practice rather than recall.
 		</W.Muted>
 		<W.Fr class="text-sm">
 			{showReveal
@@ -170,5 +171,5 @@
 	disabled={!hasAttempt || submitted}
 	onclick={produce}
 >
-	Compare with the canonical line →
+	Compare with the original line →
 </W.Button>

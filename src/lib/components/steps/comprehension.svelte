@@ -72,7 +72,7 @@
 
 	{#if picked === null}
 		<W.Chip class="mx-auto" onclick={() => (peeked = true)}>
-			{peeked ? 'hint used — this one won’t count' : 'peek (counts as a hint)'}
+			{peeked ? 'hint used, so this one counts as practice' : 'peek (counts as a hint)'}
 		</W.Chip>
 		{#if peeked}
 			<W.Card>

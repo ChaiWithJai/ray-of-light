@@ -44,11 +44,11 @@
 	</div>
 	<div class="font-display text-2xl font-semibold text-stage-text">{lesson.title}</div>
 	<div class="mt-1 font-script text-lg text-stage-muted">
-		that's the day's work — the rest happens while you sleep
+		that's the day's work; the rest happens while you sleep
 	</div>
 </div>
 
-<W.Heading class="anim-rise anim-d1 pt-2 text-xl">Before you go —</W.Heading>
+<W.Heading class="anim-rise anim-d1 pt-2 text-xl">Before you go</W.Heading>
 
 <W.Card class="anim-rise anim-d2">
 	<div class="text-sm font-bold">I understood the dialogue</div>
@@ -72,7 +72,8 @@
 </W.Card>
 
 <W.Muted class="anim-rise anim-d3">
-	Your ratings tune when lines resurface — be honest, not kind.
+	Rate what actually happened: your honest answers decide when these lines come back for
+	review, at the moment that helps you most.
 </W.Muted>
 
 <W.Button tone="primary" class="anim-rise anim-d4 mt-auto" onclick={finish}>

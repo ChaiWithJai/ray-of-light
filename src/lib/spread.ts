@@ -30,7 +30,7 @@ const SUPPORT: Record<SpreadState, SpreadSupport> = {
 		targetVisible: false,
 		sourceVisible: false,
 		audio: 'playing',
-		instruction: 'Just listen. No text yet — let your ears go first.'
+		instruction: 'Just listen, and let the voices become familiar.'
 	},
 	'meaning-orientation': {
 		targetVisible: false,
@@ -54,7 +54,7 @@ const SUPPORT: Record<SpreadState, SpreadSupport> = {
 		targetVisible: true,
 		sourceVisible: false,
 		audio: 'segmented',
-		instruction: "Repeat right on the speaker's heels — chunk by chunk."
+		instruction: "Repeat each chunk right on the speaker's heels."
 	},
 	comprehension: {
 		targetVisible: true,

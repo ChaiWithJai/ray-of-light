@@ -9,11 +9,31 @@
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	const MINUTES: DailyMinutes[] = [15, 25, 40];
-	const GOALS: { id: LearningGoal; label: string }[] = [
-		{ id: 'travel', label: 'Travel' },
-		{ id: 'family', label: 'Family' },
-		{ id: 'work', label: 'Work' },
-		{ id: 'reading', label: 'Reading' }
+	const GOALS: { id: LearningGoal; label: string; guidance: string }[] = [
+		{
+			id: 'travel',
+			label: 'Travel',
+			guidance:
+				'Treat each dialogue as a rehearsal for the real moment: ordering, asking the way, booking a room.'
+		},
+		{
+			id: 'family',
+			label: 'Family',
+			guidance:
+				'Say your lines aloud as if to a relative; real conversation is your finish line, so speaking practice matters most.'
+		},
+		{
+			id: 'work',
+			label: 'Work',
+			guidance:
+				'Give extra attention to the polite, formal turns in each dialogue; those registers carry professional conversation.'
+		},
+		{
+			id: 'reading',
+			label: 'Reading',
+			guidance:
+				'Linger on the parallel text: reading both languages side by side is the skill you are building.'
+		}
 	];
 
 	let minutes = $state<DailyMinutes>(25);
@@ -59,43 +79,46 @@
 		<div class="text-sm font-semibold">Your projected path</div>
 		<div class="mt-1.5 flex items-center gap-2">
 			<div class="flex-1">
-				<W.Rail value={100} label="Passive wave" />
-				<W.Muted class="mt-1">L1–{activeWaveAt - 1} passive wave</W.Muted>
+				<W.Rail value={100} label="Absorbing" />
+				<W.Muted class="mt-1">L1–{activeWaveAt - 1} · listen and read</W.Muted>
 			</div>
 			<div class="flex-1">
-				<W.Rail value={0} label="Active wave" />
-				<W.Muted class="mt-1">L{activeWaveAt}+ active wave</W.Muted>
+				<W.Rail value={0} label="Producing" />
+				<W.Muted class="mt-1">L{activeWaveAt}+ · recall from memory</W.Muted>
 			</div>
 		</div>
 		<W.Muted class="mt-2">
-			From lesson {activeWaveAt} you'll start producing earlier lessons from English — from
-			memory. That's {passivePercent}% of the way in.
+			For the first {activeWaveAt - 1} lessons you absorb: listening and reading. From lesson
+			{activeWaveAt}, about {passivePercent}% of the way in, earlier lessons start coming back
+			for you to say from memory.
 		</W.Muted>
 	</W.Card>
 
 	<W.Card>
-		<div class="text-sm font-semibold">Goal</div>
+		<div class="text-sm font-semibold">What are you learning for?</div>
 		<div class="flex flex-wrap items-center gap-2">
 			{#each GOALS as g (g.id)}
 				<W.Chip active={goal === g.id} onclick={() => (goal = g.id)}>{g.label}</W.Chip>
 			{/each}
 		</div>
+		{#each GOALS as g (g.id)}
+			{#if goal === g.id}
+				<W.Muted class="text-xs">{g.guidance}</W.Muted>
+			{/if}
+		{/each}
 	</W.Card>
 
 	{#if entryLessonIndex > 1 && entryLesson}
 		<W.Card tone="parchment">
 			<div class="text-sm font-semibold">Your starting point</div>
 			<W.Muted>
-				The assessment places you at lesson {entryLessonIndex} · {entryLesson.title}. Earlier
-				lessons won't be scheduled — and nothing is marked as learned that you haven't shown.
+				The assessment places you at lesson {entryLessonIndex} · {entryLesson.title}. Your
+				plan begins there, and your progress record starts from what you show along the way.
 			</W.Muted>
 		</W.Card>
 	{/if}
 
-	<W.Muted>Every 7th lesson is a review day — that's built in, not extra.</W.Muted>
+	<W.Muted>Every 7th lesson is a review day, already built into the plan.</W.Muted>
 
 	<W.Button tone="primary" onclick={commit}>Set my plan</W.Button>
-	<W.Muted class="text-center text-2xs">
-		Commitment sets pacing. No streaks, no confetti.
-	</W.Muted>
 </W.Shell>
