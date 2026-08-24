@@ -10,6 +10,7 @@ import En from './en.svelte';
 import Fr from './fr.svelte';
 import Heading from './heading.svelte';
 import Hint from './hint.svelte';
+import JourneyArc from './journey-arc.svelte';
 import MicButton from './mic-button.svelte';
 import Muted from './muted.svelte';
 import Nav from './nav.svelte';
@@ -36,6 +37,7 @@ export {
 	Fr,
 	Heading,
 	Hint,
+	JourneyArc,
 	MicButton,
 	Muted,
 	Nav,

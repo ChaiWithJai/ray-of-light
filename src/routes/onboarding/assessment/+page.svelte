@@ -46,6 +46,11 @@
 
 	<W.ConceptIntro technique="assessment" />
 
+	<W.JourneyArc
+		language={profile.language}
+		caption="This is the path your starting point sits on. The samples below choose the lesson where you begin."
+	/>
+
 	<W.Card>
 		<div class="flex items-center gap-2">
 			<W.PlayButton label="Play the sample" disabled={sample.audio.pending} />

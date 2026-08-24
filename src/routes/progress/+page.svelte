@@ -4,7 +4,7 @@
 	 * from the evidence log — there is no stored progress field to render (AC 10).
 	 */
 	import * as W from '$lib/components/ui/index.js';
-	import { COURSES } from '$lib/content/index.js';
+	import { COURSES, getLesson } from '$lib/content/index.js';
 	import { CONSTRUCTION_STATES, stateRank } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
@@ -29,6 +29,14 @@
 		transferable: "you've used it in a brand-new situation of your own"
 	};
 	let showStateMeanings = $state(false);
+
+	// Journey orientation (#37): tie the constructions to the lesson path they
+	// came from. Everything derives from evidence and the course itself.
+	const completedIndexes = $derived(
+		profile.completedLessons
+			.map((id) => getLesson(profile.language, id)?.index)
+			.filter((index): index is number => typeof index === 'number')
+	);
 </script>
 
 <svelte:head><title>Progress</title></svelte:head>
@@ -37,6 +45,15 @@
 	<div class="anim-rise pt-2">
 		<W.Heading>Progress</W.Heading>
 	</div>
+
+	<W.JourneyArc
+		language={profile.language}
+		{completedIndexes}
+		class="anim-rise anim-d1"
+		caption={seen.length > 0
+			? `Your ${seen.length} ${seen.length === 1 ? 'pattern' : 'patterns'} so far come from the ${completedIndexes.length} ${completedIndexes.length === 1 ? 'lesson' : 'lessons'} you've worked. The rest of the path holds the remaining ${course.constructions.size - seen.length}.`
+			: `The path ahead holds ${course.constructions.size} phrase patterns. Each one appears here as you meet it.`}
+	/>
 
 	<W.Muted>
 		This page tracks what you can do with each phrase pattern you've met. Every pattern

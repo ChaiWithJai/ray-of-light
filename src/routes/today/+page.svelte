@@ -103,6 +103,16 @@
 			? getConstruction(profile.language, dueResurface[0].constructionId)
 			: undefined
 	);
+
+	// The journey arc renders only what the schedule and evidence agree on.
+	const completedIndexes = $derived(
+		profile.completedLessons
+			.map((id) => getLesson(profile.language, id)?.index)
+			.filter((index): index is number => typeof index === 'number')
+	);
+	const arcCurrent = $derived(
+		assignedNewLesson && !newDone ? assignedNewLesson.index : (plan?.newLessonIndex ?? null)
+	);
 </script>
 
 <svelte:head><title>Today</title></svelte:head>
@@ -114,6 +124,18 @@
 			<span class="font-script text-xl text-text-soft">day {plan.dayNumber}</span>
 		{/if}
 	</div>
+
+	{#if plan}
+		<W.JourneyArc
+			language={profile.language}
+			current={arcCurrent}
+			{completedIndexes}
+			class="anim-rise anim-d1"
+			caption={assignmentComplete
+				? `Today's work is done: ${completedIndexes.length} of ${course.lessons.length} lessons worked through. The path continues tomorrow.`
+				: ''}
+		/>
+	{/if}
 
 	{#if !plan || (!assignment && !profile.activeSession)}
 		<W.Muted>Loading your plan…</W.Muted>
