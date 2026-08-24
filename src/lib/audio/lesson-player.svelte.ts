@@ -129,6 +129,22 @@ export class LessonPlayer {
 		this.#play(a);
 	}
 
+	/**
+	 * Play from line i's start through to the end of the dialogue — the
+	 * audio-led auto driver's resume point (mobile-method spike, Model D):
+	 * re-engaging "listen" continues the karaoke from the pair the learner is
+	 * on rather than restarting the recording from the top.
+	 */
+	playFrom(i: number, onEnded?: () => void) {
+		const a = this.#ensure();
+		const line = this.#lesson.lines[i];
+		if (!a || line?.audio.startMs === undefined) return;
+		this.#stopAtMs = null;
+		this.#onEnded = onEnded ?? null;
+		a.currentTime = line.audio.startMs / 1000;
+		this.#play(a);
+	}
+
 	/** Play a single line's slice (AC 3: audio can follow the active line). */
 	playLine(i: number, onEnded?: () => void) {
 		const a = this.#ensure();

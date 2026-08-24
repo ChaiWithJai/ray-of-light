@@ -298,27 +298,28 @@ test('a one-finger vertical drag on the stack neither steps, plays, nor records'
 	const callsBefore = (await playCalls(page)).length;
 	const evidenceBefore = await evidenceCount(page);
 
-	// Vertical motion is reserved for the page — it must not read as tracking.
-	await dispatchTouches(cdp, 'touchStart', [touch(x, yMid, 1)]);
-	await dispatchTouches(cdp, 'touchMove', [touch(x, yMid - 160, 1)]);
-	await dispatchTouches(cdp, 'touchEnd', []);
-	await expect(page.getByRole('option', { selected: true })).toContainText('Bonjour');
-	expect((await playCalls(page)).length).toBe(callsBefore);
-	expect(await evidenceCount(page)).toBe(evidenceBefore);
-
 	// A horizontal swipe is the sequential step: next pair, audio follows.
-	// (The vertical drag scrolled the page — settle back and re-measure.)
-	await page.evaluate(() => window.scrollTo(0, 0));
-	const settled = await page.getByRole('option').first().boundingBox();
-	expect(settled).toBeTruthy();
-	if (!settled) return;
-	const sx = settled.x + settled.width / 2;
-	const sy = settled.y + settled.height / 2;
-	await dispatchTouches(cdp, 'touchStart', [touch(sx + 100, sy, 1)]);
-	await dispatchTouches(cdp, 'touchMove', [touch(sx - 100, sy, 1)]);
+	// (Swipe first: the page is unscrolled, so the measured card coordinates
+	// are live. The vertical drag below hands the gesture to the browser as a
+	// scroll whose fling can keep moving the page after it ends — any touch
+	// aimed with pre-drag coordinates could land on whatever scrolled under
+	// them, so the scrolling gesture must come last.)
+	await dispatchTouches(cdp, 'touchStart', [touch(x + 100, yMid, 1)]);
+	await dispatchTouches(cdp, 'touchMove', [touch(x - 100, yMid, 1)]);
 	await dispatchTouches(cdp, 'touchEnd', []);
 	await expect(page.getByRole('option', { selected: true })).toContainText('Vous désirez');
 	await expect.poll(async () => (await playCalls(page)).length).toBe(callsBefore + 1);
+	const callsAfterSwipe = (await playCalls(page)).length;
+	const evidenceAfterSwipe = await evidenceCount(page);
+
+	// Vertical motion is reserved for the page — it must not read as tracking:
+	// no step, no audio, no evidence.
+	await dispatchTouches(cdp, 'touchStart', [touch(x, yMid, 1)]);
+	await dispatchTouches(cdp, 'touchMove', [touch(x, yMid - 160, 1)]);
+	await dispatchTouches(cdp, 'touchEnd', []);
+	await expect(page.getByRole('option', { selected: true })).toContainText('Vous désirez');
+	expect((await playCalls(page)).length).toBe(callsAfterSwipe);
+	expect(await evidenceCount(page)).toBe(evidenceAfterSwipe);
 });
 
 test('cover states hold while stepping the stack', async ({ page }) => {
