@@ -41,7 +41,11 @@
 
 	const total = $derived(COURSES[profile.language].lessons.length);
 	const activeWaveAt = $derived(POC_WAVE_CONFIG.activeWaveStartsAtLesson);
-	const passivePercent = $derived(Math.round(((activeWaveAt - 1) / total) * 100));
+	// R2 batch 1: the arc is the single path visualization; the wave-split
+	// explanation lives in its caption, derived from the real wave config.
+	const waveCaption = $derived(
+		`For the first ${activeWaveAt - 1} lessons you absorb: listening and reading. From lesson ${activeWaveAt}, earlier lessons come back for you to say from memory.`
+	);
 
 	// Placement from the entry assessment. It only moves where the passive wave
 	// starts — the skipped lessons stay unworked and grant no evidence.
@@ -92,28 +96,9 @@
 		language={profile.language}
 		current={entryLessonIndex}
 		caption={entryLessonIndex > 1
-			? `Your assessment placed the ring at lesson ${entryLessonIndex}; the plan you set here walks the rest of the path.`
-			: 'Your plan walks this whole path, one lesson a day.'}
+			? `Your assessment placed the ring at lesson ${entryLessonIndex}. ${waveCaption}`
+			: `Your plan walks this whole path, one lesson a day. ${waveCaption}`}
 	/>
-
-	<W.Card>
-		<div class="text-sm font-semibold">Your projected path</div>
-		<div class="mt-1.5 flex items-center gap-2">
-			<div class="flex-1">
-				<W.Rail value={100} label="Absorbing" />
-				<W.Muted class="mt-1">L1–{activeWaveAt - 1} · listen and read</W.Muted>
-			</div>
-			<div class="flex-1">
-				<W.Rail value={0} label="Producing" />
-				<W.Muted class="mt-1">L{activeWaveAt}+ · recall from memory</W.Muted>
-			</div>
-		</div>
-		<W.Muted class="mt-2">
-			For the first {activeWaveAt - 1} lessons you absorb: listening and reading. From lesson
-			{activeWaveAt}, about {passivePercent}% of the way in, earlier lessons start coming back
-			for you to say from memory.
-		</W.Muted>
-	</W.Card>
 
 	<W.Card>
 		<div class="text-sm font-semibold">What are you learning for?</div>
