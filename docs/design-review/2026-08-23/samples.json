@@ -1,0 +1,258 @@
+[
+ {
+  "id": "01-language",
+  "order": 0,
+  "flow": "onboarding",
+  "title": "Language choice \u2014 identity cards",
+  "desktop": "shots/01-language.desktop.png",
+  "mobile": "shots/01-language.mobile.png"
+ },
+ {
+  "id": "02-assessment",
+  "order": 1,
+  "flow": "onboarding",
+  "title": "Entry assessment (untouched)",
+  "desktop": "shots/02-assessment.desktop.png",
+  "mobile": "shots/02-assessment.mobile.png"
+ },
+ {
+  "id": "03-plan",
+  "order": 2,
+  "flow": "onboarding",
+  "title": "Daily plan \u2014 default start",
+  "desktop": "shots/03-plan.desktop.png",
+  "mobile": "shots/03-plan.mobile.png"
+ },
+ {
+  "id": "04-today-fresh",
+  "order": 3,
+  "flow": "today",
+  "title": "Today, first ever visit",
+  "desktop": "shots/04-today-fresh.desktop.png",
+  "mobile": "shots/04-today-fresh.mobile.png"
+ },
+ {
+  "id": "05-preview",
+  "order": 4,
+  "flow": "lesson",
+  "title": "Audio-first preview (the dark stage)",
+  "desktop": "shots/05-preview.desktop.png",
+  "mobile": "shots/05-preview.mobile.png"
+ },
+ {
+  "id": "06-spread",
+  "order": 5,
+  "flow": "lesson",
+  "title": "Parallel spread \u2014 both columns",
+  "desktop": "shots/06-spread.desktop.png",
+  "mobile": "shots/06-spread.mobile.png"
+ },
+ {
+  "id": "07-spread-covered",
+  "order": 6,
+  "flow": "lesson",
+  "title": "Spread with EN covered",
+  "desktop": "shots/07-spread-covered.desktop.png",
+  "mobile": "shots/07-spread-covered.mobile.png"
+ },
+ {
+  "id": "08-comprehension",
+  "order": 7,
+  "flow": "lesson",
+  "title": "Comprehension check",
+  "desktop": "shots/08-comprehension.desktop.png",
+  "mobile": "shots/08-comprehension.mobile.png"
+ },
+ {
+  "id": "09-shadow",
+  "order": 8,
+  "flow": "lesson",
+  "title": "Echo/shadow practice",
+  "desktop": "shots/09-shadow.desktop.png",
+  "mobile": "shots/09-shadow.mobile.png"
+ },
+ {
+  "id": "10-translate",
+  "order": 9,
+  "flow": "lesson",
+  "title": "Translation exercise, pre-attempt",
+  "desktop": "shots/10-translate.desktop.png",
+  "mobile": "shots/10-translate.mobile.png"
+ },
+ {
+  "id": "11-translate-revealed",
+  "order": 10,
+  "flow": "lesson",
+  "title": "Translation after check (reveal)",
+  "desktop": "shots/11-translate-revealed.desktop.png",
+  "mobile": "shots/11-translate-revealed.mobile.png"
+ },
+ {
+  "id": "12-completion",
+  "order": 11,
+  "flow": "lesson",
+  "title": "Completion exercise",
+  "desktop": "shots/12-completion.desktop.png",
+  "mobile": "shots/12-completion.mobile.png"
+ },
+ {
+  "id": "13-transfer",
+  "order": 12,
+  "flow": "lesson",
+  "title": "Transfer challenge, pre-attempt",
+  "desktop": "shots/13-transfer.desktop.png",
+  "mobile": "shots/13-transfer.mobile.png"
+ },
+ {
+  "id": "14-transfer-checked",
+  "order": 13,
+  "flow": "lesson",
+  "title": "Transfer graded against criteria",
+  "desktop": "shots/14-transfer-checked.desktop.png",
+  "mobile": "shots/14-transfer-checked.mobile.png"
+ },
+ {
+  "id": "15-closure",
+  "order": 14,
+  "flow": "lesson",
+  "title": "Lesson closure / calibration",
+  "desktop": "shots/15-closure.desktop.png",
+  "mobile": "shots/15-closure.mobile.png"
+ },
+ {
+  "id": "16-today-complete",
+  "order": 15,
+  "flow": "today",
+  "title": "Today after finishing the session",
+  "desktop": "shots/16-today-complete.desktop.png",
+  "mobile": "shots/16-today-complete.mobile.png"
+ },
+ {
+  "id": "17-today-recall-paired",
+  "order": 16,
+  "flow": "recall",
+  "title": "Day 4 \u2014 new lesson + recall paired",
+  "desktop": "shots/17-today-recall-paired.desktop.png",
+  "mobile": "shots/17-today-recall-paired.mobile.png"
+ },
+ {
+  "id": "18-recall",
+  "order": 17,
+  "flow": "recall",
+  "title": "Active recall \u2014 English cue, target covered",
+  "desktop": "shots/18-recall.desktop.png",
+  "mobile": "shots/18-recall.mobile.png"
+ },
+ {
+  "id": "19-recall-attempted",
+  "order": 18,
+  "flow": "recall",
+  "title": "Recall with an attempt typed",
+  "desktop": "shots/19-recall-attempted.desktop.png",
+  "mobile": "shots/19-recall-attempted.mobile.png"
+ },
+ {
+  "id": "20-compare-miss",
+  "order": 19,
+  "flow": "recall",
+  "title": "Comparison after a WRONG attempt",
+  "desktop": "shots/20-compare-miss.desktop.png",
+  "mobile": "shots/20-compare-miss.mobile.png"
+ },
+ {
+  "id": "21-compare-revealed",
+  "order": 20,
+  "flow": "recall",
+  "title": "Canonical line revealed after attempt",
+  "desktop": "shots/21-compare-revealed.desktop.png",
+  "mobile": "shots/21-compare-revealed.mobile.png"
+ },
+ {
+  "id": "22-today-resurface",
+  "order": 21,
+  "flow": "resurface",
+  "title": "Today with a due 'Worth another look' card",
+  "desktop": "shots/22-today-resurface.desktop.png",
+  "mobile": "shots/22-today-resurface.mobile.png"
+ },
+ {
+  "id": "23-progress",
+  "order": 22,
+  "flow": "destinations",
+  "title": "Progress map \u2014 capability states",
+  "desktop": "shots/23-progress.desktop.png",
+  "mobile": "shots/23-progress.mobile.png"
+ },
+ {
+  "id": "24-book",
+  "order": 23,
+  "flow": "destinations",
+  "title": "Book \u2014 course listing",
+  "desktop": "shots/24-book.desktop.png",
+  "mobile": "shots/24-book.mobile.png"
+ },
+ {
+  "id": "25-phrases",
+  "order": 24,
+  "flow": "destinations",
+  "title": "Phrase library",
+  "desktop": "shots/25-phrases.desktop.png",
+  "mobile": "shots/25-phrases.mobile.png"
+ },
+ {
+  "id": "26-settings",
+  "order": 25,
+  "flow": "destinations",
+  "title": "Settings",
+  "desktop": "shots/26-settings.desktop.png",
+  "mobile": "shots/26-settings.mobile.png"
+ },
+ {
+  "id": "27-assessment-answered",
+  "order": 26,
+  "flow": "placement",
+  "title": "Assessment with heard+spoke chosen",
+  "desktop": "shots/27-assessment-answered.desktop.png",
+  "mobile": "shots/27-assessment-answered.mobile.png"
+ },
+ {
+  "id": "28-plan-placed",
+  "order": 27,
+  "flow": "placement",
+  "title": "Plan showing placement at lesson 3",
+  "desktop": "shots/28-plan-placed.desktop.png",
+  "mobile": "shots/28-plan-placed.mobile.png"
+ },
+ {
+  "id": "29-today-placed",
+  "order": 28,
+  "flow": "placement",
+  "title": "Today starting at the placed lesson",
+  "desktop": "shots/29-today-placed.desktop.png",
+  "mobile": "shots/29-today-placed.mobile.png"
+ },
+ {
+  "id": "30-ta-today",
+  "order": 29,
+  "flow": "tamil",
+  "title": "Tamil Today",
+  "desktop": "shots/30-ta-today.desktop.png",
+  "mobile": "shots/30-ta-today.mobile.png"
+ },
+ {
+  "id": "31-ta-spread",
+  "order": 30,
+  "flow": "tamil",
+  "title": "Tamil spread \u2014 script + transliteration + gloss",
+  "desktop": "shots/31-ta-spread.desktop.png",
+  "mobile": "shots/31-ta-spread.mobile.png"
+ },
+ {
+  "id": "32-ta-notes",
+  "order": 31,
+  "flow": "tamil",
+  "title": "Tamil notes drawer open",
+  "desktop": "shots/32-ta-notes.desktop.png",
+  "mobile": "shots/32-ta-notes.mobile.png"
+ }
+]

@@ -1,0 +1,1098 @@
+[
+ {
+  "id": "a1787532771822emc4",
+  "sample": "01-language",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.09404096834264432,
+   "y": 0.11452513966480447,
+   "w": 0.5260707635009311,
+   "h": 0.553072625698324
+  },
+  "note": "this lacks visual cues, this is the core focus area in our application and therefore it should take a much larger real estate in the application in addition to having strong visual cues and animations, ideally that remain true to our instructional design methodology used for this application",
+  "from": "human",
+  "ts": 1787532771822
+ },
+ {
+  "id": "a1787532820544nifl",
+  "sample": "01-language",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.6527001862197392,
+   "y": 0.11033519553072625,
+   "w": 0.3240223463687151,
+   "h": 0.33519553072625696
+  },
+  "note": "we should explain the \"run of the program\" so that learners understand where they are now, where they will be at the end of the program, and the steps along the way that they will be proud of.",
+  "from": "human",
+  "ts": 1787532820544
+ },
+ {
+  "id": "a1787532868980q5gf",
+  "sample": "01-language",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.6359404096834265,
+   "y": 0.24022346368715083,
+   "w": 0.23277467411545624,
+   "h": 0.10614525139664804
+  },
+  "note": "the copywriting must improve, no need to be unecessarily terse, you can use techniques such as progressive disclosure when we need to share more information",
+  "from": "human",
+  "ts": 1787532868980
+ },
+ {
+  "id": "a1787532922978tj6c",
+  "sample": "01-language",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.08845437616387337,
+   "y": 0.39543889845094665,
+   "w": 0.6759776536312849,
+   "h": 0.030120481927710843
+  },
+  "note": "Make this match the copywriting for a course made by an instructional designer.",
+  "from": "human",
+  "ts": 1787532922978
+ },
+ {
+  "id": "a1787532932864cwts",
+  "sample": "01-language",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.08286778398510242,
+   "y": 0.7185886402753873,
+   "w": 0.8361266294227188,
+   "h": 0.04604130808950086
+  },
+  "note": "Make this match the copywriting for a course made by an instructional designer.",
+  "from": "human",
+  "ts": 1787532932864
+ },
+ {
+  "id": "a1787532993153kihz",
+  "sample": "02-assessment",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12756052141527002,
+   "y": 0.2430167597765363,
+   "w": 0.4729981378026071,
+   "h": 0.09776536312849161
+  },
+  "note": "poor use of spacing and sizing, this should style the whole `div` and the main action should be unavoidable for getting started with the correct guidance on doing this from a11y",
+  "from": "human",
+  "ts": 1787532993153
+ },
+ {
+  "id": "a17875330449751gw1",
+  "sample": "02-assessment",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.08659217877094973,
+   "y": 0.09636871508379888,
+   "w": 0.5502793296089385,
+   "h": 0.8533519553072626
+  },
+  "note": "this second step would benefit from progressive disclosure and short feedback loops that engage the users brains to make them overcome the cognitive load of doing this intake process",
+  "from": "human",
+  "ts": 1787533044975
+ },
+ {
+  "id": "a1787533132361tqa5",
+  "sample": "02-assessment",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.6554934823091247,
+   "y": 0.10754189944134078,
+   "w": 0.28677839851024206,
+   "h": 0.38268156424581007
+  },
+  "note": "this is superflous is there a better more consistent use for this sidebar area that would benefit desktop and give mobile users a reason to come to desktop, maybe a section for their own notes and it can be powered by Bonsai 27B with WebGPU in a specific way that is similar to NotebookLM and we can have a simple context-aware free harness in here.",
+  "from": "human",
+  "ts": 1787533132361
+ },
+ {
+  "id": "a1787533187217wgea",
+  "sample": "03-plan",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.10800744878957169,
+   "y": 0.23324022346368714,
+   "w": 0.5018621973929237,
+   "h": 0.23184357541899442
+  },
+  "note": "use this section again to help the user overcome motivation that will supercede the cognitive load required to complete onboarding",
+  "from": "human",
+  "ts": 1787533187217
+ },
+ {
+  "id": "a1787533238828pb95",
+  "sample": "03-plan",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.10800744878957169,
+   "y": 0.18435754189944134,
+   "w": 0.20949720670391062,
+   "h": 0.046089385474860335
+  },
+  "note": "time is a concept that I personally play with a lot. could we create sprites",
+  "from": "human",
+  "ts": 1787533238828
+ },
+ {
+  "id": "a1787533257234m86k",
+  "sample": "03-plan",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.10893854748603352,
+   "y": 0.5949720670391061,
+   "w": 0.33054003724394787,
+   "h": 0.046089385474860335
+  },
+  "note": "this does not help",
+  "from": "human",
+  "ts": 1787533257234
+ },
+ {
+  "id": "a17875332665144jgf",
+  "sample": "03-plan",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.2467411545623836,
+   "y": 0.723463687150838,
+   "w": 0.22998137802607077,
+   "h": 0.04189944134078212
+  },
+  "note": "this does not help",
+  "from": "human",
+  "ts": 1787533266514
+ },
+ {
+  "id": "a1787533280248rcja",
+  "sample": "03-plan",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.6452513966480447,
+   "y": 0.0935754189944134,
+   "w": 0.2839851024208566,
+   "h": 0.4720670391061452
+  },
+  "note": "sidebar should be repurposed",
+  "from": "human",
+  "ts": 1787533280248
+ },
+ {
+  "id": "a1787533348124elic",
+  "sample": "04-today-fresh",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.655,
+   "y": 0.12,
+   "w": 0.23,
+   "h": 0.22
+  },
+  "note": "YOUR PLAN sidebar counts lessons (0 of 14) but never states the destination \u2014 nothing on Day 1 says what you will be able to do by lesson 14 or how the two waves unfold from here.",
+  "mode": "missing journey orientation",
+  "from": "agent",
+  "ts": 1787533348124
+ },
+ {
+  "id": "a1787533362869ocze",
+  "sample": "03-plan",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.47,
+   "w": 0.48,
+   "h": 0.11
+  },
+  "note": "Goal is chosen via one-word chips (Travel/Family/Work/Reading) with zero explanation of what the goal changes in the plan \u2014 a key personalization decision gated by bare labels.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787533362869
+ },
+ {
+  "id": "a1787533398008gpbg",
+  "sample": "04-today-fresh",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.19,
+   "w": 0.48,
+   "h": 0.25
+  },
+  "note": "The single Start-lesson card is the entire point of the screen yet occupies under a quarter of the page, floating in a large empty canvas at modest width with no scale or motion cue marking it as the day's main event.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787533398008
+ },
+ {
+  "id": "a1787533409240hs7w",
+  "sample": "04-today-fresh",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.135,
+   "y": 0.29,
+   "w": 0.26,
+   "h": 0.04
+  },
+  "note": "Lesson description on the learner's first-ever visit is internal method jargon \u2014 'Passive procedure: listen, read, retrieve' \u2014 instead of a guiding sentence about what the session will feel like.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787533409240
+ },
+ {
+  "id": "a1787533416339ucxq",
+  "sample": "04-today-fresh",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.24394785847299813,
+   "y": 0.46089385474860334,
+   "w": 0.2346368715083799,
+   "h": 0.0446927374301676
+  },
+  "note": "remove",
+  "from": "human",
+  "ts": 1787533416339
+ },
+ {
+  "id": "a1787533434095m6f2",
+  "sample": "04-today-fresh",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.5558659217877095,
+   "y": 0.1340782122905028,
+   "w": 0.06052141527001862,
+   "h": 0.03770949720670391
+  },
+  "note": "time and days should have sprites and maybe a character world",
+  "from": "human",
+  "ts": 1787533434095
+ },
+ {
+  "id": "a1787533453961naj6",
+  "sample": "05-preview",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.32,
+   "y": 0.28,
+   "w": 0.16,
+   "h": 0.17
+  },
+  "note": "The core act is pressing play and listening, but the play control is a small thin-ringed glyph inside the stage while the secondary 'Skip ahead' button below is rendered at the same full card width, giving escape equal weight to the listening act.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787533453961
+ },
+ {
+  "id": "a1787533510555ypb3",
+  "sample": "05-preview",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.654562383612663,
+   "y": 0.09636871508379888,
+   "w": 0.2569832402234637,
+   "h": 0.5041899441340782
+  },
+  "note": "much more effective sidebar here compared to earlier onboarding sidebars however I think the AI harness idea I mentioned with Bonsai27B via WebGPU and skills/context baked in similar to how NotebookLM is an effective harness for learning",
+  "from": "human",
+  "ts": 1787533510555
+ },
+ {
+  "id": "a17875335192828s9v",
+  "sample": "05-preview",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.2569832402234637,
+   "y": 0.48324022346368717,
+   "w": 0.2011173184357542,
+   "h": 0.02653631284916201
+  },
+  "note": "remove",
+  "from": "human",
+  "ts": 1787533519282
+ },
+ {
+  "id": "a17875335398098uw2",
+  "sample": "05-preview",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.2132216014897579,
+   "y": 0.7388268156424581,
+   "w": 0.29608938547486036,
+   "h": 0.03770949720670391
+  },
+  "note": "not helpful outside of my dev environment",
+  "from": "human",
+  "ts": 1787533539809
+ },
+ {
+  "id": "a1787533574042653j",
+  "sample": "05-preview",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.06983240223463687,
+   "y": 0.018156424581005588,
+   "w": 0.20670391061452514,
+   "h": 0.046089385474860335
+  },
+  "note": "keep this consistent or update the style of how this is rendered to make this seem like its a \"game mode\"",
+  "from": "human",
+  "ts": 1787533574042
+ },
+ {
+  "id": "a1787533653894k1aq",
+  "sample": "05-preview",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.04748603351955307,
+   "y": 0.07487091222030981,
+   "w": 0.9301675977653632,
+   "h": 0.16049913941480207
+  },
+  "note": "mobile whitespace like this hurts the UX because the user wants no scrolling when in this part --- we should focus on sequentially moving via swiping and then occasionally and sparingly try to do a deeper dive via scrolling on a single page but only when its important to leave a lasting impression to continue learning",
+  "from": "human",
+  "ts": 1787533653894
+ },
+ {
+  "id": "a1787533682076chs1",
+  "sample": "06-spread",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.21,
+   "y": 0.82,
+   "w": 0.3,
+   "h": 0.06
+  },
+  "note": "The cover-EN/cover-FR reveal controls are the method's signature gradual-reveal interaction, yet they sit as tiny chips visually identical to the secondary 'notes' and 'pronounce' chips, whispering the key state change.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787533682076
+ },
+ {
+  "id": "a1787533713541eqez",
+  "sample": "06-spread",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.22998137802607077,
+   "y": 0.7473821989528796,
+   "w": 0.2616387337057728,
+   "h": 0.028795811518324606
+  },
+  "note": "signal information text with no action using a callout if I need a hint to work with the learning UX",
+  "from": "human",
+  "ts": 1787533713541
+ },
+ {
+  "id": "a1787533768121nx9s",
+  "sample": "06-spread",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.05493482309124767,
+   "y": 0.16361256544502617,
+   "w": 0.5782122905027933,
+   "h": 0.5484293193717278
+  },
+  "note": "the parallel spread is designed for the user using their fingers to read both at the same time and process the visual information while hearing it or trying to say it themselves",
+  "from": "human",
+  "ts": 1787533768121
+ },
+ {
+  "id": "a1787533814147gl8u",
+  "sample": "07-spread-covered",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.20297951582867785,
+   "y": 0.819371727748691,
+   "w": 0.32122905027932963,
+   "h": 0.05759162303664921
+  },
+  "note": "we need a better way to do this because this could easily confuse the user give the finitee states and not derailing while trying to figure this out",
+  "from": "human",
+  "ts": 1787533814147
+ },
+ {
+  "id": "a17875338419919sf4",
+  "sample": "08-comprehension",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.04,
+   "y": 0.7,
+   "w": 0.63,
+   "h": 0.2
+  },
+  "note": "The comprehension question and its three answer choices are the task, but they are compressed into a small low-contrast card at the bottom while the reference spread dominates the top two-thirds of the page.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787533841991
+ },
+ {
+  "id": "a17875339035920xfa",
+  "sample": "08-comprehension",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.048417132216014895,
+   "y": 0.08635178209214721,
+   "w": 0.9227188081936686,
+   "h": 0.2205157925239061
+  },
+  "note": "the parallel technique needs to consider what mobile application development would do to handle porting our instructional design theory about parallel reading between two languages by points your finger to read. but is that really tenable for mobile.",
+  "from": "human",
+  "ts": 1787533903592
+ },
+ {
+  "id": "a1787533939751qy92",
+  "sample": "09-shadow",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12942271880819367,
+   "y": 0.2779329608938548,
+   "w": 0.10893854748603352,
+   "h": 0.06005586592178771
+  },
+  "note": "make this use more space and be a proper decoration for this `div`",
+  "from": "human",
+  "ts": 1787533939751
+ },
+ {
+  "id": "a1787533971837j2s0",
+  "sample": "09-shadow",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.30819366852886404,
+   "y": 0.11173184357541899,
+   "w": 0.11080074487895716,
+   "h": 0.03770949720670391
+  },
+  "note": "maybe introduce this concept to get buy-in from the learner first because I'm nervous they will get confused",
+  "from": "human",
+  "ts": 1787533971837
+ },
+ {
+  "id": "a1787534017715mgvz",
+  "sample": "12-completion",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.28584729981378026,
+   "y": 0.31564245810055863,
+   "w": 0.18901303538175046,
+   "h": 0.0712290502793296
+  },
+  "note": "remove this text",
+  "from": "human",
+  "ts": 1787534017715
+ },
+ {
+  "id": "a178753408931244nw",
+  "sample": "13-transfer",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.1340782122905028,
+   "y": 0.1787709497206704,
+   "w": 0.18528864059590316,
+   "h": 0.027932960893854747
+  },
+  "note": "help them recall prior knowledge, and understand what the schema of \"construction\" means and maybe we should have a dedicated wiki for our taxonomy and learning methodology to link back to for learners who 1. get stuck 2. need to go deeper 3. need quick reference on-the-fly",
+  "from": "human",
+  "ts": 1787534089312
+ },
+ {
+  "id": "a1787534099298jkrj",
+  "sample": "13-transfer",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.38,
+   "w": 0.48,
+   "h": 0.14
+  },
+  "note": "Producing your own sentence is the transfer moment, yet the composition input is a plain shallow box with a tiny mic below it, same weight as the scenario card above and dwarfed by empty space filling the lower half of the screen.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534099298
+ },
+ {
+  "id": "a17875341546758wp3",
+  "sample": "13-transfer",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.10893854748603352,
+   "y": 0.2360335195530726,
+   "w": 0.21042830540037244,
+   "h": 0.09776536312849161
+  },
+  "note": "if this is an entity then we should also have sprite for constructions and the specific constructions in our curriculums so then there is a visual reference for reinforcing learning",
+  "from": "human",
+  "ts": 1787534154676
+ },
+ {
+  "id": "a1787534176935dzck",
+  "sample": "14-transfer-checked",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.10614525139664804,
+   "y": 0.5726256983240223,
+   "w": 0.5009310986964618,
+   "h": 0.17039106145251395
+  },
+  "note": "consider where this is placed and the best practices around this placement",
+  "from": "human",
+  "ts": 1787534176935
+ },
+ {
+  "id": "a1787534185167w1hp",
+  "sample": "15-closure",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.12,
+   "w": 0.48,
+   "h": 0.22
+  },
+  "note": "Lesson closure card says 'the session is done' but never places the finished lesson in the arc \u2014 no 'lesson 1 of 14', no what comes back tomorrow, no capability gained.",
+  "mode": "missing journey orientation",
+  "from": "agent",
+  "ts": 1787534185167
+ },
+ {
+  "id": "a1787534192257kcmq",
+  "sample": "15-closure",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.2430167597765363,
+   "y": 0.37988826815642457,
+   "w": 0.032588454376163874,
+   "h": 0.03212290502793296
+  },
+  "note": "remove em dash",
+  "from": "human",
+  "ts": 1787534192257
+ },
+ {
+  "id": "a178753420831980mq",
+  "sample": "16-today-complete",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.13,
+   "y": 0.2,
+   "w": 0.48,
+   "h": 0.13
+  },
+  "note": "'Your next two-wave assignment will be prepared tomorrow' uses unexplained method jargon ('two-wave assignment') at the day's endpoint where a plain forward-looking sentence is needed.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534208319
+ },
+ {
+  "id": "a1787534210222b3cx",
+  "sample": "16-today-complete",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.13,
+   "y": 0.2,
+   "w": 0.48,
+   "h": 0.13
+  },
+  "note": "Day-complete state gives no arc context \u2014 it doesn't say lesson 1 of 14 is behind you, when this lesson returns as recall, or what the next stretch of the program builds toward.",
+  "mode": "missing journey orientation",
+  "from": "agent",
+  "ts": 1787534210222
+ },
+ {
+  "id": "a1787534223691rzix",
+  "sample": "16-today-complete",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.648975791433892,
+   "y": 0.10474860335195531,
+   "w": 0.28212290502793297,
+   "h": 0.48324022346368717
+  },
+  "note": "similar sidebar feedback around utility to be mentioned here",
+  "from": "human",
+  "ts": 1787534223691
+ },
+ {
+  "id": "a1787534238912r0u5",
+  "sample": "17-today-recall-paired",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.125,
+   "y": 0.018,
+   "w": 0.06,
+   "h": 0.025
+  },
+  "note": "Header says DAY 1 while the plan aside says '3 of 14 lessons behind you' \u2014 the day counter contradicts progress on the same screen. Day should derive from the same source as the wave position.",
+  "mode": "state-truth",
+  "from": "agent",
+  "ts": 1787534238912
+ },
+ {
+  "id": "a1787534247510usj6",
+  "sample": "17-today-recall-paired",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.45,
+   "w": 0.48,
+   "h": 0.23
+  },
+  "note": "The paired active-recall session is the day's retrieval core, but its card is visually demoted \u2014 muted gray RECALL label and a ghost outline 'Start recall' button \u2014 reading as optional chrome next to the solid primary new-lesson card.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534247510
+ },
+ {
+  "id": "a1787534248367q6jv",
+  "sample": "17-today-recall-paired",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.135,
+   "y": 0.545,
+   "w": 0.33,
+   "h": 0.05
+  },
+  "note": "Recall card leads with unexplained method jargon \u2014 'Active wave: say it from the English \u2014 from memory.' \u2014 the exact 'Active wave' label the reviewer flagged, with no first-time explanation of the wave concept.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534248367
+ },
+ {
+  "id": "a1787534255913u3nc",
+  "sample": "17-today-recall-paired",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.24860335195530725,
+   "y": 0.7108938547486033,
+   "w": 0.22253258845437615,
+   "h": 0.03910614525139665
+  },
+  "note": "remove this text",
+  "from": "human",
+  "ts": 1787534255914
+ },
+ {
+  "id": "a1787534265998esce",
+  "sample": "17-today-recall-paired",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.6536312849162011,
+   "y": 0.08379888268156424,
+   "w": 0.31750465549348234,
+   "h": 0.8687150837988827
+  },
+  "note": "sidebar lacks utility here",
+  "from": "human",
+  "ts": 1787534265998
+ },
+ {
+  "id": "a1787534278276xjpm",
+  "sample": "18-recall",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.04,
+   "y": 0.72,
+   "w": 0.64,
+   "h": 0.19
+  },
+  "note": "The production attempt \u2014 say or type the French line \u2014 is the whole exercise, yet the input, mic, and hint controls sit small at the very bottom while the covered spread consumes the upper two-thirds; the active 'your turn' row is also a faint small tag.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534278276
+ },
+ {
+  "id": "a1787534279202dd0j",
+  "sample": "18-recall",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.04,
+   "y": 0.86,
+   "w": 0.65,
+   "h": 0.1
+  },
+  "note": "Recall action row gates key choices with terse chips ('hint: first word', one-word 'reveal') and a CTA using unexplained jargon 'Compare with the canonical line' at the learner's decision point.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534279202
+ },
+ {
+  "id": "a17875342917892zdv",
+  "sample": "18-recall",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.04,
+   "y": 0.77,
+   "w": 0.92,
+   "h": 0.16
+  },
+  "note": "On mobile the attempt input arrives only after scrolling past the entire eleven-row covered spread, with no visual escalation signaling that this box is where recall actually happens.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534291789
+ },
+ {
+  "id": "a17875343108618v5t",
+  "sample": "02-assessment",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.11,
+   "y": 0.12,
+   "w": 0.42,
+   "h": 0.09
+  },
+  "note": "Placement screen says 'Let's find your starting point' but never shows the path that starting point sits on or what the 14-lesson program will make you able to do.",
+  "mode": "missing journey orientation",
+  "from": "agent",
+  "ts": 1787534310861
+ },
+ {
+  "id": "a1787534312406tg4n",
+  "sample": "02-assessment",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.58,
+   "w": 0.48,
+   "h": 0.18
+  },
+  "note": "'Now say it back: / hold to speak' is a bare imperative fragment at the speaking sample \u2014 no guidance on what to say, what happens with the recording, or that imperfect speech is fine.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534312406
+ },
+ {
+  "id": "a1787534382053y39r",
+  "sample": "19-recall-attempted",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.00558659217877095,
+   "y": 0.2844311377245509,
+   "w": 0.994413407821229,
+   "h": 0.05089820359281437
+  },
+  "note": "out of place",
+  "from": "human",
+  "ts": 1787534382053
+ },
+ {
+  "id": "a1787534459542cm3a",
+  "sample": "19-recall-attempted",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.0260707635009311,
+   "y": 0.7065868263473054,
+   "w": 0.7160148975791434,
+   "h": 0.1966067864271457
+  },
+  "note": "this might require changing placement and making this closer to where the user sees this visually, it could require us to only to 1 phrase at a time and have them do all 11 and then hit next (\"progressive disclosure\" or potential chunking of exercises)",
+  "from": "human",
+  "ts": 1787534459542
+ },
+ {
+  "id": "a1787534473081yaeo",
+  "sample": "19-recall-attempted",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.3649906890130354,
+   "y": 0.9251497005988024,
+   "w": 0.0893854748603352,
+   "h": 0.01996007984031936
+  },
+  "note": "rephrase to be simple",
+  "from": "human",
+  "ts": 1787534473081
+ },
+ {
+  "id": "a1787534486654awz5",
+  "sample": "19-recall-attempted",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0,
+   "y": 0.38112353567625135,
+   "w": 0.9981378026070763,
+   "h": 0.04153354632587859
+  },
+  "note": "this is out of place",
+  "from": "human",
+  "ts": 1787534486654
+ },
+ {
+  "id": "a1787534493682uvrh",
+  "sample": "20-compare-miss",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.11,
+   "y": 0.38,
+   "w": 0.5,
+   "h": 0.45
+  },
+  "note": "~400px of dead space between the reflect prompt and the bottom-stranded CTA at desktop width. The compare column should be vertically centered or the CTA should follow the content.",
+  "mode": "composition",
+  "from": "agent",
+  "ts": 1787534493682
+ },
+ {
+  "id": "a1787534508739n4a5",
+  "sample": "20-compare-miss",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.3426443202979516,
+   "y": 0.9050279329608939,
+   "w": 0.10148975791433892,
+   "h": 0.0223463687150838
+  },
+  "note": "rephrase this to be simple",
+  "from": "human",
+  "ts": 1787534508739
+ },
+ {
+  "id": "a1787534540998rybx",
+  "sample": "21-compare-revealed",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.13128491620111732,
+   "y": 0.43854748603351956,
+   "w": 0.4478584729981378,
+   "h": 0.06424581005586592
+  },
+  "note": "this does not help the user, re-do this copywriting as an instructional designer",
+  "from": "human",
+  "ts": 1787534540998
+ },
+ {
+  "id": "a1787534554161ud1e",
+  "sample": "21-compare-revealed",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.2709497206703911,
+   "y": 0.6145251396648045,
+   "w": 0.1750465549348231,
+   "h": 0.030726256983240222
+  },
+  "note": "there's a better way to say this for learning",
+  "from": "human",
+  "ts": 1787534554161
+ },
+ {
+  "id": "a1787534571661ec0t",
+  "sample": "22-today-resurface",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.6527001862197392,
+   "y": 0.0782122905027933,
+   "w": 0.3472998137802607,
+   "h": 0.7053072625698324
+  },
+  "note": "sidebar not helpful",
+  "from": "human",
+  "ts": 1787534571661
+ },
+ {
+  "id": "a1787534577701s8td",
+  "sample": "22-today-resurface",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.5595903165735568,
+   "y": 0.12569832402234637,
+   "w": 0.051210428305400374,
+   "h": 0.05027932960893855
+  },
+  "note": "wrong day",
+  "from": "human",
+  "ts": 1787534577701
+ },
+ {
+  "id": "a17875345833126vyh",
+  "sample": "22-today-resurface",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.1340782122905028,
+   "y": 0.015363128491620111,
+   "w": 0.0521415270018622,
+   "h": 0.034916201117318434
+  },
+  "note": "wrong day",
+  "from": "human",
+  "ts": 1787534583312
+ },
+ {
+  "id": "a17875345861968t3v",
+  "sample": "22-today-resurface",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.12,
+   "y": 0.51,
+   "w": 0.48,
+   "h": 0.23
+  },
+  "note": "The due 'Worth another look' retrieval is time-sensitive core work, but its card sits below the 'nothing else to choose' caption with a gray label and ghost 'Retrieve it again' button, styled as an afterthought rather than something due today.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534586196
+ },
+ {
+  "id": "a17875345907082izu",
+  "sample": "23-progress",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.255,
+   "y": 0.185,
+   "w": 0.28,
+   "h": 0.035
+  },
+  "note": "The five-state chain 'exposed \u2192 recognized \u2192 recalled \u2192 stabilized \u2192 transferable' is presented as bare jargon with no explanation of what each state means or how the pips map to it.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534590708
+ },
+ {
+  "id": "a1787534591559dii5",
+  "sample": "23-progress",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.64,
+   "y": 0.23,
+   "w": 0.11,
+   "h": 0.58
+  },
+  "note": "The five capability states per construction are the screen's promise, but they render as unlabeled 8px pips crammed at each card's right edge, with the state ladder itself only a tiny gray legend line \u2014 the capability story is whispered.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534591559
+ },
+ {
+  "id": "a17875345942504zun",
+  "sample": "23-progress",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.42,
+   "y": 0.925,
+   "w": 0.18,
+   "h": 0.035
+  },
+  "note": "Progress ends at '8 of 63 constructions met' with no tie to the program arc \u2014 no view of which lesson you're on, the passive-to-active wave transition ahead, or the end capability the 63 constructions add up to.",
+  "mode": "missing journey orientation",
+  "from": "agent",
+  "ts": 1787534594250
+ },
+ {
+  "id": "a1787534598498hmnp",
+  "sample": "24-book",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.255,
+   "y": 0.1,
+   "w": 0.45,
+   "h": 0.025
+  },
+  "note": "Book intro copy is system-internal phrasing \u2014 'still counts toward that frozen assignment' \u2014 'frozen assignment' is scheduler jargon a learner has never been given.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534598498
+ },
+ {
+  "id": "a1787534617046qwgt",
+  "sample": "30-ta-today",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.135,
+   "y": 0.29,
+   "w": 0.26,
+   "h": 0.04
+  },
+  "note": "Tamil track repeats the same internal jargon description 'Passive procedure: listen, read, retrieve' on the first-visit lesson card instead of learner-facing guidance.",
+  "mode": "copy below instructional-design standard",
+  "from": "agent",
+  "ts": 1787534617046
+ },
+ {
+  "id": "a1787534620304zls0",
+  "sample": "31-ta-spread",
+  "viewport": "desktop",
+  "rect": {
+   "x": 0.06,
+   "y": 0.18,
+   "w": 0.62,
+   "h": 0.07
+  },
+  "note": "Audible language is the method's spine, yet the only play affordance is a minuscule triangle glyph after the active Tamil line, and the transliteration bridge beneath the script is tiny faint italic \u2014 both core perceptual channels under-scaled.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534620304
+ },
+ {
+  "id": "a17875346968688qz0",
+  "sample": "22-today-resurface",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.16,
+   "y": 0.415,
+   "w": 0.65,
+   "h": 0.03
+  },
+  "note": "'Nothing else to choose. That's the point.' renders ABOVE the resurface card \u2014 the copy is made false by the third card below it. Tagline should follow the last card (desktop gets this right).",
+  "mode": "copy-logic",
+  "from": "agent",
+  "ts": 1787534696868
+ },
+ {
+  "id": "a1787534696874idvx",
+  "sample": "22-today-resurface",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.08,
+   "y": 0.475,
+   "w": 0.84,
+   "h": 0.21
+  },
+  "note": "The resurface card says only 'Au march\u00e9 \u00b7 a line you stumbled on' \u2014 it never names the construction or shows the English cue, so the learner can't calibrate what they're about to retrieve. One phrase label (e.g. 'quantities with de') would make it actionable.",
+  "mode": "state-legibility",
+  "from": "agent",
+  "ts": 1787534696874
+ },
+ {
+  "id": "a17875346968794vlp",
+  "sample": "31-ta-spread",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.09,
+   "y": 0.585,
+   "w": 0.15,
+   "h": 0.022
+  },
+  "note": "Line 6 transliteration 'idh\u00f4' uses a circumflex where the corpus convention is macrons (v\u0113\u1e47um, nall\u0101). Convention wobble inside one lesson \u2014 belongs on the #13 review queue too.",
+  "mode": "transliteration-consistency",
+  "from": "agent",
+  "ts": 1787534696879
+ },
+ {
+  "id": "a1787534696882bf4n",
+  "sample": "22-today-resurface",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.33,
+   "y": 0.02,
+   "w": 0.14,
+   "h": 0.022
+  },
+  "note": "DAY 1 again after three completed sessions + a recall \u2014 same day-counter source problem as the desktop recall screen.",
+  "mode": "state-truth",
+  "from": "agent",
+  "ts": 1787534696882
+ },
+ {
+  "id": "a1787534696885haz8",
+  "sample": "08-comprehension",
+  "viewport": "mobile",
+  "rect": {
+   "x": 0.03,
+   "y": 0.76,
+   "w": 0.92,
+   "h": 0.16
+  },
+  "note": "On mobile the question card is pushed below a full-page covered spread, so the core decision arrives after a long scroll with the same visual weight as the reference material above it.",
+  "mode": "under-weighted focus area",
+  "from": "agent",
+  "ts": 1787534696885
+ }
+]
