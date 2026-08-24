@@ -3,11 +3,14 @@ import Blank from './blank.svelte';
 import Button from './button.svelte';
 import Card from './card.svelte';
 import Chip from './chip.svelte';
+import ConceptIntro from './concept-intro.svelte';
 import Cover from './cover.svelte';
 import Diff from './diff.svelte';
 import En from './en.svelte';
 import Fr from './fr.svelte';
 import Heading from './heading.svelte';
+import Hint from './hint.svelte';
+import JourneyArc from './journey-arc.svelte';
 import MicButton from './mic-button.svelte';
 import Muted from './muted.svelte';
 import Nav from './nav.svelte';
@@ -27,11 +30,14 @@ export {
 	Button,
 	Card,
 	Chip,
+	ConceptIntro,
 	Cover,
 	Diff,
 	En,
 	Fr,
 	Heading,
+	Hint,
+	JourneyArc,
 	MicButton,
 	Muted,
 	Nav,

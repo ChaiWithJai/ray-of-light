@@ -5,8 +5,10 @@
 	 * self-rating instrumentally rational for the learner.
 	 */
 	import * as W from '$lib/components/ui/index.js';
+	import { COURSES, getLesson } from '$lib/content/index.js';
 	import type { SessionMode, StepId } from '$lib/flow.js';
 	import type { Lesson } from '$lib/schemas/content.js';
+	import { POC_WAVE_CONFIG } from '$lib/schemas/schedule.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	let {
@@ -15,6 +17,29 @@
 		flow,
 		onDone
 	}: { lesson: Lesson; mode: SessionMode; flow: readonly StepId[]; onDone: () => void } = $props();
+
+	// Journey orientation (#37): everything shown derives from the course, the
+	// wave config, and the learner's own record.
+	const totalLessons = $derived(COURSES[lesson.language].lessons.length);
+	const hasRecall = $derived(lesson.exercises.some((exercise) => exercise.kind === 'recall'));
+	const returnsAt = $derived(lesson.index + POC_WAVE_CONFIG.activeWaveLagLessons);
+	const resurfaceLadder = POC_WAVE_CONFIG.resurfaceLadderDays.join(' · ');
+	const completedIndexes = $derived(
+		profile.completedLessons
+			.map((id) => getLesson(lesson.language, id)?.index)
+			.filter((index): index is number => typeof index === 'number')
+	);
+	const arcCaption = $derived.by(() => {
+		if (mode === 'recall') {
+			return `You've now said lesson ${lesson.index} of ${totalLessons} from memory. If a line slipped, it comes back on the ${resurfaceLadder} day ladder.`;
+		}
+		if (!hasRecall) {
+			return `Lesson ${lesson.index} of ${totalLessons} is behind you. Review lessons like this one reassemble earlier material rather than returning for recall.`;
+		}
+		return returnsAt <= totalLessons
+			? `Lesson ${lesson.index} of ${totalLessons} is behind you. Around lesson ${returnsAt}, this dialogue returns as a recall session for you to say from memory.`
+			: `Lesson ${lesson.index} of ${totalLessons} is behind you. This dialogue returns as a recall session near the end of the course.`;
+	});
 
 	let understood = $state(80);
 	let couldProduce = $state(45);
@@ -44,11 +69,19 @@
 	</div>
 	<div class="font-display text-2xl font-semibold text-stage-text">{lesson.title}</div>
 	<div class="mt-1 font-script text-lg text-stage-muted">
-		that's the day's work — the rest happens while you sleep
+		that's the day's work; the rest happens while you sleep
 	</div>
 </div>
 
-<W.Heading class="anim-rise anim-d1 pt-2 text-xl">Before you go —</W.Heading>
+<W.JourneyArc
+	language={lesson.language}
+	current={lesson.index}
+	{completedIndexes}
+	caption={arcCaption}
+	class="anim-rise anim-d1"
+/>
+
+<W.Heading class="anim-rise anim-d1 pt-2 text-xl">Before you go</W.Heading>
 
 <W.Card class="anim-rise anim-d2">
 	<div class="text-sm font-bold">I understood the dialogue</div>
@@ -72,7 +105,8 @@
 </W.Card>
 
 <W.Muted class="anim-rise anim-d3">
-	Your ratings tune when lines resurface — be honest, not kind.
+	Rate what actually happened: your honest answers decide when these lines come back for
+	review, at the moment that helps you most.
 </W.Muted>
 
 <W.Button tone="primary" class="anim-rise anim-d4 mt-auto" onclick={finish}>

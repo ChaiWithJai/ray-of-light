@@ -57,7 +57,7 @@ async function startRecall(page: Page, lessonId: string, language: 'fr' | 'ta' =
 }
 
 async function finishRecallFlow(page: Page) {
-	await page.getByRole('button', { name: 'Show the canonical line' }).click();
+	await page.getByRole('button', { name: 'Show the original line' }).click();
 	await page.getByRole('button', { name: /Say the corrected line/ }).click();
 	await page.getByRole('button', { name: 'Done for today' }).click();
 	await expect(page).toHaveURL(/\/today/);
@@ -101,7 +101,7 @@ test('a failed recall becomes a due resurface item that Today surfaces into retr
 
 	// Fail the recall: a nonblank wrong attempt records attempt-incorrect.
 	await page.getByLabel('Your production').fill('Bonjour, monsieur.');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 	await expect(page).toHaveURL(/\/recall\/fr-02\/compare/);
 	await finishRecallFlow(page);
 
@@ -130,7 +130,7 @@ test('a failed recall becomes a due resurface item that Today surfaces into retr
 
 	// This time the retrieval succeeds and lands as ordinary recall evidence.
 	await page.getByLabel('Your production').fill('Je voudrais réserver une chambre pour deux nuits.');
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 	await expect(page).toHaveURL(/\/recall\/fr-02\/compare/);
 	await finishRecallFlow(page);
 

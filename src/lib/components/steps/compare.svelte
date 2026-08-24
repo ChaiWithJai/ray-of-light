@@ -44,12 +44,12 @@
 	</W.Fr>
 </W.Card>
 
-<div class="text-center text-text-soft">↕ spot the difference</div>
+<W.Hint>↕ spot the difference</W.Hint>
 
 {#if noticed}
 	<W.Card tone="good" class="anim-uncover">
 		<W.Muted class="text-xs">
-			{acceptedFormDiffers ? 'ACCEPTED FORM ▶' : 'CANONICAL ▶'}
+			{acceptedFormDiffers ? 'ALSO ACCEPTED ▶' : 'THE ORIGINAL ▶'}
 		</W.Muted>
 		<W.Fr>
 			{#each diff.canonical as word, i (i)}
@@ -60,32 +60,33 @@
 			<W.Muted class="text-xs italic">{line.transliteration}</W.Muted>
 		{/if}
 		{#if acceptedFormDiffers}
-			<W.Muted class="text-xs">Canonical script: {canonicalAnswer}</W.Muted>
+			<W.Muted class="text-xs">The lesson writes it: {canonicalAnswer}</W.Muted>
 		{/if}
 	</W.Card>
 
 	<W.Card>
 		<W.Muted>
 			{#if identical}
-				That matches {acceptedFormDiffers ? 'an authored accepted form' : 'the canonical line'}.
+				That matches {acceptedFormDiffers ? 'an accepted way to say it' : 'the original line'}.
 			{:else}
-				Compare word by word. Differences that sound identical are spelling only; ones that
-				change the sound are worth saying aloud again.
+				Read the two lines side by side. Where a difference changes the sound, say the
+				original aloud a couple of times. Where it only changes the spelling, note it and
+				move on.
 			{/if}
 		</W.Muted>
 	</W.Card>
 
 	<W.Button tone="primary" onclick={onDone}>Say the corrected line 🎙</W.Button>
-	<W.Muted class="text-center text-2xs">
+	<W.Hint>
 		Tricky lines come back in 1 · 3 · 7 days.
-	</W.Muted>
+	</W.Hint>
 {:else}
 	<W.Card>
 		<W.Muted>
-			Look at your line again first. What would you change before you see the original?
+			Before you look, reread your line. Would you change anything?
 		</W.Muted>
 	</W.Card>
 	<W.Button class="mt-auto" onclick={() => (noticed = true)}>
-		Show the canonical line
+		Show the original line
 	</W.Button>
 {/if}

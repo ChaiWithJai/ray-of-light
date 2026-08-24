@@ -68,6 +68,8 @@
 	<W.Muted role="alert" class="text-center text-caution">{player.error}</W.Muted>
 {/if}
 
+<W.ConceptIntro technique="cover-ladder" />
+
 <div class="flex flex-wrap items-center justify-center gap-2">
 	<W.Chip active={coverSource} onclick={() => ((coverSource = !coverSource), (coverTarget = false))}>
 		cover EN
@@ -108,7 +110,7 @@
 				</div>
 			{/each}
 		{:else}
-			<W.Muted>No note on this line. Notes appear only where they earn their place.</W.Muted>
+			<W.Muted>No note on this line. When a line needs one, it appears here.</W.Muted>
 		{/if}
 
 		<!-- Morphology from Universal Dependencies: reference annotation, not
@@ -130,7 +132,7 @@
 		<W.Muted class="text-xs">you</W.Muted>
 		<W.Waveform tone="blue" bars={[{ h: 8 }, { h: 20 }, { h: 31 }, { h: 10 }, { h: 28 }, { h: 6 }]} />
 		<W.MicButton />
-		<W.Muted class="text-center">compare by ear — no scores, no red marks</W.Muted>
+		<W.Muted class="text-center">listen to both and match the shape by ear</W.Muted>
 	</W.Card>
 {/if}
 

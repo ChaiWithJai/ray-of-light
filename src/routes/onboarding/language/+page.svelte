@@ -70,6 +70,7 @@
 		{#each LANGUAGES as language, i (language)}
 			{@const course = COURSES[language]}
 			{@const id = IDENTITY[language]}
+			{@const regular = course.lessons.filter((l) => l.kind === 'regular')}
 			<W.Card
 				thick={profile.language === language}
 				class="anim-rise {i === 0 ? 'anim-d1' : 'anim-d2'} gap-3 p-5 transition-colors {id.wash}"
@@ -91,6 +92,10 @@
 					{course.lessons.reduce((n, l) => n + l.lines.length, 0)} lines
 				</W.Muted>
 				<W.Muted class="min-h-9 text-xs">{id.note}</W.Muted>
+				<W.JourneyArc
+					{language}
+					caption={`Each lesson lives in one real situation, from ${regular[0].situation.toLowerCase()} to ${regular[regular.length - 1].situation.toLowerCase()}. Partway in, earlier lessons return for you to say from memory.`}
+				/>
 				<W.Button
 					tone={profile.language === language ? 'primary' : 'outline'}
 					class="mt-auto"

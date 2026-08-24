@@ -275,14 +275,14 @@
 	{/each}
 </div>
 
-<W.Muted class="text-center">{support.instruction}</W.Muted>
+<W.Hint>{support.instruction}</W.Hint>
 
 {#if settings.trackingMode === 'single-guide'}
-	<W.Muted class="text-center text-2xs">
+	<W.Hint>
 		↑ ↓ moves one pair · tap either column to jump
-	</W.Muted>
+	</W.Hint>
 {:else}
-	<W.Muted class="text-center text-2xs">
-		drag either side — both anchors move together
-	</W.Muted>
+	<W.Hint>
+		drag either side and both anchors move together
+	</W.Hint>
 {/if}

@@ -48,8 +48,8 @@
 	{#if !worst || !construction}
 		<W.Card>
 			<W.Muted>
-				Nothing to repair. This surface only appears once the same construction has gone
-				wrong more than once — it is not a list of every mistake you've made.
+				Nothing to repair right now. When the same pattern trips you up more than once,
+				this page brings it back so you can settle it in a few different contexts.
 			</W.Muted>
 		</W.Card>
 		<W.Button class="mt-auto" href="/today">Back to Today</W.Button>
@@ -57,7 +57,7 @@
 		<W.Card tone="warn">
 			<div class="text-sm font-semibold">You keep missing {construction.label}</div>
 			<W.Muted>
-				seen {worst.count}× — let's fix just this one
+				missed {worst.count} times. Let's settle just this one.
 			</W.Muted>
 			<W.Muted class="text-2xs">{construction.gloss}</W.Muted>
 		</W.Card>

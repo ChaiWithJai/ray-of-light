@@ -53,7 +53,7 @@
 <W.Shell brand title="Phrases" nav settingsLink>
 	<div class="anim-rise pt-2">
 		<W.Heading>Phrases</W.Heading>
-		<W.Muted class="mt-1">Your own material — everything here, you have met.</W.Muted>
+		<W.Muted class="mt-1">Your own material: everything here, you have met.</W.Muted>
 	</div>
 
 	<W.SearchField bind:value={query} placeholder={'🔍 "how do I ask for…"'} aria-label="Search phrases" />
@@ -61,8 +61,8 @@
 	{#if met.length === 0}
 		<W.Card>
 			<W.Muted>
-				Empty until you've met something. Constructions land here as you work through
-				lessons — this is your own material, not a word list.
+				Empty for now. As you work through lessons, every phrase pattern you meet lands
+				here, kept with the situation it came from.
 			</W.Muted>
 		</W.Card>
 	{:else}

@@ -25,7 +25,7 @@
 <W.Shell title="Settings" back="/today">
 	<div class="anim-rise pt-2">
 		<W.Heading>Settings</W.Heading>
-		<W.Muted class="mt-1">Everything here reduces irrelevant load; nothing here teaches.</W.Muted>
+		<W.Muted class="mt-1">Adjust the experience so it fits the way you learn.</W.Muted>
 	</div>
 
 	<W.Card>
@@ -83,7 +83,7 @@
 		<W.Chip onclick={() => profile.updateSettings({ transliteration: !s.transliteration })}>
 			turn {s.transliteration ? 'off' : 'on'}
 		</W.Chip>
-		<W.Muted>a temporary scaffold — nudges you to turn it off around L30</W.Muted>
+		<W.Muted>a temporary scaffold; the course nudges you to turn it off around lesson 30</W.Muted>
 	</W.Card>
 
 	<W.Card>
@@ -109,8 +109,8 @@
 			<div class="text-sm">About the audio</div>
 			<W.Muted>
 				Lesson audio is a draft synthesized voice ({audioProvenance.voices[profile.language]},
-				{audioProvenance.engine}) — native recordings are pending. Pronunciation is a scaffold
-				here, not a model.
+				{audioProvenance.engine}); native recordings are pending. Treat its pronunciation as
+				a scaffold rather than a model.
 			</W.Muted>
 		</W.Card>
 	{/if}

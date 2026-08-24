@@ -71,10 +71,10 @@ test('recall reveal requires a nonblank attempt and cannot forge progress', asyn
 	await expect(reveal).toBeEnabled();
 	await reveal.click();
 	await expect(page.getByText(canonical, { exact: true })).toBeVisible();
-	await expect(page.getByText(/Hint used — this line won't count as recalled/)).toBeVisible();
+	await expect(page.getByText(/You used a hint, so this attempt counts as practice rather than recall/)).toBeVisible();
 	await expect(await persistedEvidence(page)).toEqual([]);
 
-	await page.getByRole('button', { name: /Compare with the canonical line/ }).click();
+	await page.getByRole('button', { name: /Compare with the original line/ }).click();
 	const evidence = await persistedEvidence(page);
 	expect(evidence).toHaveLength(1);
 	expect(evidence.every((event) => event.kind === 'recall-correct' && event.hinted)).toBe(true);

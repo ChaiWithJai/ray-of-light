@@ -53,8 +53,8 @@
 		{course.lessons.length} lessons · {course.constructions.size} constructions
 	</W.Muted>
 	<W.Muted class="text-2xs">
-		Reviews stay separate from Today. Starting Today's assigned new lesson here still counts
-		toward that frozen assignment.
+		Reviews stay separate from Today. Starting Today's assigned new lesson from here still
+		counts toward today's session.
 	</W.Muted>
 
 	{#if audioPending(profile.language)}

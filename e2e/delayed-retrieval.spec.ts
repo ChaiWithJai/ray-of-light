@@ -178,7 +178,7 @@ test('AC5: a construction met lessons earlier is produced from English once the 
 	const canonical = "Je voudrais un café, s'il vous plaît.";
 	await expect(page.getByText('Say it in French: "I would like a coffee, please."')).toBeVisible();
 	await expect(page.getByText(canonical, { exact: true })).toHaveCount(0);
-	const compare = page.getByRole('button', { name: /Compare with the canonical line/ });
+	const compare = page.getByRole('button', { name: /Compare with the original line/ });
 	await expect(compare).toBeDisabled();
 
 	// A correct unhinted attempt, made before any reveal.
@@ -210,8 +210,8 @@ test('AC5: a construction met lessons earlier is produced from English once the 
 
 	// Finish the recall session through its real remaining steps; Today keeps
 	// the paired new lesson and no longer offers the consumed recall.
-	await page.getByRole('button', { name: 'Show the canonical line' }).click();
-	await expect(page.getByText('That matches the canonical line.')).toBeVisible();
+	await page.getByRole('button', { name: 'Show the original line' }).click();
+	await expect(page.getByText('That matches the original line.')).toBeVisible();
 	await page.getByRole('button', { name: /Say the corrected line/ }).click();
 	await expect(page).toHaveURL(/\/recall\/fr-01\/closure/);
 	await page.getByRole('button', { name: 'Done for today' }).click();

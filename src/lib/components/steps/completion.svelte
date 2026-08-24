@@ -56,8 +56,6 @@
 			</div>
 		</W.Card>
 		<W.Button tone="primary" class="mt-auto" onclick={onDone}>Continue</W.Button>
-	{:else}
-		<W.Muted class="text-center text-2xs">Choose one — then you'll see why.</W.Muted>
 	{/if}
 {:else}
 	<W.Muted>No completion exercise in this lesson.</W.Muted>

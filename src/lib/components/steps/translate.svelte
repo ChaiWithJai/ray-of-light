@@ -82,7 +82,8 @@
 	</W.Card>
 	<W.Button tone="primary" onclick={onDone}>Continue</W.Button>
 {:else}
-	<W.Muted class="text-center text-2xs">
-		Answer before you check — the reveal is the point of the exercise.
-	</W.Muted>
+	<W.Hint>
+		Give your answer before checking. Working the meaning out yourself is what makes it
+		stick.
+	</W.Hint>
 {/if}

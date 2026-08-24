@@ -344,7 +344,13 @@ export const LearnerProfile = z.object({
 	/** Recall-wave lessons finished per language. Sequencing only, like completedLessons. */
 	completedRecallLessons: z.partialRecord(LanguageCode, z.array(z.string())).default({}),
 	/** Lesson ids fully worked through, per language. Sequencing only — not progress. */
-	completedLessons: z.partialRecord(LanguageCode, z.array(z.string())).default({})
+	completedLessons: z.partialRecord(LanguageCode, z.array(z.string())).default({}),
+	/**
+	 * Technique-intro ids the learner has dismissed. First-run concept intros
+	 * (#36) show once per technique; dismissal is a fact about the learner, so
+	 * it lives in the profile document like everything else.
+	 */
+	seenIntros: z.array(z.string()).default([])
 });
 export type LearnerProfile = z.infer<typeof LearnerProfile>;
 
@@ -383,6 +389,7 @@ export function emptyProfile(language: LanguageCode = 'fr'): LearnerProfile {
 		activeSession: null,
 		dailyAssignments: {},
 		completedRecallLessons: {},
-		completedLessons: {}
+		completedLessons: {},
+		seenIntros: []
 	});
 }
