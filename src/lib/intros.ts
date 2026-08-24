@@ -34,7 +34,7 @@ export const TECHNIQUE_INTROS: Record<TechniqueIntroId, TechniqueIntro> = {
 		id: 'assessment',
 		title: 'A quick placement, not a test',
 		body:
-			'These three small samples of listening and speaking find the lesson where your ' +
+			'Two small samples, one listening and one speaking, find the lesson where your ' +
 			'course should begin. Starting at the right spot means your first sessions feel ' +
 			'workable instead of trivial or overwhelming. Answer naturally and guess freely; ' +
 			'nothing here is graded, and if it all feels unfamiliar you simply begin at lesson one.'
