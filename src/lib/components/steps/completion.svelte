@@ -6,7 +6,9 @@
 	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import type { CompletionPrompt, Lesson } from '$lib/schemas/content.js';
+	import { attempt } from '$lib/stores/attempt.svelte.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { onDestroy } from 'svelte';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
 
@@ -17,6 +19,13 @@
 	const correct = $derived(picked !== null && picked === prompt?.answer);
 	const parts = $derived(prompt ? prompt.template.split('___') : []);
 
+	// #48 T1: the open attempt, published for the harness's hint boundary.
+	$effect(() => {
+		if (!prompt || picked !== null) attempt.close();
+		else attempt.open('completion', lesson.id, prompt.constructions);
+	});
+	onDestroy(() => attempt.close());
+
 	function pick(option: string) {
 		if (picked !== null || !prompt) return;
 		picked = option;
@@ -24,7 +33,7 @@
 			option === prompt.answer ? 'completion-correct' : 'attempt-incorrect',
 			lesson.id,
 			prompt.constructions,
-			{ contentVersion: CONTENT_VERSION }
+			{ hinted: attempt.hinted, contentVersion: CONTENT_VERSION }
 		);
 	}
 </script>

@@ -2,15 +2,24 @@
 	/**
 	 * NotesLink — the mobile affordance for the notebook during a session
 	 * (#48). Below `lg` there is no aside column, so the same LessonNotes
-	 * surface opens as an overlay, following the session shell's convention
+	 * surface opens as an overlay — with the T1 "Ask the method" surface beneath
+	 * it, the same pair the desktop aside carries — following the shell's convention
 	 * (Stuck/WikiPanel): never a route change, one action returns to the
 	 * exercise with its state intact.
 	 */
 	import { X } from '@lucide/svelte';
 	import * as W from '$lib/components/ui/index.js';
+	import AskMethod from './ask-method.svelte';
 	import LessonNotes from './lesson-notes.svelte';
+	import type { StepId } from '$lib/flow.js';
+	import type { SessionMode } from '$lib/schemas/index.js';
 
-	let { lessonId, class: className = '' }: { lessonId: string; class?: string } = $props();
+	let {
+		lessonId,
+		step,
+		mode = 'learn',
+		class: className = ''
+	}: { lessonId: string; step?: StepId; mode?: SessionMode; class?: string } = $props();
 
 	let open = $state(false);
 	let panel = $state<HTMLElement | null>(null);
@@ -48,7 +57,7 @@
 			bind:this={panel}
 			role="dialog"
 			aria-modal="true"
-			aria-label="Your notes"
+			aria-label="Your notes and the method"
 			tabindex={-1}
 			data-testid="notes-sheet"
 			class="anim-rise relative m-0 flex max-h-[85vh] w-full max-w-lg flex-col gap-3 overflow-y-auto rounded-t-xl border border-line bg-surface p-5 shadow-raised outline-none sm:m-4 sm:rounded-xl"
@@ -62,6 +71,10 @@
 				<X size={16} />
 			</button>
 			<LessonNotes {lessonId} />
+			<!-- #48 T1: retrieval-only "Ask the method", beside the notes. -->
+			<div class="border-t border-line pt-4">
+				<AskMethod {lessonId} {step} {mode} />
+			</div>
 			<W.Button
 				tone="primary"
 				class="mt-1"

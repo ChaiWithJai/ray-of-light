@@ -7,7 +7,9 @@
 	import * as W from '$lib/components/ui/index.js';
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import type { ComprehensionCheck, Lesson } from '$lib/schemas/content.js';
+	import { attempt } from '$lib/stores/attempt.svelte.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { onDestroy } from 'svelte';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
 
@@ -28,15 +30,36 @@
 		index = lineIndex;
 	});
 
+	// #48 T1: publish the open attempt so the harness's hint boundary can see
+	// it. Closed the moment a choice is made — after that there is nothing left
+	// to cap.
+	$effect(() => {
+		if (!check) return;
+		if (picked === null) {
+			attempt.open(
+				'comprehension',
+				lesson.id,
+				check.constructions.length
+					? check.constructions
+					: (lesson.lines[lineIndex]?.constructions ?? [])
+			);
+		} else {
+			attempt.close();
+		}
+	});
+	onDestroy(() => attempt.close());
+
 	function pick(i: number) {
 		if (picked !== null) return;
 		picked = i;
 		const correct = i === check.answerIndex;
+		// A peek and a mid-attempt method question cap the attempt identically.
+		const hinted = peeked || attempt.hinted;
 		profile.record(
 			correct ? 'comprehension-correct' : 'attempt-incorrect',
 			lesson.id,
 			check.constructions.length ? check.constructions : lesson.lines[lineIndex].constructions,
-			{ hinted: peeked, contentVersion: CONTENT_VERSION }
+			{ hinted, contentVersion: CONTENT_VERSION }
 		);
 	}
 

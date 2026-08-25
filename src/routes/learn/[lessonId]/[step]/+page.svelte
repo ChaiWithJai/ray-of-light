@@ -6,6 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import * as W from '$lib/components/ui/index.js';
+	import AskMethod from '$lib/components/app/ask-method.svelte';
 	import LessonNotes from '$lib/components/app/lesson-notes.svelte';
 	import NotesLink from '$lib/components/app/notes-link.svelte';
 	import Preview from '$lib/components/steps/preview.svelte';
@@ -133,6 +134,11 @@
 				<div class="border-t border-line pt-4">
 					<LessonNotes lessonId={lesson.id} />
 				</div>
+				<!-- #48 Phase H1 (T1): retrieval-only "Ask the method", beside the
+				     notes. No model, no WebGPU — the method's own passages, linked. -->
+				<div class="border-t border-line pt-4">
+					<AskMethod lessonId={lesson.id} {step} mode="learn" />
+				</div>
 			</div>
 		{/snippet}
 
@@ -142,7 +148,7 @@
 			     overlays; the session route never changes. The notes link renders
 			     only below lg, where there is no aside column. -->
 			<div class="-mb-2 flex items-center justify-end gap-4">
-				<NotesLink lessonId={lesson.id} />
+				<NotesLink lessonId={lesson.id} {step} mode="learn" />
 				<W.Stuck {step} class="self-auto" />
 			</div>
 			{#if step === 'preview'}
