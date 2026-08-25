@@ -10,13 +10,24 @@
 	 * a single quiet outcome strip: arc plus starting point.
 	 */
 	import { goto } from '$app/navigation';
+	import { LessonPlayer } from '$lib/audio/lesson-player.svelte.js';
 	import * as W from '$lib/components/ui/index.js';
 	import { COURSES, getLessonByIndex } from '$lib/content/index.js';
 	import { placeEntryLesson } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 
 	const lesson = $derived(getLessonByIndex(profile.language, 1)!);
-	const sample = $derived(lesson.lines[2] ?? lesson.lines[0]);
+	const sampleIndex = $derived(lesson.lines[2] ? 2 : 0);
+	const sample = $derived(lesson.lines[sampleIndex]);
+
+	const player = $derived.by(() => new LessonPlayer(lesson));
+	$effect(() => {
+		const p = player;
+		return () => p.destroy();
+	});
+	function playSample() {
+		player.playLine(sampleIndex);
+	}
 
 	let heard = $state<number | null>(null);
 	let spoke = $state(false);
@@ -66,7 +77,14 @@
 		<section class="flex flex-col gap-2" aria-label="Step 1 of 2: listen">
 			<div class="font-mono text-2xs text-text-faint">step 1 of 2</div>
 			<div class="flex items-center gap-2.5">
-				<W.PlayButton size="lg" class="mx-0" label="Play the sample" disabled={sample.audio.pending} />
+				<W.PlayButton
+					size="lg"
+					class="mx-0"
+					glyph={player.playing ? '❚❚' : '▶'}
+					label={player.playing ? 'Pause the sample' : 'Play the sample'}
+					disabled={!player.available}
+					onclick={playSample}
+				/>
 				<div class="flex flex-col gap-[3px]">
 					<div class="font-display text-base leading-snug font-semibold">
 						Listen, then pick what you heard
