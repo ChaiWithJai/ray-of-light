@@ -17,7 +17,9 @@
 	} from '$lib/answers.js';
 	import type { Lesson, RecallPrompt } from '$lib/schemas/content.js';
 	import type { RecallSessionDraft } from '$lib/schemas/learner.js';
+	import { attempt as openAttempt } from '$lib/stores/attempt.svelte.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { onDestroy } from 'svelte';
 
 	let {
 		lesson,
@@ -78,29 +80,45 @@
 	const hasAttempt = $derived(hasRecallAttempt(attempt));
 	const showReveal = $derived(revealed && hasAttempt);
 
+	/**
+	 * #48 T1: consulting the method mid-attempt caps this retrieval exactly as
+	 * a first-word hint does — but it must not reveal anything, so it feeds the
+	 * evidence flag without opening the hint card.
+	 */
+	const capped = $derived(hinted || openAttempt.hinted);
+
 	function persistDraft() {
 		if (!line) return;
-		onDraftChange?.({ lineId: line.id, text: attempt, hinted, revealed });
+		onDraftChange?.({ lineId: line.id, text: attempt, hinted: capped, revealed });
 	}
 
 	$effect(() => {
 		index;
 		hinted;
 		revealed;
+		openAttempt.hinted;
 		persistDraft();
 	});
+
+	// The open attempt, published for the harness's hint boundary.
+	$effect(() => {
+		if (submitted || !recallPrompt) openAttempt.close();
+		else openAttempt.open('recall', lesson.id, recallPrompt.constructions);
+	});
+	onDestroy(() => openAttempt.close());
 
 	function produce() {
 		if (!hasAttempt || submitted) return;
 
 		const evaluation = evaluateRecallAttempt(attempt, recallPrompt, line);
+		const wasCapped = capped;
 		submitted = true;
 		onDone({
 			lineId: line.id,
 			text: attempt,
 			canonicalAnswer: evaluation.canonicalAnswer,
 			matchedAcceptedAnswer: evaluation.matchedAcceptedAnswer
-		}, evaluation, hinted);
+		}, evaluation, wasCapped);
 	}
 </script>
 

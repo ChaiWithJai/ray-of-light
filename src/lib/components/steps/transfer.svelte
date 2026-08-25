@@ -8,7 +8,9 @@
 	import { CONTENT_VERSION, getConstruction } from '$lib/content/index.js';
 	import { evaluateTransferAttempt, type TransferEvaluation } from '$lib/answers.js';
 	import type { Lesson, TransferPrompt } from '$lib/schemas/content.js';
+	import { attempt } from '$lib/stores/attempt.svelte.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { onDestroy } from 'svelte';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
 
@@ -25,6 +27,13 @@
 	const allConstructionsMatched = $derived(evaluation?.unmatchedConstructionIds.length === 0);
 	const anyConstructionMatched = $derived((evaluation?.matchedConstructionIds.length ?? 0) > 0);
 
+	// #48 T1: the open attempt, published for the harness's hint boundary.
+	$effect(() => {
+		if (!prompt || submitted) attempt.close();
+		else attempt.open('transfer', lesson.id, [prompt.useConstruction]);
+	});
+	onDestroy(() => attempt.close());
+
 	function submit() {
 		if (submitted || answer.trim() === '' || !prompt) return;
 		submitted = true;
@@ -39,7 +48,7 @@
 				{ kind: 'attempt-incorrect', constructionIds: evaluation.unmatchedConstructionIds }
 			],
 			lesson.id,
-			{ contentVersion: CONTENT_VERSION }
+			{ hinted: attempt.hinted, contentVersion: CONTENT_VERSION }
 		);
 	}
 </script>

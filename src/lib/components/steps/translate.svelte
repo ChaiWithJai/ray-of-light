@@ -12,7 +12,9 @@
 	import { CONTENT_VERSION } from '$lib/content/index.js';
 	import { normalise } from '$lib/answers.js';
 	import type { Lesson } from '$lib/schemas/content.js';
+	import { attempt } from '$lib/stores/attempt.svelte.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { onDestroy } from 'svelte';
 
 	let { lesson, onDone }: { lesson: Lesson; onDone: () => void } = $props();
 
@@ -29,6 +31,13 @@
 	let checked = $state(false);
 	let correct = $state(false);
 
+	// #48 T1: the open attempt, published for the harness's hint boundary.
+	$effect(() => {
+		if (checked) attempt.close();
+		else attempt.open('translate', lesson.id, line.constructions);
+	});
+	onDestroy(() => attempt.close());
+
 	function check() {
 		if (checked || answer.trim() === '') return;
 		checked = true;
@@ -37,7 +46,7 @@
 			correct ? 'comprehension-correct' : 'attempt-incorrect',
 			lesson.id,
 			line.constructions,
-			{ contentVersion: CONTENT_VERSION }
+			{ hinted: attempt.hinted, contentVersion: CONTENT_VERSION }
 		);
 	}
 </script>
