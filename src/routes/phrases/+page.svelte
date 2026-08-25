@@ -4,9 +4,11 @@
 	 * keeping its source lesson and original context. Not a flashcard deck.
 	 */
 	import * as W from '$lib/components/ui/index.js';
+	import { LessonPlayer } from '$lib/audio/lesson-player.svelte.js';
 	import { COURSES, getLesson } from '$lib/content/index.js';
 	import { normalise } from '$lib/answers.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import type { Lesson } from '$lib/schemas/content.js';
 
 	const course = $derived(COURSES[profile.language]);
 	const states = $derived(profile.states);
@@ -37,7 +39,8 @@
 
 	function exampleFor(constructionId: string, lessonId: string) {
 		const lesson = getLesson(profile.language, lessonId);
-		return lesson?.lines.find((l) => l.constructions.includes(constructionId)) ?? lesson?.lines[0];
+		const index = lesson?.lines.findIndex((l) => l.constructions.includes(constructionId)) ?? -1;
+		return { line: index >= 0 ? lesson?.lines[index] : lesson?.lines[0], index: Math.max(index, 0) };
 	}
 
 	function toggle(id: string) {
@@ -46,6 +49,27 @@
 		else next.add(id);
 		selected = next;
 	}
+
+	// One player per source lesson so cards sharing a lesson share playback;
+	// only one card sounds at a time.
+	const players = new Map<string, LessonPlayer>();
+	function playerFor(lesson: Lesson) {
+		let p = players.get(lesson.id);
+		if (!p) {
+			p = new LessonPlayer(lesson);
+			players.set(lesson.id, p);
+		}
+		return p;
+	}
+	function playPhrase(lesson: Lesson, lineIndex: number) {
+		const target = playerFor(lesson);
+		for (const p of players.values()) if (p !== target) p.pause();
+		target.playLine(lineIndex);
+	}
+	$effect(() => () => {
+		for (const p of players.values()) p.destroy();
+		players.clear();
+	});
 </script>
 
 <svelte:head><title>Phrases</title></svelte:head>
@@ -68,8 +92,9 @@
 	{:else}
 		<div class="flex flex-col gap-2">
 			{#each results as construction (construction.id)}
-				{@const example = exampleFor(construction.id, construction.introducedIn)}
 				{@const lesson = getLesson(profile.language, construction.introducedIn)}
+				{@const { line: example, index: exampleIndex } = exampleFor(construction.id, construction.introducedIn)}
+				{@const player = lesson ? playerFor(lesson) : null}
 				<W.Card
 					tone={selected.has(construction.id) ? 'accent' : 'default'}
 					class="cursor-pointer"
@@ -77,7 +102,18 @@
 				>
 					<div class="flex items-center justify-between gap-2">
 						<W.Fr class="text-sm">{example?.targetScript ?? construction.label}</W.Fr>
-						<W.PlayButton size="sm" label="Play phrase" />
+						<W.PlayButton
+							size="sm"
+							glyph={player?.playing && player.activeLine === exampleIndex ? '❚❚' : '▶'}
+							label={player?.playing && player.activeLine === exampleIndex
+								? 'Pause phrase'
+								: 'Play phrase'}
+							disabled={!player?.available}
+							onclick={(e: MouseEvent) => {
+								e.stopPropagation();
+								if (lesson) playPhrase(lesson, exampleIndex);
+							}}
+						/>
 					</div>
 					{#if example?.transliteration}
 						<W.Muted class="text-2xs italic">{example.transliteration}</W.Muted>
