@@ -28,7 +28,8 @@
 
 	let {
 		constructionId,
-		state,
+		// Renamed locally so the `$state` rune is not shadowed by a prop called `state`.
+		state: capabilityState,
 		size = 44,
 		class: className
 	}: {
@@ -38,11 +39,29 @@
 		class?: string;
 	} = $props();
 
-	const stage = $derived(spriteStage(state));
+	const stage = $derived(spriteStage(capabilityState));
 	const inkUrl = $derived(approvedInkUrl(constructionId));
 	const markup = $derived(
-		spriteMarkup(constructionId, state, { size, class: cn('shrink-0', className) })
+		spriteMarkup(constructionId, capabilityState, { size, class: cn('shrink-0', className) })
 	);
+
+	/**
+	 * A surface can server-render a sprite before the learner's profile has
+	 * loaded, which draws the `unmet` outline; the real stage arrives a moment
+	 * later. A hydrated `{@html}` block keeps the nodes it claimed, so without
+	 * this the drawing would sit at `unmet` beside a state word that says
+	 * `recalled` — precisely the desync spec §6 forbids. Redrawing the host when
+	 * the DOM disagrees with the derivation keeps the two identical.
+	 */
+	let host: HTMLElement | undefined = $state.raw(undefined);
+	$effect(() => {
+		const drawn = host?.firstElementChild;
+		if (!host || !drawn) return;
+		if (drawn.getAttribute('data-stage') === stage && drawn.getAttribute('data-sprite') === constructionId) {
+			return;
+		}
+		host.innerHTML = markup;
+	});
 </script>
 
 {#if inkUrl}
@@ -58,6 +77,10 @@
 		aria-hidden="true"
 	/>
 {:else}
-	<!-- eslint-disable-next-line svelte/no-at-html-tags — trusted, project-generated markup -->
-	{@html markup}
+	<!-- `display: contents`, so the host adds nothing to the layout the sprite
+	     sits in; the svg itself remains the laid-out box. -->
+	<span class="contents" bind:this={host}>
+		<!-- eslint-disable-next-line svelte/no-at-html-tags — trusted, project-generated markup -->
+		{@html markup}
+	</span>
 {/if}

@@ -70,9 +70,12 @@
 		{#each course.lessons as lesson (lesson.id)}
 			{@const done = profile.hasCompleted(lesson.id)}
 			{@const open = done || lesson.id === assignedNewLessonId}
+			<!-- #47 W3: a construction's wiki entry links to the lesson that teaches
+			     it, so every lesson card carries a stable anchor to land on. -->
 			<W.Card
+				id="lesson-{lesson.id}"
 				tone={lesson.kind === 'synthesis' ? 'parchment' : 'default'}
-				class="p-3 {open ? '' : 'opacity-45'}"
+				class="scroll-mt-20 p-3 {open ? '' : 'opacity-45'}"
 			>
 				<div class="flex items-center justify-between gap-2">
 					<div class="text-sm">

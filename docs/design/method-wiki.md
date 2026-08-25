@@ -1,11 +1,14 @@
 # Method wiki — learner-facing reference for the taxonomy and methodology
 
-**Status:** spec (Design R1 · Phase 0); W0–W1 implemented, plus W2's full page
-set (content module `src/lib/content/wiki/`, all seven technique pages, /method,
-/capability, glossary, `/wiki` routes, glossary popover, stuck panel, intro
-"learn more" overlays, conformance tests). Remaining: route prerendering, the
-app-wide term sweep, and W3 (/constructions, Bonsai harness wiring). Refs #47,
-#36 (first-run intros), #37 (orientation), #1.
+**Status:** spec (Design R1 · Phase 0); W0–W2 implemented (content module
+`src/lib/content/wiki/`, all seven technique pages, /method, /capability,
+glossary, `/wiki` routes, glossary popover, stuck panel, intro "learn more"
+overlays, conformance tests), plus W3's per-construction half: `/constructions`
+and `/constructions/[id]`, generated from the course data and the sprite cast
+(`src/lib/content/wiki/constructions.ts`), cross-linked from Progress, Term
+popovers and the Book. Remaining: route prerendering, the app-wide term sweep,
+and W3's Bonsai harness wiring. Refs #47, #46 (sprites), #36 (first-run
+intros), #37 (orientation), #1.
 
 ---
 
@@ -74,8 +77,12 @@ Three access forms, one per job:
                        what evidence earns it (the D3 table, learner-voiced)
   /glossary/…        — one short entry per term: construction, wave, spread,
                        support, evidence, resurface, synthesis, placement, …
-  /constructions/[id] (later) — per-construction page: gloss, lesson of first
-                       appearance, its sprite, current capability state
+  /constructions     — the cast, grouped by capability state: what you own
+                       (strongest first) and what is still coming
+  /constructions/[id] — per-construction page: gloss, lesson of first
+                       appearance, the lines that exercise it, its sprite at
+                       your stage, and your current capability state ("not yet
+                       met" when there is no evidence)
 ```
 
 Every technique page has a fixed shape mirroring the three jobs: **Unstuck**
@@ -164,7 +171,10 @@ authoring is enforced, not remembered.
   compare, shadow, transfer steps; `StepId → page` map.
 - **Phase W2:** full /wiki routes (prerendered), remaining technique pages,
   resurfacing + synthesis pages, term links swept across all surfaces.
-- **Phase W3 (with #46/#48):** /constructions entries wired to sprites; wiki
+- **Phase W3 (with #46/#48):** /constructions entries wired to sprites
+  (shipped: entries derive label, gloss, introducing lesson and cited lines
+  from `src/lib/content/index.ts` joined to `sprites.json`, and conformance
+  tests fail when a construction, a cited line or a link drifts); wiki
   entries exposed as the Bonsai harness's retrieval corpus (see
   `docs/design/bonsai-aside-harness.md` §4 — the harness consumes the same
   typed `WikiEntry[]`, which is why the module, not the routes, is the

@@ -8,6 +8,7 @@
 	 */
 	import * as W from '$lib/components/ui/index.js';
 	import { GLOSSARY, TECHNIQUE_PAGES } from '$lib/content/wiki/index.js';
+	import { CONSTRUCTION_COPY } from '$lib/content/wiki/constructions.js';
 </script>
 
 <svelte:head><title>Method guide</title></svelte:head>
@@ -37,6 +38,16 @@
 		<W.Muted class="text-sm">
 			The five states every phrase pattern climbs, and what earns each one.
 		</W.Muted>
+	</W.Card>
+
+	<W.Card class="gap-1">
+		<a
+			href="/wiki/constructions"
+			class="font-display text-lg font-semibold text-text no-underline hover:text-brand-deep"
+		>
+			{CONSTRUCTION_COPY.indexTitle}
+		</a>
+		<W.Muted class="text-sm">{CONSTRUCTION_COPY.indexLead}</W.Muted>
 	</W.Card>
 
 	<W.Card class="gap-2">

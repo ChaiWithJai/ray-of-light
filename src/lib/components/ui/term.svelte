@@ -13,6 +13,11 @@
 	import { cn } from '$lib/utils.js';
 	import { glossaryEntry } from '$lib/content/wiki/index.js';
 	import { spriteCastEntry } from '$lib/content/sprite-cast.js';
+	import {
+		CONSTRUCTION_COPY,
+		constructionHref,
+		UNMET_LABEL
+	} from '$lib/content/wiki/constructions.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
 	import Sprite from './sprite.svelte';
 
@@ -60,8 +65,17 @@
 				{#if castEntry}
 					<div class="mt-2 flex items-center gap-2" data-testid="term-sprite-{id}">
 						<Sprite constructionId={id} state={castState} size={32} />
-						<span class="text-2xs text-text-faint">{castState ?? 'not yet met'}</span>
+						<span class="text-2xs text-text-faint">{castState ?? UNMET_LABEL}</span>
 					</div>
+					<!-- #47 W3: a term that names a real pattern goes to that pattern's
+					     own entry, not only to the general glossary word. -->
+					<a
+						href={constructionHref(id)}
+						data-testid="term-construction-link-{id}"
+						class="mt-2 inline-block text-2xs font-bold text-brand-deep underline decoration-dotted underline-offset-2 outline-none hover:text-brand focus-visible:ring-2 focus-visible:ring-brand"
+					>
+						{CONSTRUCTION_COPY.entryLink}
+					</a>
 				{/if}
 				<a
 					href="/wiki/glossary/{entry.id}"
