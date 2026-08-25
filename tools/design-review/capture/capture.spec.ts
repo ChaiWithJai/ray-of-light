@@ -13,7 +13,30 @@ const STORAGE_KEY = 'ray-of-light.profile.v1';
 
 async function shot(page: Page, name: string, project: string) {
 	await page.waitForTimeout(350); // settle animations
+	// fullPage stitching renders position:sticky elements at their scroll
+	// offset, painting session headers mid-page — annotated as a "CSS bug"
+	// twice across review rounds though live behavior is correct. Pin sticky
+	// elements static (top of flow) for the capture only.
+	await page.evaluate(() => {
+		for (const el of document.querySelectorAll<HTMLElement>('*')) {
+			if (getComputedStyle(el).position === 'sticky') el.style.position = 'static';
+		}
+	});
 	await page.screenshot({ path: join(OUT, `${name}.${project}.png`), fullPage: true });
+	await page.evaluate(() => {
+		for (const el of document.querySelectorAll<HTMLElement>('*')) {
+			if (el.style.position === 'static') el.style.position = '';
+		}
+	});
+}
+
+
+/** Shadow gates its advance until the echo pass completes; with no working
+ *  audio clock the pass can't finish, so take the product's own escape. */
+async function leaveShadow(page: Page) {
+	const skip = page.getByRole('button', { name: /Skip ahead/ });
+	if (await skip.count()) { await skip.first().click(); return; }
+	await page.getByRole('button', { name: 'Continue' }).click();
 }
 
 const SCRIPTS: Record<string, { comprehension: RegExp[]; completion: string; translate: string; transfer: string }> = {
@@ -47,7 +70,7 @@ async function completeSession(page: Page, lessonId: string) {
 		await page.getByRole('button', { name: answer }).first().click();
 		await page.getByRole('button', { name: /Next|Continue/ }).click();
 	}
-	await page.getByRole('button', { name: 'Continue' }).click(); // shadow
+	await leaveShadow(page);
 	await page.getByLabel('Your English translation').fill(s.translate);
 	await page.getByRole('button', { name: 'Check' }).click();
 	await expect(page.getByTestId('reveal')).toBeVisible();
@@ -120,7 +143,7 @@ test('critical path — French', async ({ page }, testInfo) => {
 		await page.getByRole('button', { name: /Next|Continue/ }).click();
 	}
 	await shot(page, '09-shadow', p);
-	await page.getByRole('button', { name: 'Continue' }).click();
+	await leaveShadow(page);
 	await shot(page, '10-translate', p);
 	await page.getByLabel('Your English translation').fill(SCRIPTS['fr-01'].translate);
 	await page.getByRole('button', { name: 'Check' }).click();
