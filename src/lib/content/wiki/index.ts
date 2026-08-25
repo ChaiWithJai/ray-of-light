@@ -182,7 +182,10 @@ const GLOSSARY_SOURCE: GlossaryEntry[] = [
  * `ConstructionState`, so adding a state to the schema fails compilation here
  * until its copy exists; a conformance test also checks the rendered page.
  */
-const STATE_COPY: Record<ConstructionState, { meaning: string; earns: string }> = {
+export const CAPABILITY_STATE_COPY: Record<
+	ConstructionState,
+	{ meaning: string; earns: string }
+> = {
 	exposed: {
 		meaning: 'You have met this pattern inside a lesson, in meaningful audio and text.',
 		earns: 'Reading its line on the spread, both columns together, earns this.'
@@ -230,7 +233,7 @@ const capabilityPage: WikiPage = {
 		},
 		...CONSTRUCTION_STATES.map((state) => ({
 			heading: state,
-			paragraphs: [STATE_COPY[state].meaning, STATE_COPY[state].earns]
+			paragraphs: [CAPABILITY_STATE_COPY[state].meaning, CAPABILITY_STATE_COPY[state].earns]
 		})),
 		{
 			heading: 'Why hints cap an attempt',

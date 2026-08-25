@@ -169,9 +169,17 @@ listed in the manifest, provenance in the manifest entry.
 - **S2 (shipped):** sprite surfaces at the transfer step (the exercised
   construction fronting the prompt), lesson closure (the roll call of the
   lesson's constructions at their honest derived stages), `/wiki/capability`
-  (the stage grammar drawn with one sample cast member) and Term popovers
-  (a sprite renders when the term id is a real cast member in the manifest).
+  (the stage grammar drawn with one sample cast member), Term popovers
+  (a sprite renders when the term id is a real cast member in the manifest)
+  and the per-construction wiki entries at `/wiki/constructions[/id]`
+  (`docs/design/method-wiki.md` W3), where each character appears at the
+  learner's derived stage and the index groups the cast by that stage.
   Plus the ink pipeline and its review gate, below.
+
+  `<Sprite>` redraws its host when the DOM's `data-stage` disagrees with the
+  derivation: a page can server-render a sprite before the profile has loaded,
+  and a hydrated `{@html}` block keeps the nodes it claimed, which would leave
+  an `unmet` outline standing beside a state word that says otherwise (§6).
 
 **The ink layer and the owner-review gate (D8).**
 `scripts/generate-sprite-ink.mts` produces per-character PNG assets into the

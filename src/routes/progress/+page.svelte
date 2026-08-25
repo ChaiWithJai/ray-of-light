@@ -7,6 +7,7 @@
 	import { COURSES, getLesson } from '$lib/content/index.js';
 	import { CONSTRUCTION_STATES, stateRank } from '$lib/schemas/learner.js';
 	import { profile } from '$lib/stores/profile.svelte.js';
+	import { CONSTRUCTION_COPY, constructionHref } from '$lib/content/wiki/constructions.js';
 
 	const course = $derived(COURSES[profile.language]);
 	const states = $derived(profile.states);
@@ -107,7 +108,13 @@
 				{@const rank = stateRank(row.state)}
 				<W.Card class="anim-rise gap-2 p-4 {i < 4 ? `anim-d${i + 1}` : ''}">
 					<div class="flex items-start justify-between gap-3">
-						<div class="flex min-w-0 items-center gap-2.5">
+						<!-- #47 W3: the card is the way into the pattern's own wiki entry:
+						     its lesson, the lines that exercise it, what its state means. -->
+						<a
+							href={constructionHref(row.construction.id)}
+							data-testid="construction-link-{row.construction.id}"
+							class="flex min-w-0 items-center gap-2.5 rounded-lg no-underline outline-none hover:text-brand-deep focus-visible:ring-2 focus-visible:ring-brand"
+						>
 							<!-- #46 phase S0: the construction's character, at the stage the
 							     evidence derivation says — the same `row.state` the meter and
 							     the state word render. Marginalia, not a mascot. -->
@@ -116,7 +123,7 @@
 								<W.Fr class="text-base">{row.construction.label}</W.Fr>
 								<W.Muted class="mt-0.5 text-2xs">{row.construction.gloss}</W.Muted>
 							</div>
-						</div>
+						</a>
 						<div class="flex shrink-0 flex-col items-end gap-1.5 pt-0.5">
 							<span class="text-2xs font-bold tracking-[0.14em] text-brand-deep uppercase">
 								{reached}
@@ -146,5 +153,15 @@
 	<W.Muted class="text-center text-2xs">
 		{seen.length} of {course.constructions.size} constructions met
 	</W.Muted>
+
+	<!-- #47 W3: Progress shows what you have met; the wiki index also holds what
+	     is still coming, each pattern with its lesson and its lines. -->
+	<a
+		href="/wiki/constructions"
+		data-testid="all-constructions-link"
+		class="self-center text-2xs font-bold text-brand-deep underline decoration-dotted underline-offset-2 outline-none hover:text-brand focus-visible:ring-2 focus-visible:ring-brand"
+	>
+		{CONSTRUCTION_COPY.indexLink}
+	</a>
 
 </W.Shell>
